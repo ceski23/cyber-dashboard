@@ -19,6 +19,7 @@ export const auth = betterAuth({
 								clientSecret: serverEnv.OIDC_CLIENT_SECRET!,
 								scopes: ['openid', 'email', 'profile'],
 								pkce: true,
+								accessType: 'offline',
 							},
 						],
 					}),

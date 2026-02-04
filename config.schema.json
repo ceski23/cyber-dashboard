@@ -1,0 +1,120 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "The schema to verify this document against."
+		},
+		"title": {
+			"type": "string",
+			"description": "The title of the dashboard."
+		},
+		"widgets": {
+			"type": "array",
+			"items": {
+				"anyOf": [
+					{
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "A unique identifier for the widget."
+							},
+							"type": {
+								"type": "string",
+								"const": "cpu-load",
+								"description": "The type of the widget."
+							},
+							"title": {
+								"description": "The title of the widget.",
+								"type": "string"
+							},
+							"description": {
+								"description": "The description of the widget.",
+								"type": "string"
+							},
+							"columns": {
+								"default": 3,
+								"description": "The number of columns the widget spans.",
+								"type": "number",
+								"minimum": 1
+							},
+							"options": {
+								"type": "object",
+								"properties": {
+									"refreshInterval": {
+										"default": 5000,
+										"description": "Interval (in ms) to refresh CPU data.",
+										"type": "number",
+										"minimum": 1000
+									},
+									"showGraph": {
+										"default": true,
+										"description": "Whether to display the CPU usage graph.",
+										"type": "boolean"
+									}
+								},
+								"additionalProperties": false,
+								"description": "The configuration options for the widget."
+							}
+						},
+						"required": ["id", "type", "options"],
+						"additionalProperties": false
+					},
+					{
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "A unique identifier for the widget."
+							},
+							"type": {
+								"type": "string",
+								"const": "memory-used",
+								"description": "The type of the widget."
+							},
+							"title": {
+								"description": "The title of the widget.",
+								"type": "string"
+							},
+							"description": {
+								"description": "The description of the widget.",
+								"type": "string"
+							},
+							"columns": {
+								"default": 3,
+								"description": "The number of columns the widget spans.",
+								"type": "number",
+								"minimum": 1
+							},
+							"options": {
+								"type": "object",
+								"properties": {
+									"refreshInterval": {
+										"default": 5000,
+										"description": "Interval (in ms) to refresh memory data.",
+										"type": "number",
+										"minimum": 1000
+									},
+									"showGraph": {
+										"default": true,
+										"description": "Whether to display the memory usage graph.",
+										"type": "boolean"
+									}
+								},
+								"additionalProperties": false,
+								"description": "The configuration options for the widget."
+							}
+						},
+						"required": ["id", "type", "options"],
+						"additionalProperties": false
+					}
+				]
+			},
+			"description": "The list of widgets to display on the dashboard."
+		}
+	},
+	"required": ["widgets"],
+	"additionalProperties": false
+}

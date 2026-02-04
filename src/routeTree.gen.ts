@@ -9,19 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
+import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as LayoutLoginRouteImport } from './routes/_layout/login'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const LayoutRouteRoute = LayoutRouteRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LayoutRouteRoute,
+} as any)
+const LayoutLoginRoute = LayoutLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => LayoutRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -30,50 +35,57 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/': typeof LayoutIndexRoute
+  '/login': typeof LayoutLoginRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/login': typeof LayoutLoginRoute
+  '/': typeof LayoutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/_layout': typeof LayoutRouteRouteWithChildren
+  '/_layout/login': typeof LayoutLoginRoute
+  '/_layout/': typeof LayoutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/login' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/api/auth/$'
-  id: '__root__' | '/' | '/login' | '/api/auth/$'
+  to: '/login' | '/' | '/api/auth/$'
+  id: '__root__' | '/_layout' | '/_layout/login' | '/_layout/' | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
+  LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_layout/': {
+      id: '/_layout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof LayoutIndexRouteImport
+      parentRoute: typeof LayoutRouteRoute
+    }
+    '/_layout/login': {
+      id: '/_layout/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LayoutLoginRouteImport
+      parentRoute: typeof LayoutRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -85,9 +97,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface LayoutRouteRouteChildren {
+  LayoutLoginRoute: typeof LayoutLoginRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
+}
+
+const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
+  LayoutLoginRoute: LayoutLoginRoute,
+  LayoutIndexRoute: LayoutIndexRoute,
+}
+
+const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
+  LayoutRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LoginRoute: LoginRoute,
+  LayoutRouteRoute: LayoutRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

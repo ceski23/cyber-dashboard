@@ -15,7 +15,14 @@ const config = defineConfig({
 		},
 	},
 	plugins: [
-		devtools(),
+		devtools({
+			enhancedLogs: {
+				enabled: false,
+			},
+			consolePiping: {
+				enabled: false,
+			},
+		}),
 		viteTsConfigPaths({
 			projects: ['./tsconfig.json'],
 		}),

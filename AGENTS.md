@@ -1,7 +1,7 @@
 # Agent Development Guide - cyber-dashboard-v2
 
 **Project:** Homelab Dashboard with TanStack Start, better-auth, and React  
-**Tech Stack:** TanStack Start, React 19, TypeScript 5.9, Bun, Vite, TailwindCSS  
+**Tech Stack:** TanStack Start, React 19, TypeScript 5.9, Bun, Vite, TailwindCSS, oxlint, oxfmt  
 **Last Updated:** 2026-02-01
 
 ---
@@ -19,6 +19,25 @@ bun run build
 
 # Preview production build
 bun run preview
+```
+
+### Linting & Formatting
+
+```bash
+# Run oxlint (linter based on rust-analyzer)
+bun run lint
+
+# Auto-fix linting issues
+bun run lint:fix
+
+# Format code with oxfmt
+bun run format
+
+# Check formatting without modifying
+bun run format:check
+
+# Run both lint and format checks (pre-commit hook)
+bun run lint && bun run format:check
 ```
 
 ### Package Management
@@ -48,15 +67,42 @@ bun dlx shadcn@latest add button
 
 ## Code Style Guidelines
 
+### Linting & Formatting Configuration
+
+**Linter:** oxlint (rust-analyzer based, faster than ESLint)
+
+- Enforced rules: `typescript/consistent-type-definitions` (use `type`, not `interface`)
+- Arrow functions: must use arrow body style when possible (`=>` not `{}`)
+- Function style: must use function expressions, not declarations
+- React rules: `react/recommended`, `react-hooks/recommended`, `react-perf`
+- Ignored: `src/components/ui/*` (shadcn/ui components)
+
+**Formatter:** oxfmt (Rust-based formatter)
+
+- Line width: 120 characters
+- Indentation: tabs (width 4)
+- Quotes: single (except JSX where double)
+- Trailing commas: all
+- Imports: auto-sorted by oxfmt groups (side-effect → builtin → external → internal → parent → sibling → index)
+- Tailwind: auto-sorts classes in `className` and `class` attributes
+
 ### TypeScript & Imports
 
 - **Module Resolution:** Paths use `@/*` alias (e.g., `@/components/Header`)
 - **Strict Mode:** TypeScript strict mode enabled - all types required
 - **No Unused Vars:** Both `noUnusedLocals` and `noUnusedParameters` enforced
-- **Import Order:** Group imports (React/third-party → @/ imports → relative)
+- **Type Definitions:** Use `type`, not `interface` (oxlint enforced)
+- **Import Order:** Automatically sorted by oxfmt into groups:
+    1. Side-effect imports
+    2. Builtin imports
+    3. External/third-party imports
+    4. Internal imports (`@/*`)
+    5. Parent imports (`../`)
+    6. Sibling imports (`./`)
+    7. Index imports
 
 ```typescript
-// Correct pattern
+// Correct pattern (oxfmt will auto-sort)
 import { createFileRoute } from '@tanstack/react-router'
 import { betterAuth } from 'better-auth'
 
@@ -78,16 +124,28 @@ import { someHelper } from './utils'
 
 **React Components (TSX):**
 
+- Use arrow function expressions (oxlint enforced)
+- Define types at top of file
+- Avoid `any` type - be explicit
+
 ```typescript
 import { createFileRoute } from '@tanstack/react-router'
 
+type MyComponentProps = {
+	title: string
+	count: number
+}
+
 export const Route = createFileRoute('/path')({
-  component: MyComponent,
+	component: MyComponent,
 })
 
-function MyComponent() {
-  return <div>Content</div>
-}
+const MyComponent = ({ title, count }: MyComponentProps) => (
+	<div className="space-y-4">
+		<h1>{title}</h1>
+		<p>{count}</p>
+	</div>
+)
 ```
 
 **Server Functions (TanStack Start):**
@@ -105,11 +163,12 @@ export const myServerFn = createServerFn({ method: 'GET' }).handler(async () => 
 
 - **Framework:** TailwindCSS v4 via `@tailwindcss/vite` plugin
 - **Classes:** Use Tailwind utility classes directly in JSX
+- **Class Sorting:** oxfmt auto-sorts Tailwind classes in `className` and `class` attributes
 - **Global Styles:** Add to `src/styles.css` if needed
 - **Animations:** Use `tw-animate-css` library for CSS animations
 
 ```tsx
-// Tailwind class usage
+// Tailwind class usage (oxfmt will auto-sort classes)
 <div className="min-h-screen bg-gray-900 p-6">
 	<h1 className="text-3xl font-bold text-white">Title</h1>
 </div>
@@ -118,18 +177,19 @@ export const myServerFn = createServerFn({ method: 'GET' }).handler(async () => 
 ### Type Safety
 
 - Always use TypeScript for new files (`.tsx` for React, `.ts` for utilities)
+- Use `type` keyword for type definitions (not `interface` - oxlint enforced)
 - Use Zod for runtime validation (already in dependencies)
-- Define interfaces at top of component files
+- Define types at top of component files or in separate `types/` files
 - Avoid `any` type - be explicit about types
 
 ```typescript
-interface MyProps {
+type MyComponentProps = {
 	title: string
 	count: number
 	onSubmit: (value: string) => void
 }
 
-function MyComponent({ title, count, onSubmit }: MyProps) {
+const MyComponent = ({ title, count, onSubmit }: MyComponentProps) => {
 	// ...
 }
 ```
@@ -138,16 +198,19 @@ function MyComponent({ title, count, onSubmit }: MyProps) {
 
 - Use try-catch for async operations
 - Provide user-friendly error messages in UI
-- Log errors to console in development
+- Log errors to console in development with descriptive context
 - For server functions, throw errors that will be caught client-side
+- Never silence errors silently - always log or propagate
+- Use `console.error()` for errors, `console.warn()` for warnings
 
 ```typescript
 try {
 	const result = await serverFunction()
 	// handle success
 } catch (error) {
-	console.error('Operation failed:', error)
+	console.error('Operation failed:', error instanceof Error ? error.message : String(error))
 	// show error UI to user
+	throw error // propagate if needed
 }
 ```
 
@@ -155,9 +218,11 @@ try {
 
 - **Files:** PascalCase for components (e.g., `Header.tsx`, `Card.tsx`)
 - **Functions:** camelCase for utilities (e.g., `formatDate()`, `getUserData()`)
-- **Constants:** UPPER_SNAKE_CASE for constants
-- **React Components:** PascalCase (e.g., `function MyComponent()`)
-- **Hooks:** camelCase starting with `use` (e.g., `useAuth()`)
+- **Constants:** UPPER_SNAKE_CASE for constants (e.g., `MAX_RETRIES`, `API_BASE_URL`)
+- **React Components:** PascalCase (e.g., `const MyComponent = ...`)
+- **Hooks:** camelCase starting with `use` (e.g., `useAuth()`, `useLocalStorage()`)
+- **Private functions:** prefix with underscore if needed (e.g., `_internalHelper()`)
+- **Boolean variables:** prefix with `is`, `has`, `can`, `should` (e.g., `isLoading`, `hasError`)
 
 ---
 
@@ -187,7 +252,17 @@ export const Route = createFileRoute('/')({
 })
 ```
 
-**Important:** `tanstackStartCookies()` plugin **MUST** be the last plugin in the auth config's plugins array.
+**CRITICAL:** `tanstackStartCookies()` plugin **MUST** be the last plugin in the auth config's plugins array.
+
+### File Structure
+
+- **Routes:** `src/routes/*.tsx` (TanStack Router file-based routing)
+- **Components:** `src/components/*.tsx` (Reusable UI components)
+- **UI Components:** `src/components/ui/*.tsx` (shadcn/ui components)
+- **Widgets:** `src/widgets/*.tsx` (Page-specific composed components)
+- **Libraries:** `src/lib/*.ts` (utilities, auth, config)
+- **Types:** `src/types/*.ts` (Shared type definitions)
+- **Styles:** `src/styles.css` (global Tailwind styles)
 
 ### Environment Variables
 
@@ -211,40 +286,47 @@ import { serverEnv } from '@/env'
 const secret = serverEnv.BETTER_AUTH_SECRET
 ```
 
-### Routing (TanStack Router)
-
-- File-based routing in `src/routes/`
-- Root route: `src/routes/__root.tsx`
-- Index route: `src/routes/index.tsx`
-- Nested routes: create subdirectories
-- Dynamic segments: use `$param` syntax
-- API routes: `src/routes/api/auth/$.ts`
-
 ---
 
-## Common Development Tasks
+## Development Workflow
 
-### Adding a New Page
+### Before Committing
+
+Always run the pre-commit checks:
+
+```bash
+bun run lint && bun run format:check
+```
+
+These are enforced by husky hooks. To auto-fix issues:
+
+```bash
+bun run lint:fix && bun run format
+```
+
+### Common Development Tasks
+
+**Adding a New Page:**
 
 1. Create `src/routes/mypage.tsx`
-2. Use the file-based routing pattern
-3. Import middleware if auth is needed
+2. Use file-based routing pattern
+3. Import middleware if auth needed
 4. Export `Route` created with `createFileRoute`
 
-### Adding a New Component
+**Adding a New Component:**
 
 1. Create `src/components/MyComponent.tsx`
-2. Define props interface
+2. Define `type MyComponentProps = { ... }`
 3. Use TypeScript types throughout
-4. Export as default or named export
+4. Run `bun run format` before committing
 
-### Adding a shadcn/ui Component
+**Adding shadcn/ui Components:**
 
 ```bash
 bun dlx shadcn@latest add card button alert
 ```
 
-Then import and use:
+Import and use:
 
 ```typescript
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -252,25 +334,30 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 ---
 
+## Troubleshooting
+
+| Error                      | Solution                                           |
+| -------------------------- | -------------------------------------------------- |
+| `Module not found '@/...'` | Check `tsconfig.json` paths alias                  |
+| `unused variable`          | Remove or prefix with `_` if intentional           |
+| Type errors                | Run `bun run build` to catch TypeScript errors     |
+| Formatting issues          | Run `bun run format` to auto-fix                   |
+| Linting issues             | Run `bun run lint:fix` to auto-fix                 |
+| Pre-commit hook fails      | Run `bun run lint && bun run format:check` locally |
+
+---
+
 ## Important Notes
 
+0. **NEVER COMMIT:** Under no cirricumstances you should commit any changes, your job is not creating commits. FORBIDDEN!
 1. **Bun Runtime:** Project uses Bun as package manager and runtime
-2. **SSR Ready:** TanStack Start enables server-side rendering
-3. **Streaming:** Use `createServerFn()` for server functions
-4. **Type Generation:** Route tree auto-generated in `src/routeTree.gen.ts`
-5. **Devtools:** React Router and Query devtools included in dev mode
+2. **SSR Ready:** TanStack Start enables server-side rendering with built-in hydration
+3. **Server Functions:** Use `createServerFn()` for secure server-only operations
+4. **Route Tree:** Auto-generated in `src/routeTree.gen.ts` - never edit manually
+5. **Devtools:** React Router and Query devtools included in dev mode only
+6. **Pre-commit Hooks:** oxlint and oxfmt checks are required before committing
+7. **Type Checking:** Strict TypeScript mode enforced - resolve all type errors before building
 
 ---
 
-## When You See Errors
-
-| Error                      | Solution                                             |
-| -------------------------- | ---------------------------------------------------- |
-| `Module not found '@/...'` | Check tsconfig.json paths alias                      |
-| `unused variable`          | Remove or prefix with `_` if intentional             |
-| Type errors                | Run TypeScript in strict mode to catch early         |
-| Import order issues        | Follow grouping: React → third-party → @/ → relative |
-
----
-
-**For more details, see IMPLEMENTATION_PLAN.md**
+**For architecture details, see IMPLEMENTATION_PLAN.md**

@@ -1,0 +1,9 @@
+import z from 'zod'
+
+import { configSchema } from '@/lib/config'
+
+const jsonSchema = z.toJSONSchema(configSchema, {
+	io: 'input',
+})
+
+Bun.write('config.schema.json', JSON.stringify(jsonSchema, null, 2))

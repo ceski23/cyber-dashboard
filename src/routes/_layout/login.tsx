@@ -40,6 +40,6 @@ const LoginPage = () => {
 	)
 }
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/_layout/login')({
 	component: LoginPage,
 })

@@ -1,0 +1,14 @@
+@property --memory {
+	syntax: '<integer>';
+	initial-value: 0;
+	inherits: false;
+}
+
+.memory {
+	transition: --memory 1s ease-out;
+	counter-reset: memory var(--memory);
+}
+
+.memory::after {
+	content: counter(memory) '%';
+}
