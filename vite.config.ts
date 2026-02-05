@@ -30,6 +30,9 @@ const config = defineConfig({
 		tanstackStart(),
 		viteReact(),
 	],
+	optimizeDeps: {
+		exclude: ['cpu-features', 'ssh2'],
+	},
 })
 
 export default config

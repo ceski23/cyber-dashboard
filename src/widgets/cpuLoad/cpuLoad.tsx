@@ -29,11 +29,7 @@ export const streamCpuData = createServerFn({ method: 'GET' })
 		await si.currentLoad() // Warm up
 		await Bun.sleep(1000)
 
-		while (true) {
-			if (signal.aborted) {
-				break
-			}
-
+		while (!signal.aborted) {
 			const { currentLoad } = await si.currentLoad()
 
 			cache.push({

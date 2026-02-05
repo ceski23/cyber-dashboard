@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { statusProviderSchema } from '@/services/status'
 import { widgets } from '@/widgets'
 
 export const configSchema = z.strictObject({
@@ -8,6 +9,12 @@ export const configSchema = z.strictObject({
 	widgets: z
 		.array(z.union(Object.values(widgets).map(widget => widget.schema)))
 		.describe('The list of widgets to display on the dashboard.'),
+	statusProviders: z
+		.record(
+			z.string().describe('The name of the status provider.'),
+			statusProviderSchema.describe('Status providers options.'),
+		)
+		.optional(),
 })
 
 export type Config = z.infer<typeof configSchema>

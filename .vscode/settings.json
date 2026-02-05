@@ -12,6 +12,7 @@
 		"source.fixAll.oxc": "always"
 	},
 	"oxc.typeAware": true,
+	"oxc.unusedDisableDirectives": "deny",
 	"[javascript][javascriptreact][typescript][typescriptreact][json][jsonc][css]": {
 		"editor.defaultFormatter": "oxc.oxc-vscode",
 		"editor.formatOnSave": true

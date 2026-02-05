@@ -109,10 +109,184 @@
 						},
 						"required": ["id", "type", "options"],
 						"additionalProperties": false
+					},
+					{
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "A unique identifier for the widget."
+							},
+							"type": {
+								"type": "string",
+								"const": "service-link",
+								"description": "The type of the widget."
+							},
+							"title": {
+								"description": "The title of the widget.",
+								"type": "string"
+							},
+							"description": {
+								"description": "The description of the widget.",
+								"type": "string"
+							},
+							"columns": {
+								"default": 3,
+								"description": "The number of columns the widget spans.",
+								"type": "number",
+								"minimum": 1
+							},
+							"options": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name of the service to link to."
+									},
+									"description": {
+										"description": "Optional description of the service.",
+										"type": "string"
+									},
+									"icon": {
+										"description": "Optional icon URL for the service.",
+										"type": "string",
+										"format": "uri"
+									},
+									"url": {
+										"type": "string",
+										"format": "uri",
+										"description": "URL to link to the service."
+									},
+									"status": {
+										"description": "Service status configuration.",
+										"type": "object",
+										"properties": {
+											"connectionName": {
+												"type": "string",
+												"description": "Name of the connection to check service status."
+											},
+											"serviceName": {
+												"type": "string",
+												"description": "Name of the service to check status for."
+											}
+										},
+										"required": ["connectionName", "serviceName"],
+										"additionalProperties": false
+									}
+								},
+								"required": ["name", "url"],
+								"additionalProperties": false,
+								"description": "The configuration options for the widget."
+							}
+						},
+						"required": ["id", "type", "options"],
+						"additionalProperties": false
 					}
 				]
 			},
 			"description": "The list of widgets to display on the dashboard."
+		},
+		"statusProviders": {
+			"type": "object",
+			"propertyNames": {
+				"type": "string",
+				"description": "The name of the status provider."
+			},
+			"additionalProperties": {
+				"anyOf": [
+					{
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"const": "docker"
+							},
+							"refreshInterval": {
+								"default": 5000,
+								"description": "The interval in milliseconds to refresh the Docker status.",
+								"type": "number"
+							},
+							"connection": {
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"socketPath": {
+												"default": "/var/run/docker.sock",
+												"description": "The path to the Docker socket.",
+												"type": "string"
+											}
+										},
+										"additionalProperties": false
+									},
+									{
+										"type": "object",
+										"properties": {
+											"host": {
+												"type": "string",
+												"description": "The Docker host URL."
+											},
+											"port": {
+												"default": 2375,
+												"description": "The Docker host port.",
+												"type": "number"
+											},
+											"protocol": {
+												"default": "http",
+												"description": "The protocol to use when connecting to the Docker host.",
+												"type": "string",
+												"enum": ["http", "https"]
+											},
+											"headers": {
+												"description": "Optional headers for the Docker connection.",
+												"type": "object",
+												"propertyNames": {
+													"type": "string"
+												},
+												"additionalProperties": {
+													"type": "string"
+												}
+											}
+										},
+										"required": ["host"],
+										"additionalProperties": false
+									}
+								]
+							}
+						},
+						"required": ["type", "connection"],
+						"additionalProperties": false
+					},
+					{
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"const": "gatus"
+							},
+							"refreshInterval": {
+								"default": 5000,
+								"description": "The interval in milliseconds to refresh the Gatus status.",
+								"type": "number"
+							},
+							"connection": {
+								"type": "object",
+								"properties": {
+									"baseUrl": {
+										"type": "string",
+										"description": "The base URL of the Gatus instance."
+									}
+								},
+								"required": ["baseUrl"],
+								"additionalProperties": false
+							}
+						},
+						"required": ["type", "connection"],
+						"additionalProperties": false
+					}
+				],
+				"description": "Status providers options."
+			}
 		}
 	},
 	"required": ["widgets"],

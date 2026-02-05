@@ -2,10 +2,12 @@ import type z from 'zod'
 
 import { cpuLoad } from './cpuLoad'
 import { memoryUsed } from './memoryUsed'
+import { serviceLink } from './serviceLink'
 
 export const widgets = {
 	[cpuLoad.type]: cpuLoad,
 	[memoryUsed.type]: memoryUsed,
+	[serviceLink.type]: serviceLink,
 }
 
 export type WidgetType = {

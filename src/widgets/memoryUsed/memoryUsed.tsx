@@ -27,11 +27,7 @@ export const streamMemoryData = createServerFn({ method: 'GET' })
 	.handler(async function* ({ data: { interval }, signal }) {
 		const cache = new CircularBuffer<MemoryData>(Array, 20)
 
-		while (true) {
-			if (signal.aborted) {
-				break
-			}
-
+		while (!signal.aborted) {
 			const { used, total } = await si.mem()
 
 			cache.push({

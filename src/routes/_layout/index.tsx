@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Widget } from '@/components/Widget'
-import { authMiddleware } from '@/lib/auth/middleware'
 
 const DashboardPage = () => {
 	const { config } = Route.useRouteContext()
@@ -20,7 +19,7 @@ const DashboardPage = () => {
 
 export const Route = createFileRoute('/_layout/')({
 	server: {
-		middleware: [authMiddleware],
+		// middleware: [authMiddleware],
 	},
 	component: DashboardPage,
 })
