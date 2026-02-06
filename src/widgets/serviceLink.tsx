@@ -1,5 +1,6 @@
 import z from 'zod'
 
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useServiceStatus } from '@/services/status'
 
 import { defineWidget } from './helpers'
@@ -29,28 +30,42 @@ export const serviceLink = defineWidget({
 		const { data } = useServiceStatus(status?.provider, status?.service)
 
 		return (
-			<a
-				href={url}
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				{icon && (
-					<img
-						src={icon}
-						alt={`${name} icon`}
-						style={{ width: 32, height: 32 }}
+			<Card
+				render={
+					<a
+						href={url}
+						target="_blank"
+						rel="noopener noreferrer"
 					/>
-				)}
-				<div>
-					<span>{name}</span>
-					{description && <span>{description}</span>}
-				</div>
+				}
+			>
+				<CardHeader>
+					{icon && (
+						<img
+							src={icon}
+							alt={`${name} icon`}
+							style={{ width: 32, height: 32 }}
+						/>
+					)}
+					<CardTitle>{name}</CardTitle>
+					<CardDescription>{description}</CardDescription>
+				</CardHeader>
 				{data && (
-					<span>
-						Status: {data.label} {data.status === 'available' ? '🟢' : '🔴'}
-					</span>
+					<CardFooter>
+						<span className="text-sm">
+							Status: {data.label} {data.status === 'available' ? '🟢' : '🔴'}
+						</span>
+					</CardFooter>
 				)}
-			</a>
+			</Card>
 		)
 	},
+	provideLinks: ({ url, name, icon }) => [
+		{
+			type: 'Services',
+			label: name,
+			url,
+			icon,
+		},
+	],
 })

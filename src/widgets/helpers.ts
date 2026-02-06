@@ -4,6 +4,12 @@ export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> 
 	type: TType
 	optionsSchema: TSchema
 	Component: React.ComponentType<z.infer<ReturnType<typeof baseWidgetSchema<TType>>> & { options: z.infer<TSchema> }>
+	provideLinks?: (options: z.infer<TSchema>) => Array<{
+		type: string
+		label: string
+		url: string
+		icon?: string
+	}>
 }
 
 export const baseWidgetSchema = <const T extends string>(type: T) =>
@@ -19,10 +25,12 @@ export const defineWidget = <const TType extends string, TSchema extends z.ZodOb
 	Component,
 	optionsSchema,
 	type,
+	provideLinks,
 }: WidgetDefinition<TType, TSchema>) => ({
 	type,
 	Component,
 	schema: baseWidgetSchema(type).extend({
 		options: optionsSchema.describe('The configuration options for the widget.'),
 	}),
+	provideLinks,
 })

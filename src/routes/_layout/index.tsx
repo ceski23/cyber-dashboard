@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { CommandPalette } from '@/components/CommandPalette'
 import { Widget } from '@/components/Widget'
 
 const DashboardPage = () => {
@@ -7,6 +8,7 @@ const DashboardPage = () => {
 
 	return (
 		<div>
+			<CommandPalette config={config} />
 			{config.widgets.map(definition => (
 				<Widget
 					key={definition.id}
