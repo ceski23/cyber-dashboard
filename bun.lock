@@ -6,6 +6,7 @@
       "name": "cyber-dashboard-v2",
       "dependencies": {
         "@radix-ui/react-slot": "1.2.4",
+        "@supercharge/promise-pool": "3.2.0",
         "@tailwindcss/vite": "4.1.18",
         "@tanstack/react-devtools": "0.9.4",
         "@tanstack/react-query": "5.90.20",
@@ -20,9 +21,11 @@
         "clsx": "2.1.1",
         "date-fns": "4.1.0",
         "dockerode": "4.0.9",
+        "es-toolkit": "1.44.0",
         "ky": "1.14.3",
         "lucide-react": "0.563.0",
         "mnemonist": "0.40.3",
+        "ping": "1.0.0",
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "recharts": "3.7.0",
@@ -306,6 +309,8 @@
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 
     "@standard-schema/utils": ["@standard-schema/utils@0.3.0", "", {}, "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="],
+
+    "@supercharge/promise-pool": ["@supercharge/promise-pool@3.2.0", "", {}, "sha512-pj0cAALblTZBPtMltWOlZTQSLT07jIaFNeM8TWoJD1cQMgDB9mcMlVMoetiB35OzNJpqQ2b+QEtwiR9f20mADg=="],
 
     "@tailwindcss/node": ["@tailwindcss/node@4.1.18", "", { "dependencies": { "@jridgewell/remapping": "^2.3.4", "enhanced-resolve": "^5.18.3", "jiti": "^2.6.1", "lightningcss": "1.30.2", "magic-string": "^0.30.21", "source-map-js": "^1.2.1", "tailwindcss": "4.1.18" } }, "sha512-DoR7U1P7iYhw16qJ49fgXUlry1t4CpXeErJHnQ44JgTSKMaZUdf17cfn5mHchfJ4KRBZRFA/Coo+MUF5+gOaCQ=="],
 
@@ -734,6 +739,8 @@
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 
     "picomatch": ["picomatch@4.0.3", "", {}, "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q=="],
+
+    "ping": ["ping@1.0.0", "", {}, "sha512-3dxdgGtV+7P/EVo42JhkGSomeO/0GGicSz3mI/yK+AI+VGNAOfakw5XfcbGI4IjyBY+ZZwvuRXdhnNF2uliKew=="],
 
     "postcss": ["postcss@8.5.6", "", { "dependencies": { "nanoid": "^3.3.11", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg=="],
 

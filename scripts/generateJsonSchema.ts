@@ -7,3 +7,4 @@ const jsonSchema = z.toJSONSchema(configSchema, {
 })
 
 Bun.write('config.schema.json', JSON.stringify(jsonSchema, null, 2))
+await Bun.$`bun run format config.schema.json`

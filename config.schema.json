@@ -161,16 +161,16 @@
 										"description": "Service status configuration.",
 										"type": "object",
 										"properties": {
-											"connectionName": {
+											"provider": {
 												"type": "string",
-												"description": "Name of the connection to check service status."
+												"description": "Name of the status provider to use for this service. Must match a provider defined in the dashboard configuration."
 											},
-											"serviceName": {
+											"service": {
 												"type": "string",
-												"description": "Name of the service to check status for."
+												"description": "Identifier of the service to check status for (depends on the provider)."
 											}
 										},
-										"required": ["connectionName", "serviceName"],
+										"required": ["provider", "service"],
 										"additionalProperties": false
 									}
 								},
@@ -282,6 +282,44 @@
 							}
 						},
 						"required": ["type", "connection"],
+						"additionalProperties": false
+					},
+					{
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"const": "ping"
+							},
+							"refreshInterval": {
+								"default": 5000,
+								"description": "The interval in milliseconds to refresh the ping status.",
+								"type": "number"
+							},
+							"timeout": {
+								"default": 5000,
+								"description": "The timeout in milliseconds for each ping request.",
+								"type": "number"
+							},
+							"version": {
+								"default": "ipv4",
+								"description": "Whether to use IPv4 or IPv6 for pinging.",
+								"type": "string",
+								"enum": ["ipv4", "ipv6"]
+							},
+							"services": {
+								"type": "object",
+								"propertyNames": {
+									"type": "string",
+									"description": "Service identifier"
+								},
+								"additionalProperties": {
+									"type": "string",
+									"description": "The host to ping (IP address or domain name)"
+								}
+							}
+						},
+						"required": ["type", "services"],
 						"additionalProperties": false
 					}
 				],

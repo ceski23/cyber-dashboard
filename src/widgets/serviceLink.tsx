@@ -13,14 +13,20 @@ export const serviceLink = defineWidget({
 		url: z.url().describe('URL to link to the service.'),
 		status: z
 			.strictObject({
-				connectionName: z.string().describe('Name of the connection to check service status.'),
-				serviceName: z.string().describe('Name of the service to check status for.'),
+				provider: z
+					.string()
+					.describe(
+						'Name of the status provider to use for this service. Must match a provider defined in the dashboard configuration.',
+					),
+				service: z
+					.string()
+					.describe('Identifier of the service to check status for (depends on the provider).'),
 			})
 			.optional()
 			.describe('Service status configuration.'),
 	}),
 	Component: ({ options: { status, url, icon, name, description } }) => {
-		const { data } = useServiceStatus(status?.connectionName, status?.serviceName)
+		const { data } = useServiceStatus(status?.provider, status?.service)
 
 		return (
 			<a
