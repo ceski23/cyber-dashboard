@@ -1,3 +1,4 @@
+// oxlint-disable typescript/consistent-type-definitions
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {

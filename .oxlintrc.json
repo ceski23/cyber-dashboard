@@ -1,11 +1,12 @@
 {
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
 	"extends": ["plugin:react/recommended", "plugin:react-hooks/recommended"],
-	"plugins": ["react", "react-perf"],
+	"plugins": ["react", "react-perf", "typescript"],
 	"ignorePatterns": ["src/components/ui/*"],
 	"rules": {
 		"typescript/consistent-type-definitions": ["error", "type"],
 		"arrow-body-style": ["error", "as-needed"],
-		"func-style": ["error", "expression"]
+		"func-style": ["error", "expression"],
+		"typescript/strict-boolean-expressions": ["error"]
 	}
 }

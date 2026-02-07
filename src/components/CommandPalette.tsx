@@ -41,7 +41,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config 
 	)
 
 	const handleReloadConfig = () => {
-		router.invalidate()
+		void router.invalidate()
 		setOpen(false)
 	}
 

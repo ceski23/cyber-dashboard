@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { isNotNil } from 'es-toolkit'
 
 import { useAuthClient } from '@/lib/auth/client.ts'
 
@@ -16,7 +17,7 @@ export default function Header() {
 					<div className="h-8 w-8 animate-pulse bg-neutral-100 dark:bg-neutral-800" />
 				) : session?.user ? (
 					<div className="flex items-center gap-2">
-						{session.user.image ? (
+						{isNotNil(session.user.image) ? (
 							<img
 								src={session.user.image}
 								alt=""

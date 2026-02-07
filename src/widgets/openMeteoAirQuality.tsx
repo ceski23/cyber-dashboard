@@ -30,7 +30,7 @@ const fetchCurrentWeather = createServerFn({ method: 'GET' })
 			const current = response?.current()
 			const utcOffsetSeconds = response?.utcOffsetSeconds()
 
-			return isNil(current) || isNil(utcOffsetSeconds) ? undefined : { current, utcOffsetSeconds }
+			return !current || isNil(utcOffsetSeconds) ? undefined : { current, utcOffsetSeconds }
 		})
 
 		if (!response) {
@@ -65,7 +65,7 @@ export const openMeteoAirQuality = defineWidget({
 			queryKey: ['openMeteo', 'airQuality', { ...locationData, units }],
 			queryFn: isNil(locationData)
 				? skipToken
-				: async () => fetchCurrentWeather({ data: { ...locationData, units } }),
+				: async ({ signal }) => fetchCurrentWeather({ data: { ...locationData, units }, signal }),
 		})
 
 		if (locationError) {

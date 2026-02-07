@@ -6,7 +6,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import appCss from '../styles.css?url'
 
-interface MyRouterContext {
+type MyRouterContext = {
 	queryClient: QueryClient
 }
 

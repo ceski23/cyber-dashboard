@@ -47,7 +47,7 @@ export const streamGatusStatus = createServerFn({ method: 'GET' })
 			const endpoints = await apiClient
 				.get('api/v1/endpoints/statuses', { signal })
 				.json()
-				.then(gatusResponseSchema.parse)
+				.then(data => gatusResponseSchema.parse(data))
 
 			yield endpoints.map<ServiceStatus>(endpoint => {
 				const isSuccess = endpoint.results?.at(-1)?.success

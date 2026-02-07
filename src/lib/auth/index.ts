@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { genericOAuth } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import { isNotNil } from 'es-toolkit'
 
 import { serverEnv } from '@/env'
 
@@ -8,7 +9,7 @@ export const auth = betterAuth({
 	baseURL: serverEnv.BETTER_AUTH_URL,
 	secret: serverEnv.BETTER_AUTH_SECRET,
 	plugins: [
-		...(serverEnv.OIDC_ISSUER
+		...(isNotNil(serverEnv.OIDC_ISSUER)
 			? [
 					genericOAuth({
 						config: [
@@ -27,5 +28,5 @@ export const auth = betterAuth({
 			: []),
 		tanstackStartCookies(), // ⚠️ MUST be last plugin
 	],
-	trustedOrigins: [serverEnv.BETTER_AUTH_URL, ...(serverEnv.OIDC_ISSUER ? [serverEnv.OIDC_ISSUER] : [])],
+	trustedOrigins: [serverEnv.BETTER_AUTH_URL, ...(isNotNil(serverEnv.OIDC_ISSUER) ? [serverEnv.OIDC_ISSUER] : [])],
 })

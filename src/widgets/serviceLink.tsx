@@ -1,3 +1,4 @@
+import { isNotNil } from 'es-toolkit'
 import z from 'zod'
 
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -41,7 +42,7 @@ export const serviceLink = defineWidget({
 				}
 			>
 				<CardHeader>
-					{icon && (
+					{isNotNil(icon) && (
 						<img
 							src={icon}
 							alt={`${name} icon`}

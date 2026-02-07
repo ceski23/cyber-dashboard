@@ -12,13 +12,7 @@ export const locationQuery = (location: Location) =>
 		queryKey: ['location', location],
 		retry: false,
 		queryFn: async () => {
-			if (location !== 'auto') {
-				return location
-			}
-
-			if (!navigator.geolocation) {
-				throw new Error('Geolocation is not supported by this browser.')
-			}
+			if (location !== 'auto') return location
 
 			return new Promise<{ latitude: number; longitude: number }>((resolve, reject) => {
 				navigator.geolocation.getCurrentPosition(
