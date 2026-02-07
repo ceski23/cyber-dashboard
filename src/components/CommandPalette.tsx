@@ -1,7 +1,8 @@
 import { useRouter } from '@tanstack/react-router'
 import { groupBy } from 'es-toolkit'
 import { RotateCcwIcon } from 'lucide-react'
-import { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import { Fragment, FunctionComponent, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import {
 	Command,
@@ -14,6 +15,7 @@ import {
 	CommandSeparator,
 } from '@/components/ui/command'
 import type { Config } from '@/lib/config'
+import { metaKey } from '@/lib/utils'
 import { widgets } from '@/widgets'
 
 import { Button } from './ui/button'
@@ -32,22 +34,17 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config 
 		link => link.type,
 	)
 
-	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
-				event.preventDefault()
-				setOpen(open => !open)
-			}
-		}
-
-		document.addEventListener('keydown', handleKeyDown)
-		return () => document.removeEventListener('keydown', handleKeyDown)
-	}, [])
-
 	const handleReloadConfig = () => {
 		router.invalidate()
 		setOpen(false)
 	}
+
+	useHotkeys('mod+k', () => setOpen(open => !open))
+
+	useHotkeys('mod+r', event => {
+		event.preventDefault()
+		handleReloadConfig()
+	})
 
 	return (
 		<Fragment>
@@ -57,7 +54,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config 
 			>
 				Open Command Palette{' '}
 				<KbdGroup>
-					<Kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</Kbd>
+					<Kbd>{metaKey}</Kbd>
 					<Kbd>K</Kbd>
 				</KbdGroup>
 			</Button>
@@ -73,6 +70,10 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config 
 							<CommandItem onSelect={handleReloadConfig}>
 								<RotateCcwIcon className="mr-2 inline-block h-4 w-4" />
 								Reload config
+								<KbdGroup className="ml-auto">
+									<Kbd>{metaKey}</Kbd>
+									<Kbd>R</Kbd>
+								</KbdGroup>
 							</CommandItem>
 						</CommandGroup>
 						<CommandSeparator />
