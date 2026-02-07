@@ -51,7 +51,7 @@ export const cpuLoad = defineWidget({
 		refreshInterval: z.number().min(1000).default(5000).describe('Interval (in ms) to refresh CPU data.'),
 		showGraph: z.boolean().optional().default(true).describe('Whether to display the CPU usage graph.'),
 	}),
-	Component: ({ options: { refreshInterval, showGraph } }) => {
+	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
 		const { data } = useQuery({
 			queryKey: ['cpuData', { refreshInterval }] as const,
 			queryFn: experimental_streamedQuery({
@@ -66,7 +66,7 @@ export const cpuLoad = defineWidget({
 			.slice(0, -1)
 
 		return (
-			<div>
+			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
 				<p>
 					CPU load:{' '}
 					<span

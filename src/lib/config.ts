@@ -3,11 +3,22 @@ import { z } from 'zod'
 import { statusProviderSchema } from '@/services/status'
 import { widgets } from '@/widgets'
 
+const widgetsSchema = z.union(Object.values(widgets).map(widget => widget.schema))
+
 export const configSchema = z.strictObject({
 	$schema: z.string().describe('The schema to verify this document against.').optional(),
 	title: z.string().describe('The title of the dashboard.').optional(),
 	widgets: z
-		.array(z.union(Object.values(widgets).map(widget => widget.schema)))
+		.array(
+			z.union([
+				widgetsSchema,
+				z.strictObject({
+					name: z.string().optional().describe('The name of the group.'),
+					columns: z.number().describe('The number of columns in the group.').optional(),
+					widgets: z.array(widgetsSchema),
+				}),
+			]),
+		)
 		.describe('The list of widgets to display on the dashboard.'),
 	statusProviders: z
 		.record(

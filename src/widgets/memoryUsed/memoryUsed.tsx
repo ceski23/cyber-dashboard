@@ -53,7 +53,7 @@ export const memoryUsed = defineWidget({
 		refreshInterval: z.number().min(1000).default(5000).describe('Interval (in ms) to refresh memory data.'),
 		showGraph: z.boolean().optional().default(true).describe('Whether to display the memory usage graph.'),
 	}),
-	Component: ({ options: { refreshInterval, showGraph } }) => {
+	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
 		const { data } = useQuery({
 			queryKey: ['memoryData', { refreshInterval }] as const,
 			queryFn: experimental_streamedQuery({
@@ -69,7 +69,7 @@ export const memoryUsed = defineWidget({
 			.slice(0, -1)
 
 		return (
-			<div>
+			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
 				<p>
 					Memory usage:{' '}
 					<span

@@ -15,261 +15,545 @@
 			"items": {
 				"anyOf": [
 					{
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "string",
-								"description": "A unique identifier for the widget."
-							},
-							"type": {
-								"type": "string",
-								"const": "cpu-load",
-								"description": "The type of the widget."
-							},
-							"columns": {
-								"default": 3,
-								"description": "The number of columns the widget spans.",
-								"type": "number",
-								"minimum": 1
-							},
-							"options": {
+						"anyOf": [
+							{
 								"type": "object",
 								"properties": {
-									"refreshInterval": {
-										"default": 5000,
-										"description": "Interval (in ms) to refresh CPU data.",
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "cpu-load",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
 										"type": "number",
-										"minimum": 1000
+										"minimum": 1
 									},
-									"showGraph": {
-										"default": true,
-										"description": "Whether to display the CPU usage graph.",
-										"type": "boolean"
-									}
-								},
-								"additionalProperties": false,
-								"description": "The configuration options for the widget."
-							}
-						},
-						"required": ["id", "type", "options"],
-						"additionalProperties": false
-					},
-					{
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "string",
-								"description": "A unique identifier for the widget."
-							},
-							"type": {
-								"type": "string",
-								"const": "memory-used",
-								"description": "The type of the widget."
-							},
-							"columns": {
-								"default": 3,
-								"description": "The number of columns the widget spans.",
-								"type": "number",
-								"minimum": 1
-							},
-							"options": {
-								"type": "object",
-								"properties": {
-									"refreshInterval": {
-										"default": 5000,
-										"description": "Interval (in ms) to refresh memory data.",
-										"type": "number",
-										"minimum": 1000
-									},
-									"showGraph": {
-										"default": true,
-										"description": "Whether to display the memory usage graph.",
-										"type": "boolean"
-									}
-								},
-								"additionalProperties": false,
-								"description": "The configuration options for the widget."
-							}
-						},
-						"required": ["id", "type", "options"],
-						"additionalProperties": false
-					},
-					{
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "string",
-								"description": "A unique identifier for the widget."
-							},
-							"type": {
-								"type": "string",
-								"const": "service-link",
-								"description": "The type of the widget."
-							},
-							"columns": {
-								"default": 3,
-								"description": "The number of columns the widget spans.",
-								"type": "number",
-								"minimum": 1
-							},
-							"options": {
-								"type": "object",
-								"properties": {
-									"name": {
-										"type": "string",
-										"description": "Name of the service to link to."
-									},
-									"description": {
-										"description": "Optional description of the service.",
-										"type": "string"
-									},
-									"icon": {
-										"description": "Optional icon URL for the service.",
-										"type": "string",
-										"format": "uri"
-									},
-									"url": {
-										"type": "string",
-										"format": "uri",
-										"description": "URL to link to the service."
-									},
-									"status": {
-										"description": "Service status configuration.",
+									"options": {
 										"type": "object",
 										"properties": {
-											"provider": {
-												"type": "string",
-												"description": "Name of the status provider to use for this service. Must match a provider defined in the dashboard configuration."
+											"refreshInterval": {
+												"default": 5000,
+												"description": "Interval (in ms) to refresh CPU data.",
+												"type": "number",
+												"minimum": 1000
 											},
-											"service": {
-												"type": "string",
-												"description": "Identifier of the service to check status for (depends on the provider)."
+											"showGraph": {
+												"default": true,
+												"description": "Whether to display the CPU usage graph.",
+												"type": "boolean"
 											}
 										},
-										"required": ["provider", "service"],
-										"additionalProperties": false
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
 									}
 								},
-								"required": ["name", "url"],
-								"additionalProperties": false,
-								"description": "The configuration options for the widget."
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "memory-used",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"refreshInterval": {
+												"default": 5000,
+												"description": "Interval (in ms) to refresh memory data.",
+												"type": "number",
+												"minimum": 1000
+											},
+											"showGraph": {
+												"default": true,
+												"description": "Whether to display the memory usage graph.",
+												"type": "boolean"
+											}
+										},
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "service-link",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"type": "string",
+												"description": "Name of the service to link to."
+											},
+											"description": {
+												"description": "Optional description of the service.",
+												"type": "string"
+											},
+											"icon": {
+												"description": "Optional icon URL for the service.",
+												"type": "string",
+												"format": "uri"
+											},
+											"url": {
+												"type": "string",
+												"format": "uri",
+												"description": "URL to link to the service."
+											},
+											"status": {
+												"description": "Service status configuration.",
+												"type": "object",
+												"properties": {
+													"provider": {
+														"type": "string",
+														"description": "Name of the status provider to use for this service. Must match a provider defined in the dashboard configuration."
+													},
+													"service": {
+														"type": "string",
+														"description": "Identifier of the service to check status for (depends on the provider)."
+													}
+												},
+												"required": ["provider", "service"],
+												"additionalProperties": false
+											}
+										},
+										"required": ["name", "url"],
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "open-meteo-weather",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"location": {
+												"anyOf": [
+													{
+														"type": "string",
+														"const": "auto",
+														"description": "Automatically determine location."
+													},
+													{
+														"type": "object",
+														"properties": {
+															"latitude": {
+																"type": "number",
+																"minimum": -90,
+																"maximum": 90,
+																"description": "The latitude of the location."
+															},
+															"longitude": {
+																"type": "number",
+																"minimum": -180,
+																"maximum": 180,
+																"description": "The longitude of the location."
+															}
+														},
+														"required": ["latitude", "longitude"]
+													}
+												]
+											}
+										},
+										"required": ["location"],
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "open-meteo-air-quality",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"location": {
+												"anyOf": [
+													{
+														"type": "string",
+														"const": "auto",
+														"description": "Automatically determine location."
+													},
+													{
+														"type": "object",
+														"properties": {
+															"latitude": {
+																"type": "number",
+																"minimum": -90,
+																"maximum": 90,
+																"description": "The latitude of the location."
+															},
+															"longitude": {
+																"type": "number",
+																"minimum": -180,
+																"maximum": 180,
+																"description": "The longitude of the location."
+															}
+														},
+														"required": ["latitude", "longitude"]
+													}
+												]
+											}
+										},
+										"required": ["location"],
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
 							}
-						},
-						"required": ["id", "type", "options"],
-						"additionalProperties": false
+						]
 					},
 					{
 						"type": "object",
 						"properties": {
-							"id": {
-								"type": "string",
-								"description": "A unique identifier for the widget."
-							},
-							"type": {
-								"type": "string",
-								"const": "open-meteo-weather",
-								"description": "The type of the widget."
+							"name": {
+								"description": "The name of the group.",
+								"type": "string"
 							},
 							"columns": {
-								"default": 3,
-								"description": "The number of columns the widget spans.",
 								"type": "number",
-								"minimum": 1
+								"description": "The number of columns in the group."
 							},
-							"options": {
-								"type": "object",
-								"properties": {
-									"location": {
-										"anyOf": [
-											{
-												"type": "string",
-												"const": "auto",
-												"description": "Automatically determine location."
-											},
-											{
-												"type": "object",
-												"properties": {
-													"latitude": {
-														"type": "number",
-														"minimum": -90,
-														"maximum": 90,
-														"description": "The latitude of the location."
-													},
-													"longitude": {
-														"type": "number",
-														"minimum": -180,
-														"maximum": 180,
-														"description": "The longitude of the location."
-													}
+							"widgets": {
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
 												},
-												"required": ["latitude", "longitude"]
-											}
-										]
-									}
-								},
-								"required": ["location"],
-								"additionalProperties": false,
-								"description": "The configuration options for the widget."
+												"type": {
+													"type": "string",
+													"const": "cpu-load",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"refreshInterval": {
+															"default": 5000,
+															"description": "Interval (in ms) to refresh CPU data.",
+															"type": "number",
+															"minimum": 1000
+														},
+														"showGraph": {
+															"default": true,
+															"description": "Whether to display the CPU usage graph.",
+															"type": "boolean"
+														}
+													},
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "memory-used",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"refreshInterval": {
+															"default": 5000,
+															"description": "Interval (in ms) to refresh memory data.",
+															"type": "number",
+															"minimum": 1000
+														},
+														"showGraph": {
+															"default": true,
+															"description": "Whether to display the memory usage graph.",
+															"type": "boolean"
+														}
+													},
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "service-link",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"type": "string",
+															"description": "Name of the service to link to."
+														},
+														"description": {
+															"description": "Optional description of the service.",
+															"type": "string"
+														},
+														"icon": {
+															"description": "Optional icon URL for the service.",
+															"type": "string",
+															"format": "uri"
+														},
+														"url": {
+															"type": "string",
+															"format": "uri",
+															"description": "URL to link to the service."
+														},
+														"status": {
+															"description": "Service status configuration.",
+															"type": "object",
+															"properties": {
+																"provider": {
+																	"type": "string",
+																	"description": "Name of the status provider to use for this service. Must match a provider defined in the dashboard configuration."
+																},
+																"service": {
+																	"type": "string",
+																	"description": "Identifier of the service to check status for (depends on the provider)."
+																}
+															},
+															"required": ["provider", "service"],
+															"additionalProperties": false
+														}
+													},
+													"required": ["name", "url"],
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "open-meteo-weather",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"location": {
+															"anyOf": [
+																{
+																	"type": "string",
+																	"const": "auto",
+																	"description": "Automatically determine location."
+																},
+																{
+																	"type": "object",
+																	"properties": {
+																		"latitude": {
+																			"type": "number",
+																			"minimum": -90,
+																			"maximum": 90,
+																			"description": "The latitude of the location."
+																		},
+																		"longitude": {
+																			"type": "number",
+																			"minimum": -180,
+																			"maximum": 180,
+																			"description": "The longitude of the location."
+																		}
+																	},
+																	"required": ["latitude", "longitude"]
+																}
+															]
+														}
+													},
+													"required": ["location"],
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "open-meteo-air-quality",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"location": {
+															"anyOf": [
+																{
+																	"type": "string",
+																	"const": "auto",
+																	"description": "Automatically determine location."
+																},
+																{
+																	"type": "object",
+																	"properties": {
+																		"latitude": {
+																			"type": "number",
+																			"minimum": -90,
+																			"maximum": 90,
+																			"description": "The latitude of the location."
+																		},
+																		"longitude": {
+																			"type": "number",
+																			"minimum": -180,
+																			"maximum": 180,
+																			"description": "The longitude of the location."
+																		}
+																	},
+																	"required": ["latitude", "longitude"]
+																}
+															]
+														}
+													},
+													"required": ["location"],
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										}
+									]
+								}
 							}
 						},
-						"required": ["id", "type", "options"],
-						"additionalProperties": false
-					},
-					{
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "string",
-								"description": "A unique identifier for the widget."
-							},
-							"type": {
-								"type": "string",
-								"const": "open-meteo-air-quality",
-								"description": "The type of the widget."
-							},
-							"columns": {
-								"default": 3,
-								"description": "The number of columns the widget spans.",
-								"type": "number",
-								"minimum": 1
-							},
-							"options": {
-								"type": "object",
-								"properties": {
-									"location": {
-										"anyOf": [
-											{
-												"type": "string",
-												"const": "auto",
-												"description": "Automatically determine location."
-											},
-											{
-												"type": "object",
-												"properties": {
-													"latitude": {
-														"type": "number",
-														"minimum": -90,
-														"maximum": 90,
-														"description": "The latitude of the location."
-													},
-													"longitude": {
-														"type": "number",
-														"minimum": -180,
-														"maximum": 180,
-														"description": "The longitude of the location."
-													}
-												},
-												"required": ["latitude", "longitude"]
-											}
-										]
-									}
-								},
-								"required": ["location"],
-								"additionalProperties": false,
-								"description": "The configuration options for the widget."
-							}
-						},
-						"required": ["id", "type", "options"],
+						"required": ["widgets"],
 						"additionalProperties": false
 					}
 				]

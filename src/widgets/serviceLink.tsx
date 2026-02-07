@@ -26,11 +26,12 @@ export const serviceLink = defineWidget({
 			.optional()
 			.describe('Service status configuration.'),
 	}),
-	Component: ({ options: { status, url, icon, name, description } }) => {
+	Component: ({ options: { status, url, icon, name, description }, columns }) => {
 		const { data } = useServiceStatus(status?.provider, status?.service)
 
 		return (
 			<Card
+				style={{ gridColumn: `span ${columns ?? 1}` }}
 				render={
 					<a
 						href={url}

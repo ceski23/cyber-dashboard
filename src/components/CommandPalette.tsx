@@ -29,8 +29,14 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config 
 	const router = useRouter()
 	const [open, setOpen] = useState(false)
 	const allLinks = groupBy(
-		// @ts-expect-error should be correct based on the provideLinks definition in the widget definitions.
-		config.widgets.flatMap(widget => widgets[widget.type].provideLinks?.(widget.options) ?? []),
+		config.widgets.flatMap(widgetOrGroup => {
+			const widgetList = 'widgets' in widgetOrGroup ? widgetOrGroup.widgets : [widgetOrGroup]
+			return widgetList.flatMap(widget => {
+				const widgetDef = widgets[widget.type]
+				// @ts-expect-error should be correct based on the provideLinks definition in the widget definitions.
+				return widgetDef.provideLinks?.(widget.options) ?? []
+			})
+		}),
 		link => link.type,
 	)
 

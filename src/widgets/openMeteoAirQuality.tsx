@@ -58,7 +58,7 @@ export const openMeteoOptions = z.strictObject({
 export const openMeteoAirQuality = defineWidget({
 	type: 'open-meteo-air-quality',
 	optionsSchema: openMeteoOptions,
-	Component: ({ options: { location } }) => {
+	Component: ({ options: { location }, columns }) => {
 		const { units } = useConfig()
 		const { data: locationData, error: locationError } = useQuery(locationQuery(location))
 		const { data, error: weatherError } = useQuery({
@@ -77,7 +77,7 @@ export const openMeteoAirQuality = defineWidget({
 		}
 
 		return (
-			<div>
+			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
 				<div>Open Meteo Air Quality Widget</div>
 				<pre>{JSON.stringify(data, null, 2)}</pre>
 			</div>
