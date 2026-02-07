@@ -15,6 +15,13 @@ export const configSchema = z.strictObject({
 			statusProviderSchema.describe('Status providers options.'),
 		)
 		.optional(),
+	units: z
+		.union([
+			z.literal('metric').describe('Use metric units (Celsius, hPa, etc.).'),
+			z.literal('imperial').describe('Use imperial units (Fahrenheit, inHg, etc.).'),
+		])
+		.default('metric')
+		.describe('The units to use for weather data. If not specified, the default is metric.'),
 })
 
 export type Config = z.infer<typeof configSchema>

@@ -181,6 +181,136 @@
 						},
 						"required": ["id", "type", "options"],
 						"additionalProperties": false
+					},
+					{
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "A unique identifier for the widget."
+							},
+							"type": {
+								"type": "string",
+								"const": "open-meteo-weather",
+								"description": "The type of the widget."
+							},
+							"title": {
+								"description": "The title of the widget.",
+								"type": "string"
+							},
+							"description": {
+								"description": "The description of the widget.",
+								"type": "string"
+							},
+							"columns": {
+								"default": 3,
+								"description": "The number of columns the widget spans.",
+								"type": "number",
+								"minimum": 1
+							},
+							"options": {
+								"type": "object",
+								"properties": {
+									"location": {
+										"anyOf": [
+											{
+												"type": "string",
+												"const": "auto",
+												"description": "Automatically determine location."
+											},
+											{
+												"type": "object",
+												"properties": {
+													"latitude": {
+														"type": "number",
+														"minimum": -90,
+														"maximum": 90,
+														"description": "The latitude of the location."
+													},
+													"longitude": {
+														"type": "number",
+														"minimum": -180,
+														"maximum": 180,
+														"description": "The longitude of the location."
+													}
+												},
+												"required": ["latitude", "longitude"]
+											}
+										]
+									}
+								},
+								"required": ["location"],
+								"additionalProperties": false,
+								"description": "The configuration options for the widget."
+							}
+						},
+						"required": ["id", "type", "options"],
+						"additionalProperties": false
+					},
+					{
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "A unique identifier for the widget."
+							},
+							"type": {
+								"type": "string",
+								"const": "open-meteo-air-quality",
+								"description": "The type of the widget."
+							},
+							"title": {
+								"description": "The title of the widget.",
+								"type": "string"
+							},
+							"description": {
+								"description": "The description of the widget.",
+								"type": "string"
+							},
+							"columns": {
+								"default": 3,
+								"description": "The number of columns the widget spans.",
+								"type": "number",
+								"minimum": 1
+							},
+							"options": {
+								"type": "object",
+								"properties": {
+									"location": {
+										"anyOf": [
+											{
+												"type": "string",
+												"const": "auto",
+												"description": "Automatically determine location."
+											},
+											{
+												"type": "object",
+												"properties": {
+													"latitude": {
+														"type": "number",
+														"minimum": -90,
+														"maximum": 90,
+														"description": "The latitude of the location."
+													},
+													"longitude": {
+														"type": "number",
+														"minimum": -180,
+														"maximum": 180,
+														"description": "The longitude of the location."
+													}
+												},
+												"required": ["latitude", "longitude"]
+											}
+										]
+									}
+								},
+								"required": ["location"],
+								"additionalProperties": false,
+								"description": "The configuration options for the widget."
+							}
+						},
+						"required": ["id", "type", "options"],
+						"additionalProperties": false
 					}
 				]
 			},
@@ -325,6 +455,22 @@
 				],
 				"description": "Status providers options."
 			}
+		},
+		"units": {
+			"default": "metric",
+			"description": "The units to use for weather data. If not specified, the default is metric.",
+			"anyOf": [
+				{
+					"type": "string",
+					"const": "metric",
+					"description": "Use metric units (Celsius, hPa, etc.)."
+				},
+				{
+					"type": "string",
+					"const": "imperial",
+					"description": "Use imperial units (Fahrenheit, inHg, etc.)."
+				}
+			]
 		}
 	},
 	"required": ["widgets"],
