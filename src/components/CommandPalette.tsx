@@ -1,5 +1,6 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
-import { groupBy } from 'es-toolkit'
+import { useServerFn } from '@tanstack/react-start'
 import { RotateCcwIcon } from 'lucide-react'
 import { Fragment, FunctionComponent, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -14,42 +15,42 @@ import {
 	CommandList,
 	CommandSeparator,
 } from '@/components/ui/command'
-import type { Config } from '@/lib/config'
+import { reloadConfigFn } from '@/lib/config'
 import { metaKey } from '@/lib/utils'
-import { widgets } from '@/widgets'
 
 import { Button } from './ui/button'
 import { Kbd, KbdGroup } from './ui/kbd'
 
 type CommandPaletteProps = {
-	config: Config
+	links: Record<
+		string,
+		{
+			type: string
+			label: string
+			url: string
+			icon?: string
+		}[]
+	>
 }
 
-export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config }) => {
+export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }) => {
 	const router = useRouter()
 	const [open, setOpen] = useState(false)
-	const allLinks = groupBy(
-		config.widgets.flatMap(widgetOrGroup => {
-			const widgetList = 'widgets' in widgetOrGroup ? widgetOrGroup.widgets : [widgetOrGroup]
-			return widgetList.flatMap(widget => {
-				const widgetDef = widgets[widget.type]
-				// @ts-expect-error should be correct based on the provideLinks definition in the widget definitions.
-				return widgetDef.provideLinks?.(widget.options) ?? []
-			})
-		}),
-		link => link.type,
-	)
+	const queryClient = useQueryClient()
+	const reloadConfig = useServerFn(reloadConfigFn)
 
-	const handleReloadConfig = () => {
-		void router.invalidate()
+	const handleReloadConfig = async () => {
+		await reloadConfig()
+		void queryClient.invalidateQueries()
+		await router.invalidate()
 		setOpen(false)
 	}
 
 	useHotkeys('mod+k', () => setOpen(open => !open))
 
-	useHotkeys('mod+r', event => {
+	useHotkeys('mod+r', async event => {
 		event.preventDefault()
-		handleReloadConfig()
+		await handleReloadConfig()
 	})
 
 	return (
@@ -83,7 +84,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ config 
 							</CommandItem>
 						</CommandGroup>
 						<CommandSeparator />
-						{Object.entries(allLinks).map(([type, links]) => (
+						{Object.entries(links).map(([type, links]) => (
 							<CommandGroup
 								key={type}
 								heading={type}

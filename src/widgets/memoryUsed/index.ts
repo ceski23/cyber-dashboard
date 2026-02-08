@@ -1,1 +1,0 @@
-export { memoryUsed } from './memoryUsed'

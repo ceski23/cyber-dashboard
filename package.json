@@ -22,16 +22,18 @@
 		"@tanstack/react-devtools": "0.9.4",
 		"@tanstack/react-query": "5.90.20",
 		"@tanstack/react-query-devtools": "5.91.3",
-		"@tanstack/react-router": "1.158.0",
-		"@tanstack/react-router-devtools": "1.158.0",
-		"@tanstack/react-router-ssr-query": "1.158.0",
-		"@tanstack/react-start": "1.158.0",
-		"@tanstack/router-plugin": "1.158.0",
+		"@tanstack/react-router": "1.158.4",
+		"@tanstack/react-router-devtools": "1.158.4",
+		"@tanstack/react-router-ssr-query": "1.158.4",
+		"@tanstack/react-start": "1.159.0",
+		"@tanstack/router-plugin": "1.158.4",
 		"better-auth": "1.4.18",
 		"class-variance-authority": "0.7.1",
 		"clsx": "2.1.1",
 		"cmdk": "1.1.1",
+		"confbox": "0.2.4",
 		"date-fns": "4.1.0",
+		"defu": "6.1.4",
 		"dockerode": "4.0.9",
 		"es-toolkit": "1.44.0",
 		"ky": "1.14.3",
@@ -64,6 +66,7 @@
 		"oxlint-tsgolint": "0.11.4",
 		"shadcn": "3.8.4",
 		"typescript": "5.9.3",
-		"vite": "7.3.1"
+		"vite": "7.3.1",
+		"vite-plugin-circular-dependency": "0.5.0"
 	}
 }

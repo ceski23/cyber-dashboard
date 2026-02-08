@@ -4,10 +4,12 @@ import { isNil } from 'es-toolkit'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
 
-import { useConfig } from '@/lib/hooks/useConfig'
+import { configMiddleware } from '@/lib/config/middleware'
 import { locationQuery } from '@/services/location'
 
-import { defineWidget } from './helpers'
+import { defineWidget } from '../helpers'
+
+import { openMeteoWeatherOptions } from './schema'
 
 const getWMOLabel = (code: number): string => {
 	switch (code) {
@@ -58,73 +60,70 @@ const getWMOLabel = (code: number): string => {
 }
 
 const fetchCurrentWeather = createServerFn({ method: 'GET' })
+	.middleware([configMiddleware])
 	.inputValidator(
 		z.object({
 			latitude: z.number().min(-90).max(90),
 			longitude: z.number().min(-180).max(180),
-			units: z.enum(['metric', 'imperial']),
 		}),
 	)
-	.handler(async ({ data: { latitude, longitude, units } }) => {
-		const response = await fetchWeatherApi('https://api.open-meteo.com/v1/forecast', {
-			latitude,
-			longitude,
-			current: [
-				'temperature_2m',
-				'relative_humidity_2m',
-				'apparent_temperature',
-				'precipitation',
-				'weather_code',
-				'surface_pressure',
-			],
-			temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
-			wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
-			precipitation_unit: units === 'metric' ? 'mm' : 'inch',
-		}).then(responses => {
-			const response = responses.at(0)
-			const current = response?.current()
-			const utcOffsetSeconds = response?.utcOffsetSeconds()
+	.handler(
+		async ({
+			data: { latitude, longitude },
+			// context: {
+			// 	config: { units },
+			// },
+		}) => {
+			const units = 'metric' // TODO: get from config
+			const response = await fetchWeatherApi('https://api.open-meteo.com/v1/forecast', {
+				latitude,
+				longitude,
+				current: [
+					'temperature_2m',
+					'relative_humidity_2m',
+					'apparent_temperature',
+					'precipitation',
+					'weather_code',
+					'surface_pressure',
+				],
+				temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
+				wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
+				precipitation_unit: units === 'metric' ? 'mm' : 'inch',
+			}).then(responses => {
+				const response = responses.at(0)
+				const current = response?.current()
+				const utcOffsetSeconds = response?.utcOffsetSeconds()
 
-			return !current || isNil(utcOffsetSeconds) ? undefined : { current, utcOffsetSeconds }
-		})
+				return !current || isNil(utcOffsetSeconds) ? undefined : { current, utcOffsetSeconds }
+			})
 
-		if (!response) {
-			throw new Error('No response from Open Meteo API')
-		}
+			if (!response) {
+				throw new Error('No response from Open Meteo API')
+			}
 
-		return {
-			time: new Date((Number(response.current.time()) + response.utcOffsetSeconds) * 1000),
-			temperature: response.current.variables(0)!.value(),
-			relativeHumidity: response.current.variables(1)!.value(),
-			apparentTemperature: response.current.variables(2)!.value(),
-			precipitation: response.current.variables(3)!.value(),
-			weatherCode: response.current.variables(4)!.value(),
-			weatherDescription: getWMOLabel(response.current.variables(4)!.value()),
-			surfacePressure: response.current.variables(5)!.value(),
-		}
-	})
-
-export const openMeteoOptions = z.strictObject({
-	location: z.union([
-		z.literal('auto').describe('Automatically determine location.'),
-		z.object({
-			latitude: z.number().min(-90).max(90).describe('The latitude of the location.'),
-			longitude: z.number().min(-180).max(180).describe('The longitude of the location.'),
-		}),
-	]),
-})
+			return {
+				time: new Date((Number(response.current.time()) + response.utcOffsetSeconds) * 1000),
+				temperature: response.current.variables(0)!.value(),
+				relativeHumidity: response.current.variables(1)!.value(),
+				apparentTemperature: response.current.variables(2)!.value(),
+				precipitation: response.current.variables(3)!.value(),
+				weatherCode: response.current.variables(4)!.value(),
+				weatherDescription: getWMOLabel(response.current.variables(4)!.value()),
+				surfacePressure: response.current.variables(5)!.value(),
+			}
+		},
+	)
 
 export const openMeteoWeather = defineWidget({
 	type: 'open-meteo-weather',
-	optionsSchema: openMeteoOptions,
+	optionsSchema: openMeteoWeatherOptions,
 	Component: ({ options: { location }, columns }) => {
 		const { data: locationData, error: locationError } = useQuery(locationQuery(location))
-		const { units } = useConfig()
 		const { data, error: weatherError } = useQuery({
-			queryKey: ['openMeteo', 'currentWeather', { ...locationData, units }],
+			queryKey: ['openMeteo', 'currentWeather', locationData],
 			queryFn: isNil(locationData)
 				? skipToken
-				: async ({ signal }) => fetchCurrentWeather({ data: { ...locationData, units }, signal }),
+				: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
 		})
 
 		if (locationError) {

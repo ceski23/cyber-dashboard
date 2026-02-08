@@ -1,12 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { auth } from '@/lib/auth'
+import { createAuth } from '@/lib/auth'
+import { configMiddleware } from '@/lib/config/middleware'
 
 export const Route = createFileRoute('/api/auth/$')({
 	server: {
+		middleware: [configMiddleware],
 		handlers: {
-			GET: ({ request }) => auth.handler(request),
-			POST: ({ request }) => auth.handler(request),
+			GET: async ({ request, context: { config } }) => {
+				const auth = await createAuth(config)
+				return auth.handler(request)
+			},
+			POST: async ({ request, context: { config } }) => {
+				const auth = await createAuth(config)
+				return auth.handler(request)
+			},
 		},
 	},
 })

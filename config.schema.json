@@ -715,8 +715,63 @@
 					"description": "Use imperial units (Fahrenheit, inHg, etc.)."
 				}
 			]
+		},
+		"auth": {
+			"description": "Authentication configuration.",
+			"oneOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"const": "basic",
+							"description": "Basic authentication."
+						},
+						"username": {
+							"type": "string",
+							"description": "The username for basic authentication."
+						},
+						"password": {
+							"type": "string",
+							"description": "The password for basic authentication."
+						}
+					},
+					"required": ["type", "username", "password"],
+					"additionalProperties": false
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"const": "oidc",
+							"description": "OpenID Connect authentication."
+						},
+						"issuer": {
+							"type": "string",
+							"format": "uri",
+							"description": "The OIDC issuer URL."
+						},
+						"clientId": {
+							"type": "string",
+							"description": "The OIDC client ID."
+						},
+						"clientSecret": {
+							"type": "string",
+							"description": "The OIDC client secret."
+						}
+					},
+					"required": ["type", "issuer", "clientId", "clientSecret"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"baseUrl": {
+			"type": "string",
+			"format": "uri",
+			"description": "The base URL of the dashboard. Used for generating links and configuring authentication."
 		}
 	},
-	"required": ["widgets"],
+	"required": ["widgets", "baseUrl"],
 	"additionalProperties": false
 }

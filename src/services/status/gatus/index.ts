@@ -1,16 +1,11 @@
 import { createServerFn } from '@tanstack/react-start'
+import { getRequest } from '@tanstack/react-start/server'
 import ky from 'ky'
 import { z } from 'zod'
 
-import type { ServiceStatus } from '.'
+import type { ServiceStatus } from '..'
 
-export const gatusOptions = z.strictObject({
-	type: z.literal('gatus'),
-	refreshInterval: z.number().default(5000).describe('The interval in milliseconds to refresh the Gatus status.'),
-	connection: z.strictObject({
-		baseUrl: z.string().describe('The base URL of the Gatus instance.'),
-	}),
-})
+import { gatusOptions } from './schema'
 
 const gatusResponseSchema = z.array(
 	z.object({
@@ -40,7 +35,8 @@ const gatusResponseSchema = z.array(
 
 export const streamGatusStatus = createServerFn({ method: 'GET' })
 	.inputValidator(gatusOptions)
-	.handler(async function* ({ data: { connection, refreshInterval }, signal }) {
+	.handler(async function* ({ data: { connection, refreshInterval } }) {
+		const { signal } = getRequest()
 		const apiClient = ky.create({ prefixUrl: connection.baseUrl })
 
 		while (!signal.aborted) {

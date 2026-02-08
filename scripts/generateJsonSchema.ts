@@ -1,6 +1,6 @@
 import z from 'zod'
 
-import { configSchema } from '@/lib/config'
+import { configSchema } from '@/lib/config/schema'
 
 const jsonSchema = z.toJSONSchema(configSchema, {
 	io: 'input',

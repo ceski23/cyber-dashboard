@@ -3,7 +3,7 @@ import z from 'zod'
 export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> = {
 	type: TType
 	optionsSchema: TSchema
-	Component: React.ComponentType<z.infer<ReturnType<typeof baseWidgetSchema<TType>>> & { options: z.infer<TSchema> }>
+	Component: React.ComponentType<z.infer<TSchema>>
 	provideLinks?: (options: z.infer<TSchema>) => Array<{
 		type: string
 		label: string
@@ -12,14 +12,7 @@ export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> 
 	}>
 }
 
-export const baseWidgetSchema = <const T extends string>(type: T) =>
-	z.strictObject({
-		id: z.string().describe('A unique identifier for the widget.'),
-		type: z.literal(type).describe('The type of the widget.'),
-		columns: z.number().min(1).default(3).describe('The number of columns the widget spans.'),
-	})
-
-export const defineWidget = <const TType extends string, TSchema extends z.ZodObject>({
+export const defineWidget = <const TType extends string, TSchema extends z.ZodObject<{ type: z.ZodLiteral<TType> }>>({
 	Component,
 	optionsSchema,
 	type,
@@ -27,8 +20,17 @@ export const defineWidget = <const TType extends string, TSchema extends z.ZodOb
 }: WidgetDefinition<TType, TSchema>) => ({
 	type,
 	Component,
-	schema: baseWidgetSchema(type).extend({
-		options: optionsSchema.describe('The configuration options for the widget.'),
-	}),
+	schema: optionsSchema,
 	provideLinks,
 })
+
+export const defineWidgetOptions = <const TType extends string, TSchema extends z.ZodObject>(
+	type: TType,
+	optionsSchema: TSchema,
+) =>
+	z.strictObject({
+		id: z.string().describe('A unique identifier for the widget.'),
+		type: z.literal(type).describe('The type of the widget.'),
+		columns: z.number().min(1).default(3).describe('The number of columns the widget spans.'),
+		options: optionsSchema.describe('The configuration options for the widget.'),
+	})

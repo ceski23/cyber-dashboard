@@ -1,32 +1,34 @@
+import { createServerOnlyFn } from '@tanstack/react-start'
 import { betterAuth } from 'better-auth'
 import { genericOAuth } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import { isNotNil } from 'es-toolkit'
 
-import { serverEnv } from '@/env'
+import { type DashboardConfig } from '../config'
 
-export const auth = betterAuth({
-	baseURL: serverEnv.BETTER_AUTH_URL,
-	secret: serverEnv.BETTER_AUTH_SECRET,
-	plugins: [
-		...(isNotNil(serverEnv.OIDC_ISSUER)
-			? [
-					genericOAuth({
-						config: [
-							{
-								providerId: 'homelab-oidc',
-								discoveryUrl: `${serverEnv.OIDC_ISSUER}/.well-known/openid-configuration`,
-								clientId: serverEnv.OIDC_CLIENT_ID!,
-								clientSecret: serverEnv.OIDC_CLIENT_SECRET!,
-								scopes: ['openid', 'email', 'profile'],
-								pkce: true,
-								accessType: 'offline',
-							},
-						],
-					}),
-				]
-			: []),
-		tanstackStartCookies(), // ⚠️ MUST be last plugin
-	],
-	trustedOrigins: [serverEnv.BETTER_AUTH_URL, ...(isNotNil(serverEnv.OIDC_ISSUER) ? [serverEnv.OIDC_ISSUER] : [])],
+export const createAuth = createServerOnlyFn(async ({ auth, baseUrl }: DashboardConfig) => {
+	const oauthPlugin =
+		auth?.type !== 'oidc'
+			? undefined
+			: genericOAuth({
+					config: [
+						{
+							providerId: 'homelab-oidc',
+							discoveryUrl: new URL('.well-known/openid-configuration', auth.issuer).toString(),
+							clientId: auth.clientId,
+							clientSecret: auth.clientSecret,
+							scopes: ['openid', 'email', 'profile'],
+							pkce: true,
+							accessType: 'offline',
+						},
+					],
+				})
+
+	return betterAuth({
+		baseURL: baseUrl,
+		plugins: [
+			...(oauthPlugin ? [oauthPlugin] : []),
+			tanstackStartCookies(), // ⚠️ MUST be last plugin
+		],
+		trustedOrigins: [baseUrl, ...(auth?.type === 'oidc' ? [auth.issuer] : [])],
+	})
 })

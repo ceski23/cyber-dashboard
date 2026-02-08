@@ -3,29 +3,29 @@ import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 
 import Header from '@/components/Header'
-import { serverEnv } from '@/env'
 import { AuthClientProvider, createAuthClient } from '@/lib/auth/client'
-import { configSchema, type Config } from '@/lib/config'
+import { configMiddleware } from '@/lib/config/middleware'
 
-const getRuntimeEnvs = createServerFn({ method: 'GET' }).handler(() => ({
-	BETTER_AUTH_URL: serverEnv.BETTER_AUTH_URL,
-}))
-
-const fetchConfig = createServerFn({ method: 'GET' }).handler(async (): Promise<Config> => {
-	const configFile = Bun.file('config.json')
-	const configText = await configFile.text()
-	const configData = configSchema.parse(JSON.parse(configText))
-
-	return configData
-})
+const getData = createServerFn({ method: 'GET' })
+	.middleware([configMiddleware])
+	.handler(
+		async ({
+			context: {
+				config: { title, baseUrl },
+			},
+		}) => ({
+			title,
+			baseUrl,
+		}),
+	)
 
 const Layout = () => {
-	const { runtimeEnvs } = Route.useRouteContext()
-	const [authClient] = useState(() => createAuthClient(runtimeEnvs.BETTER_AUTH_URL))
+	const { baseUrl, title } = Route.useLoaderData()
+	const [authClient] = useState(() => createAuthClient(baseUrl))
 
 	return (
 		<AuthClientProvider value={authClient}>
-			<Header />
+			<Header title={title ?? 'Homelab Dashboard'} />
 			<Outlet />
 		</AuthClientProvider>
 	)
@@ -33,10 +33,7 @@ const Layout = () => {
 
 export const Route = createFileRoute('/_layout')({
 	component: Layout,
-	beforeLoad: async () => ({
-		runtimeEnvs: await getRuntimeEnvs(),
-		config: await fetchConfig(),
-	}),
+	loader: async () => await getData(),
 	errorComponent: ({ error }) => (
 		<div className="p-4">
 			<h1 className="mb-4 text-2xl font-bold">An error occurred</h1>

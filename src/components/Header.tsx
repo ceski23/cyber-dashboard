@@ -3,14 +3,18 @@ import { isNotNil } from 'es-toolkit'
 
 import { useAuthClient } from '@/lib/auth/client.ts'
 
-export default function Header() {
+type HeaderProps = {
+	title: string
+}
+
+export default function Header({ title }: HeaderProps) {
 	const authClient = useAuthClient()
 	const { data: session, isPending } = authClient.useSession()
 
 	return (
 		<header className="flex items-center justify-between bg-gray-800 p-4 text-white shadow-lg">
 			<h1 className="text-xl font-semibold">
-				<Link to="/">Homelab Dashboard</Link>
+				<Link to="/">{title}</Link>
 			</h1>
 			<div className="flex items-center gap-4">
 				{isPending ? (
