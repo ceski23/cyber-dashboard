@@ -1,9 +1,9 @@
+import { formatForDisplay, useHotkey } from '@tanstack/react-hotkeys'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { RotateCcwIcon } from 'lucide-react'
 import { Fragment, FunctionComponent, useState } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
 
 import {
 	Command,
@@ -16,10 +16,9 @@ import {
 	CommandSeparator,
 } from '@/components/ui/command'
 import { reloadConfigFn } from '@/lib/config'
-import { metaKey } from '@/lib/utils'
 
 import { Button } from './ui/button'
-import { Kbd, KbdGroup } from './ui/kbd'
+import { Kbd } from './ui/kbd'
 
 type CommandPaletteProps = {
 	links: Record<
@@ -46,9 +45,9 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }
 		setOpen(false)
 	}
 
-	useHotkeys('mod+k', () => setOpen(open => !open))
+	useHotkey('Mod+K', () => setOpen(open => !open))
 
-	useHotkeys('mod+r', async event => {
+	useHotkey('Mod+R', async event => {
 		event.preventDefault()
 		await handleReloadConfig()
 	})
@@ -59,11 +58,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }
 				variant="outline"
 				onClick={() => setOpen(true)}
 			>
-				Open Command Palette{' '}
-				<KbdGroup>
-					<Kbd>{metaKey}</Kbd>
-					<Kbd>K</Kbd>
-				</KbdGroup>
+				Open Command Palette <Kbd>{formatForDisplay('Mod+K')}</Kbd>
 			</Button>
 			<CommandDialog
 				open={open}
@@ -77,10 +72,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }
 							<CommandItem onSelect={handleReloadConfig}>
 								<RotateCcwIcon className="mr-2 inline-block h-4 w-4" />
 								Reload config
-								<KbdGroup className="ml-auto">
-									<Kbd>{metaKey}</Kbd>
-									<Kbd>R</Kbd>
-								</KbdGroup>
+								<Kbd className="ml-auto">{formatForDisplay('Mod+R')}</Kbd>
 							</CommandItem>
 						</CommandGroup>
 						<CommandSeparator />
