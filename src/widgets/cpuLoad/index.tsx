@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { format, fromUnixTime } from 'date-fns'
 import { CircularBuffer } from 'mnemonist'
-import { Tooltip } from 'recharts'
+import { CartesianGrid, Tooltip } from 'recharts'
 import si from 'systeminformation'
 import z from 'zod'
 
@@ -75,7 +75,7 @@ export const cpuLoad = defineWidget({
 					/>
 				</p>
 				{showGraph && (
-					<TypedChart.LineChart
+					<TypedChart.AreaChart
 						style={{ width: '100%', aspectRatio: 1.618, maxWidth: 600 }}
 						responsive
 						data={data?.map(item => ({
@@ -83,23 +83,57 @@ export const cpuLoad = defineWidget({
 							timestamp: item.timestamp,
 						}))}
 					>
-						<TypedChart.Line
-							dataKey="usage"
+						<defs>
+							<linearGradient
+								id="colorCpu"
+								x1="0"
+								y1="0"
+								x2="0"
+								y2="1"
+							>
+								<stop
+									offset="5%"
+									stopColor="#3b82f6"
+									stopOpacity={0.3}
+								/>
+								<stop
+									offset="95%"
+									stopColor="#3b82f6"
+									stopOpacity={0}
+								/>
+							</linearGradient>
+						</defs>
+						<CartesianGrid
+							strokeDasharray="3 3"
+							stroke="#27272a"
+							vertical={false}
+						/>
+						<TypedChart.Area
 							type="monotone"
+							dataKey="usage"
+							stroke="#3b82f6"
+							strokeWidth={2}
+							fillOpacity={1}
+							fill="url(#colorCpu)"
 						/>
 						<TypedChart.YAxis
 							type="number"
 							domain={[0, 100]}
 							unit="%"
+							tickLine={false}
+							axisLine={false}
 						/>
 						<TypedChart.XAxis
 							dataKey="timestamp"
 							type="number"
 							tickFormatter={tick => format(fromUnixTime(tick / 1000), 'HH:mm:ss')}
 							domain={['dataMin', 'dataMax']}
+							stroke="#52525b"
+							tickLine={false}
+							axisLine={false}
 						/>
 						<Tooltip />
-					</TypedChart.LineChart>
+					</TypedChart.AreaChart>
 				)}
 			</div>
 		)
