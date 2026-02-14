@@ -14,5 +14,13 @@ export const useServiceStatus = (provider?: string, serviceId?: string) =>
 						reducer: (_prev, next: ServiceStatus[]) => next,
 						streamFn: ({ signal }) => streamStatus({ data: { provider }, signal }),
 					}),
-		select: (services: ServiceStatus[]) => services.find(({ service }) => service === serviceId),
+		select: (services: ServiceStatus[]) => {
+			const service = services.find(({ service }) => service === serviceId)
+
+			if (!service) {
+				throw new Error(`Service with id "${serviceId}" not found in provider "${provider}"`)
+			}
+
+			return service
+		},
 	})

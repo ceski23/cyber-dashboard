@@ -1,5 +1,6 @@
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
+import { getRequest } from '@tanstack/react-start/server'
 import { isNil } from 'es-toolkit'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
@@ -26,15 +27,23 @@ const fetchCurrentWeather = createServerFn({ method: 'GET' })
 			// 	config: { units },
 			// },
 		}) => {
+			const { signal } = getRequest()
 			const units = 'metric' // TODO: get from config
-			const response = await fetchWeatherApi('https://air-quality-api.open-meteo.com/v1/air-quality', {
-				latitude,
-				longitude,
-				current: ['pm10', 'pm2_5', 'european_aqi'],
-				temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
-				wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
-				precipitation_unit: units === 'metric' ? 'mm' : 'inch',
-			}).then(responses => {
+			const response = await fetchWeatherApi(
+				'https://air-quality-api.open-meteo.com/v1/air-quality',
+				{
+					latitude,
+					longitude,
+					current: ['pm10', 'pm2_5', 'european_aqi'],
+					temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
+					wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
+					precipitation_unit: units === 'metric' ? 'mm' : 'inch',
+				},
+				undefined,
+				undefined,
+				undefined,
+				{ signal },
+			).then(responses => {
 				const response = responses.at(0)
 				const current = response?.current()
 				const utcOffsetSeconds = response?.utcOffsetSeconds()

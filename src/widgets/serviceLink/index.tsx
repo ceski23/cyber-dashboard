@@ -1,5 +1,5 @@
 import { isNotNil } from 'es-toolkit'
-import z from 'zod'
+import { match } from 'ts-pattern'
 
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useServiceStatus } from '@/services/status/useServiceStatus'
@@ -12,7 +12,7 @@ export const serviceLink = defineWidget({
 	type: 'service-link',
 	optionsSchema: serviceLinkOptions,
 	Component: ({ options: { status, url, icon, name, description }, columns }) => {
-		const { data } = useServiceStatus(status?.provider, status?.service)
+		const statusQuery = useServiceStatus(status?.provider, status?.service)
 
 		return (
 			<Card
@@ -36,13 +36,25 @@ export const serviceLink = defineWidget({
 					<CardTitle>{name}</CardTitle>
 					<CardDescription>{description}</CardDescription>
 				</CardHeader>
-				{data && (
-					<CardFooter>
-						<span className="text-sm">
-							Status: {data.label} {data.status === 'available' ? '🟢' : '🔴'}
-						</span>
-					</CardFooter>
-				)}
+				{match(statusQuery)
+					.with({ status: 'pending', isEnabled: true }, () => (
+						<CardFooter>
+							<span className="text-sm">Status: Loading... ⚫</span>
+						</CardFooter>
+					))
+					.with({ status: 'error' }, ({ error }) => (
+						<CardFooter>
+							<span className="text-sm">Status: {error.message} 🔴</span>
+						</CardFooter>
+					))
+					.with({ status: 'success' }, ({ data }) => (
+						<CardFooter>
+							<span className="text-sm">
+								Status: {data.label} {data.status === 'available' ? '🟢' : '🔴'}
+							</span>
+						</CardFooter>
+					))
+					.otherwise(() => null)}
 			</Card>
 		)
 	},

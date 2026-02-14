@@ -4,7 +4,7 @@ export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> 
 	type: TType
 	optionsSchema: TSchema
 	Component: React.ComponentType<z.infer<TSchema>>
-	provideLinks?: (options: z.infer<TSchema>) => Array<{
+	provideLinks?: (options: z.infer<TSchema['shape']['options']>) => Array<{
 		type: string
 		label: string
 		url: string
