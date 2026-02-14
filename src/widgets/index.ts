@@ -5,6 +5,7 @@ import { memoryUsed } from './memoryUsed'
 import { openMeteoAirQuality } from './openMeteoAirQuality'
 import { openMeteoWeather } from './openMeteoWeather'
 import { serviceLink } from './serviceLink'
+import { storageUsed } from './storageUsed'
 
 export const widgets = {
 	[cpuLoad.type]: cpuLoad,
@@ -12,6 +13,7 @@ export const widgets = {
 	[serviceLink.type]: serviceLink,
 	[openMeteoWeather.type]: openMeteoWeather,
 	[openMeteoAirQuality.type]: openMeteoAirQuality,
+	[storageUsed.type]: storageUsed,
 }
 
 export type WidgetType = {

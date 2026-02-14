@@ -273,6 +273,40 @@
 								},
 								"required": ["id", "type", "options"],
 								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "storage-used",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"drive": {
+												"default": "/",
+												"description": "Drive to monitor (e.g., /dev/sda1)",
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
 							}
 						]
 					},
@@ -548,6 +582,40 @@
 											},
 											"required": ["id", "type", "options"],
 											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "storage-used",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"drive": {
+															"default": "/",
+															"description": "Drive to monitor (e.g., /dev/sda1)",
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
 										}
 									]
 								}
@@ -674,12 +742,6 @@
 								"default": 5000,
 								"description": "The timeout in milliseconds for each ping request.",
 								"type": "number"
-							},
-							"version": {
-								"default": "ipv4",
-								"description": "Whether to use IPv4 or IPv6 for pinging.",
-								"type": "string",
-								"enum": ["ipv4", "ipv6"]
 							},
 							"services": {
 								"type": "object",

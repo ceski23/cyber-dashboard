@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { format, fromUnixTime } from 'date-fns'
 import { CircularBuffer } from 'mnemonist'
+import prettyBytes from 'pretty-bytes'
 import { Tooltip } from 'recharts'
 import si from 'systeminformation'
 import z from 'zod'
@@ -76,19 +77,7 @@ export const memoryUsed = defineWidget({
 						className={style.memory}
 						style={{ '--memory': currentUsagePercent }}
 					/>
-					(
-					{currentUsed.toLocaleString(undefined, {
-						notation: 'compact',
-						unit: 'byte',
-						style: 'unit',
-					})}{' '}
-					/{' '}
-					{currentTotal.toLocaleString(undefined, {
-						notation: 'compact',
-						unit: 'byte',
-						style: 'unit',
-					})}
-					)
+					({prettyBytes(currentUsed)} / {prettyBytes(currentTotal)})
 				</p>
 				{showGraph && (
 					<TypedChart.LineChart
