@@ -1,8 +1,8 @@
 import { fileURLToPath, URL } from 'url'
 
-import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import circleDependency from 'vite-plugin-circular-dependency'
@@ -27,7 +27,7 @@ const config = defineConfig({
 		viteTsConfigPaths({
 			projects: ['./tsconfig.json'],
 		}),
-		tailwindcss(),
+		vanillaExtractPlugin(),
 		tanstackStart(),
 		viteReact(),
 		circleDependency(),

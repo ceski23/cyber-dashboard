@@ -1,40 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { groupBy } from 'es-toolkit'
 
-import { CommandPalette } from '@/components/CommandPalette'
-import { Widget } from '@/components/Widget'
+import { Widget } from '@/components/widget'
 import { authMiddleware } from '@/lib/auth/middleware'
 import { configMiddleware } from '@/lib/config/middleware'
-import { widgets } from '@/widgets'
 
 const fetchData = createServerFn({ method: 'GET' })
 	.middleware([configMiddleware])
-	.handler(async ({ context: { config } }) => {
-		const links = groupBy(
-			config.widgets.flatMap(widgetOrGroup => {
-				const widgetList = 'widgets' in widgetOrGroup ? widgetOrGroup.widgets : [widgetOrGroup]
-				return widgetList.flatMap(widget => {
-					const widgetDef = widgets[widget.type]
-					// @ts-expect-error should be correct based on the provideLinks definition in the widget definitions.
-					return widgetDef.provideLinks?.(widget.options) ?? []
-				})
-			}),
-			link => link.type,
-		)
-
-		return {
-			widgets: config.widgets,
-			links,
-		}
-	})
+	.handler(async ({ context: { config } }) => ({
+		widgets: config.widgets,
+	}))
 
 const DashboardPage = () => {
-	const { widgets, links } = Route.useLoaderData()
+	const { widgets } = Route.useLoaderData()
 
 	return (
 		<div>
-			<CommandPalette links={links} />
 			<div className="grid grid-cols-12 gap-4">
 				{widgets.map((definition, index) => {
 					if ('widgets' in definition) {

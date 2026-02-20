@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import z from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +10,7 @@ const LoginPage = () => {
 
 	const handleLogin = async () => {
 		try {
+			// TODO: Handle redirect after login
 			await authClient.signIn.social({
 				provider: 'homelab-oidc',
 				callbackURL: '/',
@@ -42,4 +44,7 @@ const LoginPage = () => {
 
 export const Route = createFileRoute('/_layout/login')({
 	component: LoginPage,
+	validateSearch: z.object({
+		redirect: z.string().optional(),
+	}),
 })

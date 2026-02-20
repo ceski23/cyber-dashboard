@@ -9,7 +9,7 @@ import { createAuth } from './index'
 
 export const authMiddleware = createMiddleware()
 	.middleware([configMiddleware])
-	.server(async ({ next, context: { config } }) => {
+	.server(async ({ next, context: { config }, pathname }) => {
 		const headers = getRequestHeaders()
 
 		if (!config.auth) {
@@ -46,7 +46,7 @@ export const authMiddleware = createMiddleware()
 				const session = await auth.api.getSession({ headers })
 
 				if (!session) {
-					throw redirect({ to: '/login' })
+					throw redirect({ to: '/login', search: { redirect: pathname } })
 				}
 
 				break

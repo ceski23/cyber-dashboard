@@ -1,11 +1,9 @@
-'use client'
-
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog'
+import clsx from 'clsx'
 import { XIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
 	return (
@@ -47,7 +45,7 @@ function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) 
 	return (
 		<DialogPrimitive.Backdrop
 			data-slot="dialog-overlay"
-			className={cn(
+			className={clsx(
 				'fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
 				className,
 			)}
@@ -69,7 +67,7 @@ function DialogContent({
 			<DialogOverlay />
 			<DialogPrimitive.Popup
 				data-slot="dialog-content"
-				className={cn(
+				className={clsx(
 					'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-xl bg-background p-6 text-sm ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-md data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
 					className,
 				)}
@@ -100,7 +98,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
 			data-slot="dialog-header"
-			className={cn('flex flex-col gap-2', className)}
+			className={clsx('flex flex-col gap-2', className)}
 			{...props}
 		/>
 	)
@@ -117,7 +115,7 @@ function DialogFooter({
 	return (
 		<div
 			data-slot="dialog-footer"
-			className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
+			className={clsx('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
 			{...props}
 		>
 			{children}
@@ -132,7 +130,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
 	return (
 		<DialogPrimitive.Title
 			data-slot="dialog-title"
-			className={cn('leading-none font-medium', className)}
+			className={clsx('leading-none font-medium', className)}
 			{...props}
 		/>
 	)
@@ -142,7 +140,7 @@ function DialogDescription({ className, ...props }: DialogPrimitive.Description.
 	return (
 		<DialogPrimitive.Description
 			data-slot="dialog-description"
-			className={cn(
+			className={clsx(
 				'text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground',
 				className,
 			)}
