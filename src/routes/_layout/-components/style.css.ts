@@ -106,31 +106,35 @@ export const styles = {
 		overlay: style({
 			position: 'fixed',
 			inset: 0,
-			zIndex: 100,
 			backgroundColor: transparentize(vars.color.background, 0.5),
 			backdropFilter: 'blur(6px)',
+			opacity: 1,
+			transition: 'opacity 0.3s ease',
+			selectors: {
+				'&:is([data-starting-style], [data-ending-style])': {
+					opacity: 0,
+				},
+			},
 		}),
 		dialog: style({
-			display: 'flex',
-			flexDirection: 'column',
 			width: '100%',
 			maxWidth: '32rem',
-			margin: '0 auto',
-			zIndex: 101,
-			overflow: 'hidden',
 			position: 'fixed',
-			inset: 0,
 			top: '20vh',
-			left: vars.spacing[4],
-			right: vars.spacing[4],
-		}),
-		content: style({
-			display: 'flex',
-			flexDirection: 'column',
+			left: '50%',
+			transform: 'translate(-50%, 0)',
 			borderRadius: vars.radius.xl,
 			border: `1px solid ${vars.color.border}`,
 			backgroundColor: '#18181b',
 			boxShadow: vars.shadow.panel,
+			opacity: 1,
+			transition: 'opacity 0.3s ease, transform 0.2s ease',
+			selectors: {
+				'&:is([data-starting-style], [data-ending-style])': {
+					opacity: 0,
+					transform: 'translate(-50%, 5%)',
+				},
+			},
 		}),
 		input: style({
 			flex: 1,
