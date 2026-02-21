@@ -63,7 +63,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }
 			<Dialog.Portal>
 				<Dialog.Backdrop className={styles.commandPalette.overlay} />
 				<Dialog.Popup className={styles.commandPalette.dialog}>
-					<Command>
+					<Command loop>
 						<div className={styles.commandPalette.inputWrapper}>
 							<SearchIcon size={20} />
 							<Command.Input

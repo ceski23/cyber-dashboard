@@ -180,9 +180,11 @@ export const styles = {
 				fontSize: vars.text.sm,
 				textDecoration: 'none',
 				transition: 'background-color 0.2s, color 0.2s',
-				':hover': {
-					backgroundColor: transparentize(vars.color.foreground, 0.05),
-					color: vars.color.foregroundAlt,
+				selectors: {
+					'&[data-selected=true]': {
+						backgroundColor: transparentize(vars.color.foreground, 0.05),
+						color: vars.color.foregroundAlt,
+					},
 				},
 			}),
 			icon: style({
