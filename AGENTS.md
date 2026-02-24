@@ -1,363 +1,161 @@
-# Agent Development Guide - cyber-dashboard-v2
+# Agent Development Guide — cyber-dashboard
 
-**Project:** Homelab Dashboard with TanStack Start, better-auth, and React  
-**Tech Stack:** TanStack Start, React 19, TypeScript 5.9, Bun, Vite, TailwindCSS, oxlint, oxfmt  
-**Last Updated:** 2026-02-01
+**Stack:** TanStack Start (SSR), React 19, TypeScript 5.9, Bun, Vite, Vanilla Extract, better-auth, TanStack Query  
+**NEVER COMMIT** — do not create git commits under any circumstances.
 
 ---
 
 ## Quick Commands
 
-### Development & Building
-
 ```bash
-# Start dev server (port 3000)
-bun run dev
-
-# Build for production
-bun run build
-
-# Preview production build
-bun run preview
+bun run dev            # Dev server on port 3000
+bun run build          # Production build
+bun run typecheck      # tsc --noEmit (catch type errors without building)
+bun run lint           # oxlint (type-aware)
+bun run lint:fix       # Auto-fix lint issues
+bun run format         # oxfmt --write
+bun run format:check   # Check formatting only
+bun run generate:schema  # Regenerate config.schema.json from Zod schema
 ```
 
-### Linting & Formatting
-
-```bash
-# Run oxlint (linter based on rust-analyzer)
-bun run lint
-
-# Auto-fix linting issues
-bun run lint:fix
-
-# Format code with oxfmt
-bun run format
-
-# Check formatting without modifying
-bun run format:check
-
-# Run both lint and format checks (pre-commit hook)
-bun run lint && bun run format:check
-```
-
-### Package Management
-
-```bash
-# Install dependencies
-bun install
-
-# Add dependency
-bun add <package>
-
-# Add dev dependency
-bun add -d <package>
-```
-
-### shadcn/ui Components
-
-```bash
-# Add a new component (use bun dlx, not pnpm dlx)
-bun dlx shadcn@latest add <component-name>
-
-# Example: Add button component
-bun dlx shadcn@latest add button
-```
+Pre-commit (husky enforced): `bun run lint && bun run format:check`
 
 ---
 
-## Code Style Guidelines
+## Architecture Overview
 
-### Linting & Formatting Configuration
+This is a **homelab dashboard** rendered via TanStack Start (SSR). Widgets, config, and status data all flow server→client via server functions and TanStack Query streaming.
 
-**Linter:** oxlint (rust-analyzer based, faster than ESLint)
+### Config System (`src/lib/config/`)
 
-- Enforced rules: `typescript/consistent-type-definitions` (use `type`, not `interface`)
-- Arrow functions: must use arrow body style when possible (`=>` not `{}`)
-- Function style: must use function expressions, not declarations
-- React rules: `react/recommended`, `react-hooks/recommended`, `react-perf`
-- Ignored: `src/components/ui/*` (shadcn/ui components)
+Dashboard is configured from a file at the project root (`config.jsonc`, `config.json`, `config.yaml`, or `config.yml`), with env variable overrides via `CONFIG_` prefix. Config is parsed and validated against `configSchema` (Zod, in `src/lib/config/schema.ts`) and cached server-side via `createServerOnlyFn`. Auth mode (basic or OIDC) and status providers are declared in this config, not in `.env`.
 
-**Formatter:** oxfmt (Rust-based formatter)
-
-- Line width: 120 characters
-- Indentation: tabs (width 4)
-- Quotes: single (except JSX where double)
-- Trailing commas: all
-- Imports: auto-sorted by oxfmt groups (side-effect → builtin → external → internal → parent → sibling → index)
-- Tailwind: auto-sorts classes in `className` and `class` attributes
-
-### TypeScript & Imports
-
-- **Module Resolution:** Paths use `@/*` alias (e.g., `@/components/Header`)
-- **Strict Mode:** TypeScript strict mode enabled - all types required
-- **No Unused Vars:** Both `noUnusedLocals` and `noUnusedParameters` enforced
-- **Type Definitions:** Use `type`, not `interface` (oxlint enforced)
-- **Import Order:** Automatically sorted by oxfmt into groups:
-    1. Side-effect imports
-    2. Builtin imports
-    3. External/third-party imports
-    4. Internal imports (`@/*`)
-    5. Parent imports (`../`)
-    6. Sibling imports (`./`)
-    7. Index imports
-
-```typescript
-// Correct pattern (oxfmt will auto-sort)
-import { createFileRoute } from '@tanstack/react-router'
-import { betterAuth } from 'better-auth'
-
-import { auth } from '@/lib/auth'
-import Header from '@/components/Header'
-
-import { someHelper } from './utils'
+```bash
+# Regenerate config.schema.json after editing schema.ts
+bun run generate:schema
 ```
 
-### File & Folder Structure
+### Widget System (`src/widgets/`)
 
-- **Routes:** `src/routes/*.tsx` (TanStack Router file-based routing)
-- **Components:** `src/components/*.tsx` (UI components)
-- **UI Components:** `src/components/ui/*.tsx` (shadcn/ui components)
-- **Libraries:** `src/lib/*.ts` (utilities, auth, config)
-- **Styles:** `src/styles.css` (global Tailwind styles)
+All widgets follow the same two-file pattern:
 
-### Component Patterns
-
-**React Components (TSX):**
-
-- Use arrow function expressions (oxlint enforced)
-- Define types at top of file
-- Avoid `any` type - be explicit
-
+**`schema.ts`** — define options using `defineWidgetOptions(type, zodSchema)`:
 ```typescript
-import { createFileRoute } from '@tanstack/react-router'
-
-type MyComponentProps = {
-	title: string
-	count: number
-}
-
-export const Route = createFileRoute('/path')({
-	component: MyComponent,
-})
-
-const MyComponent = ({ title, count }: MyComponentProps) => (
-	<div className="space-y-4">
-		<h1>{title}</h1>
-		<p>{count}</p>
-	</div>
-)
+export const myWidgetOptions = defineWidgetOptions('my-widget', z.strictObject({
+someField: z.string(),
+}))
 ```
 
-**Server Functions (TanStack Start):**
-
+**`index.tsx`** — register using `defineWidget({ type, optionsSchema, Component, provideLinks? })`:
 ```typescript
-import { createServerFn } from '@tanstack/react-start'
-
-export const myServerFn = createServerFn({ method: 'GET' }).handler(async () => {
-	// Server-side only code
-	return { data: 'value' }
+export const myWidget = defineWidget({
+type: 'my-widget',
+optionsSchema: myWidgetOptions,
+Component: ({ options, columns }) => <div style={{ gridColumn: `span ${columns ?? 1}` }}>...</div>,
+	// Optional: expose links to the Command Palette
+	provideLinks: ({ url, name, icon }) => [{ type: 'Category', label: name, url, icon }],
 })
 ```
 
-### Styling
+`provideLinks` feeds the Command Palette — return an array of `{ type, label, url, icon? }` to make the widget's target URL discoverable via the palette. See `src/widgets/serviceLink/index.tsx` for a real example.
 
-- **Framework:** TailwindCSS v4 via `@tailwindcss/vite` plugin
-- **Classes:** Use Tailwind utility classes directly in JSX
-- **Class Sorting:** oxfmt auto-sorts Tailwind classes in `className` and `class` attributes
-- **Global Styles:** Add to `src/styles.css` if needed
-- **Animations:** Use `tw-animate-css` library for CSS animations
-
-```tsx
-// Tailwind class usage (oxfmt will auto-sort classes)
-<div className="min-h-screen bg-gray-900 p-6">
-	<h1 className="text-3xl font-bold text-white">Title</h1>
-</div>
-```
-
-### Type Safety
-
-- Always use TypeScript for new files (`.tsx` for React, `.ts` for utilities)
-- Use `type` keyword for type definitions (not `interface` - oxlint enforced)
-- Use Zod for runtime validation (already in dependencies)
-- Define types at top of component files or in separate `types/` files
-- Avoid `any` type - be explicit about types
+Server functions that stream use `async function*` generators. Client-side consumption uses `experimental_streamedQuery` from TanStack Query:
 
 ```typescript
-type MyComponentProps = {
-	title: string
-	count: number
-	onSubmit: (value: string) => void
+// Server (inside createServerFn handler):
+handler: async function* ({ data }) {
+	while (!signal.aborted) {
+		yield someData
+		await Bun.sleep(interval)
+	}
 }
 
-const MyComponent = ({ title, count, onSubmit }: MyComponentProps) => {
-	// ...
-}
-```
-
-### Error Handling
-
-- Use try-catch for async operations
-- Provide user-friendly error messages in UI
-- Log errors to console in development with descriptive context
-- For server functions, throw errors that will be caught client-side
-- Never silence errors silently - always log or propagate
-- Use `console.error()` for errors, `console.warn()` for warnings
-
-```typescript
-try {
-	const result = await serverFunction()
-	// handle success
-} catch (error) {
-	console.error('Operation failed:', error instanceof Error ? error.message : String(error))
-	// show error UI to user
-	throw error // propagate if needed
-}
-```
-
-### Naming Conventions
-
-- **Files:** PascalCase for components (e.g., `Header.tsx`, `Card.tsx`)
-- **Functions:** camelCase for utilities (e.g., `formatDate()`, `getUserData()`)
-- **Constants:** UPPER_SNAKE_CASE for constants (e.g., `MAX_RETRIES`, `API_BASE_URL`)
-- **React Components:** PascalCase (e.g., `const MyComponent = ...`)
-- **Hooks:** camelCase starting with `use` (e.g., `useAuth()`, `useLocalStorage()`)
-- **Private functions:** prefix with underscore if needed (e.g., `_internalHelper()`)
-- **Boolean variables:** prefix with `is`, `has`, `can`, `should` (e.g., `isLoading`, `hasError`)
-
----
-
-## Project-Specific Patterns
-
-### Authentication (better-auth + TanStack Start)
-
-The project uses **better-auth** with OIDC/OAuth2 for authentication.
-
-**Key Files:**
-
-- `src/lib/auth/index.ts` - Server auth config
-- `src/lib/auth/client.ts` - Client auth config
-- `src/lib/auth/middleware.ts` - Route protection
-- `src/routes/api/auth/$.ts` - Auth handler
-
-**Protected Routes Pattern:**
-
-```typescript
-import { authMiddleware } from '@/lib/auth/middleware'
-
-export const Route = createFileRoute('/')({
-	component: Dashboard,
-	server: {
-		middleware: [authMiddleware], // Protects this route
-	},
+// Client:
+queryFn: experimental_streamedQuery({
+initialValue: [],
+reducer: (_prev, next) => next,
+	streamFn: ({ signal }) => myServerFn({ data: { ... }, signal }),
 })
 ```
 
-**CRITICAL:** `tanstackStartCookies()` plugin **MUST** be the last plugin in the auth config's plugins array.
+See `src/widgets/cpuLoad/index.tsx` and `src/services/status/index.ts` for full examples.
 
-### File Structure
+### Status Providers (`src/services/status/`)
 
-- **Routes:** `src/routes/*.tsx` (TanStack Router file-based routing)
-- **Components:** `src/components/*.tsx` (Reusable UI components)
-- **UI Components:** `src/components/ui/*.tsx` (shadcn/ui components)
-- **Widgets:** `src/widgets/*.tsx` (Page-specific composed components)
-- **Libraries:** `src/lib/*.ts` (utilities, auth, config)
-- **Types:** `src/types/*.ts` (Shared type definitions)
-- **Styles:** `src/styles.css` (global Tailwind styles)
+Pluggable backends (docker, gatus, ping) returning `ServiceStatus[]`. The `streamStatus` server function dispatches to the correct provider based on `config.statusProviders[name].type`. Widget instances reference providers by name via `status.provider`.
 
-### Environment Variables
+### Authentication (`src/lib/auth/`)
 
-Located in `.env` (gitignored). Template: `.env.example`
+Auth is **config-driven** — instantiated at runtime from `config.auth` (not hardcoded env vars). Supports `basic` or `oidc`. `tanstackStartCookies()` **must be the last plugin** in the better-auth plugins array.
 
-**Required Variables:**
+---
 
-```bash
-BETTER_AUTH_SECRET      # Generate: openssl rand -base64 32
-BETTER_AUTH_URL         # http://localhost:3000
-OIDC_ISSUER             # OIDC provider issuer URL
-OIDC_CLIENT_ID          # From OIDC provider
-OIDC_CLIENT_SECRET      # From OIDC provider
-```
+## Styling
 
-**Accessing in Code:**
+**Vanilla Extract only.** All styles are written in `.css.ts` files — any Tailwind `className` usage in the codebase is a leftover being removed, do not add new Tailwind classes.
+
+Theme tokens live in `src/theme.css.ts` (`vars.color.*`, `vars.spacing.*`, `vars.text.*`, `vars.radius.*`, etc.). Always reference `vars` — never hardcode values in `.css.ts` files. See `.agents/skills/vanilla-extract/SKILL.md` for more information.
 
 ```typescript
-// Server-side only
-import { serverEnv } from '@/env'
-const secret = serverEnv.BETTER_AUTH_SECRET
+// src/components/MyWidget.css.ts
+import { style } from '@vanilla-extract/css'
+import { vars } from '@/theme.css'
+
+export const root = style({
+	background: vars.color.backgroundAlt,
+	borderRadius: vars.radius.md,
+	color: vars.color.foreground,
+})
 ```
 
----
-
-## Development Workflow
-
-### Before Committing
-
-Always run the pre-commit checks:
-
-```bash
-bun run lint && bun run format:check
-```
-
-These are enforced by husky hooks. To auto-fix issues:
-
-```bash
-bun run lint:fix && bun run format
-```
-
-### Common Development Tasks
-
-**Adding a New Page:**
-
-1. Create `src/routes/mypage.tsx`
-2. Use file-based routing pattern
-3. Import middleware if auth needed
-4. Export `Route` created with `createFileRoute`
-
-**Adding a New Component:**
-
-1. Create `src/components/MyComponent.tsx`
-2. Define `type MyComponentProps = { ... }`
-3. Use TypeScript types throughout
-4. Run `bun run format` before committing
-
-**Adding shadcn/ui Components:**
-
-```bash
-bun dlx shadcn@latest add card button alert
-```
-
-Import and use:
-
+Import the class name into the component:
 ```typescript
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import * as styles from './MyWidget.css'
+// or for module CSS:
+import style from './myWidget.module.css'
 ```
 
 ---
 
-## Troubleshooting
+## Code Style (oxlint + oxfmt enforced)
 
-| Error                      | Solution                                           |
-| -------------------------- | -------------------------------------------------- |
-| `Module not found '@/...'` | Check `tsconfig.json` paths alias                  |
-| `unused variable`          | Remove or prefix with `_` if intentional           |
-| Type errors                | Run `bun run build` to catch TypeScript errors     |
-| Formatting issues          | Run `bun run format` to auto-fix                   |
-| Linting issues             | Run `bun run lint:fix` to auto-fix                 |
-| Pre-commit hook fails      | Run `bun run lint && bun run format:check` locally |
-
----
-
-## Important Notes
-
-0. **NEVER COMMIT:** Under no cirricumstances you should commit any changes, your job is not creating commits. FORBIDDEN!
-1. **Bun Runtime:** Project uses Bun as package manager and runtime
-2. **SSR Ready:** TanStack Start enables server-side rendering with built-in hydration
-3. **Server Functions:** Use `createServerFn()` for secure server-only operations
-4. **Route Tree:** Auto-generated in `src/routeTree.gen.ts` - never edit manually
-5. **Devtools:** React Router and Query devtools included in dev mode only
-6. **Pre-commit Hooks:** oxlint and oxfmt checks are required before committing
-7. **Type Checking:** Strict TypeScript mode enforced - resolve all type errors before building
+- **`type` not `interface`** — oxlint enforced
+- **Arrow function expressions**, not function declarations
+- **Tabs** for indentation, single quotes (except JSX), 120-char line width
+- **`@/*` import alias** for `src/` — oxfmt auto-sorts imports into groups
+- `noUnusedLocals`/`noUnusedParameters` strict — prefix intentionally unused with `_`
+- `vite-plugin-circular-dependency` is active — avoid circular imports between modules
+- `src/components/ui/*` (shadcn/ui) is excluded from oxlint
 
 ---
 
-**For architecture details, see IMPLEMENTATION_PLAN.md**
+## Key Files
+
+| File | Purpose |
+|---|---|
+| `src/lib/config/schema.ts` | Master Zod schema for `config.jsonc` |
+| `src/widgets/helpers.ts` | `defineWidget` / `defineWidgetOptions` factories |
+| `src/widgets/index.ts` | Widget registry (add new widgets here) |
+| `src/widgets/schemas.ts` | Zod union of all widget option schemas |
+| `src/theme.css.ts` | Vanilla Extract global theme tokens |
+| `src/routeTree.gen.ts` | **Auto-generated** — never edit manually |
+| `config.jsonc` | Live dashboard configuration (project root) |
+
+---
+
+## File Structure
+
+```
+src/
+  routes/           # TanStack file-based routing (createFileRoute)
+  components/       # Reusable UI components
+    ui/             # shadcn/ui (linting excluded)
+  widgets/          # One folder per widget type: index.tsx + schema.ts
+  services/         # Server-side data providers (status, location)
+  lib/
+    auth/           # better-auth setup (config-driven, not env-driven)
+    config/         # Config loading, schema, server middleware
+    utils/          # Shared utilities
+  theme.css.ts      # Global Vanilla Extract theme tokens
+  styles.css        # Global CSS reset
+```
