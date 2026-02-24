@@ -32,11 +32,11 @@ Vanilla Extract generates static CSS at build time from TypeScript style definit
 ## Setup (React + Vite)
 
 1. Install base package:
-   - `@vanilla-extract/css`
+    - `@vanilla-extract/css`
 2. Install Vite integration:
-   - `@vanilla-extract/vite-plugin` (dev dependency)
+    - `@vanilla-extract/vite-plugin` (dev dependency)
 3. Add plugin in `vite.config.ts`:
-   - `vanillaExtractPlugin()`
+    - `vanillaExtractPlugin()`
 
 ### Vite plugin identifiers
 
@@ -167,12 +167,14 @@ Use this for user-customizable themes, CMS-driven colors, tenant branding, etc.
 Use **only for general styling and browser resets**.
 
 **Appropriate for global styles:**
+
 - `body`, `html` reset styles
 - `::selection` styling
 - Generic browser resets (margins, padding, box-sizing, etc.)
 - Link underlines and basic resets applied globally
 
 **NOT for global styles** (create component-specific styles instead):
+
 - Headings (`h1`–`h6`) - style in dedicated heading components
 - Buttons - use component recipes or `styleVariants`
 - Links - style in dedicated link components or use `globalStyle` only for minimal resets, not visual styling
@@ -228,13 +230,13 @@ Useful advanced helpers:
 ## Suggested Component Pattern (React)
 
 - `Component.css.ts`
-  - base class(es)
-  - variants (`styleVariants` or recipe)
-  - exported variant type(s)
+    - base class(es)
+    - variants (`styleVariants` or recipe)
+    - exported variant type(s)
 - `Component.tsx`
-  - typed props
-  - map props to classes
-  - compose external `className`
+    - typed props
+    - map props to classes
+    - compose external `className`
 
 ## Simple Example: Button with 2 Recipe Variants + Theme Variables
 
@@ -242,22 +244,22 @@ Use this as a starter pattern for a themed React button.
 
 ```ts
 // theme.css.ts
-import { createTheme } from '@vanilla-extract/css';
+import { createTheme } from '@vanilla-extract/css'
 
 export const vars = createGlobalTheme(':root', {
-  color: {
-    primaryBg: '#2563eb',
-    primaryText: '#ffffff',
-    secondaryBg: '#e5e7eb',
-    secondaryText: '#111827',
-  },
-  radius: {
-    md: '8px',
-  },
-  font: {
-    sans: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-  }
-});
+	color: {
+		primaryBg: '#2563eb',
+		primaryText: '#ffffff',
+		secondaryBg: '#e5e7eb',
+		secondaryText: '#111827',
+	},
+	radius: {
+		md: '8px',
+	},
+	font: {
+		sans: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+	},
+})
 ```
 
 > [!IMPORTANT]
@@ -265,57 +267,57 @@ export const vars = createGlobalTheme(':root', {
 
 ```ts
 // index.tsx
-import './theme.css.ts';
+import './theme.css.ts'
 ```
 
 ```ts
 // button.css.ts
-import { recipe, type RecipeVariants } from '@vanilla-extract/recipes';
-import { vars } from './theme.css';
+import { recipe, type RecipeVariants } from '@vanilla-extract/recipes'
+import { vars } from './theme.css'
 
 export const button = recipe({
-  base: {
-    border: 0,
-    borderRadius: vars.radius.md,
-    cursor: 'pointer',
-    fontFamily: vars.font.sans,
-    fontWeight: 600,
-    padding: '10px 14px',
-  },
-  variants: {
-    variant: {
-      primary: {
-        background: vars.color.primaryBg,
-        color: vars.color.primaryText,
-      },
-      secondary: {
-        background: vars.color.secondaryBg,
-        color: vars.color.secondaryText,
-      },
-    },
-  },
-  defaultVariants: {
-    variant: 'primary',
-  },
-});
+	base: {
+		border: 0,
+		borderRadius: vars.radius.md,
+		cursor: 'pointer',
+		fontFamily: vars.font.sans,
+		fontWeight: 600,
+		padding: '10px 14px',
+	},
+	variants: {
+		variant: {
+			primary: {
+				background: vars.color.primaryBg,
+				color: vars.color.primaryText,
+			},
+			secondary: {
+				background: vars.color.secondaryBg,
+				color: vars.color.secondaryText,
+			},
+		},
+	},
+	defaultVariants: {
+		variant: 'primary',
+	},
+})
 
-export type ButtonVariants = RecipeVariants<typeof button>;
+export type ButtonVariants = RecipeVariants<typeof button>
 ```
 
 ```tsx
 // Button.tsx
-import type { ButtonHTMLAttributes } from 'react';
-import { clsx } from 'clsx';
-import { button, type ButtonVariants } from './button.css';
+import type { ButtonHTMLAttributes } from 'react'
+import { clsx } from 'clsx'
+import { button, type ButtonVariants } from './button.css'
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & ButtonVariants;
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & ButtonVariants
 
 export const Button = ({ variant, className, ...props }: Props) => (
-  <button
-    className={clsx(button({ variant }), className)}
-    {...props}
-  />
-);
+	<button
+		className={clsx(button({ variant }), className)}
+		{...props}
+	/>
+)
 
 // Usage:
 // <Button>Primary</Button>

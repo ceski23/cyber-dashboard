@@ -40,13 +40,18 @@ bun run generate:schema
 All widgets follow the same two-file pattern:
 
 **`schema.ts`** — define options using `defineWidgetOptions(type, zodSchema)`:
+
 ```typescript
-export const myWidgetOptions = defineWidgetOptions('my-widget', z.strictObject({
-someField: z.string(),
-}))
+export const myWidgetOptions = defineWidgetOptions(
+	'my-widget',
+	z.strictObject({
+		someField: z.string(),
+	}),
+)
 ```
 
 **`index.tsx`** — register using `defineWidget({ type, optionsSchema, Component, provideLinks? })`:
+
 ```typescript
 export const myWidget = defineWidget({
 type: 'my-widget',
@@ -109,6 +114,7 @@ export const root = style({
 ```
 
 Import the class name into the component:
+
 ```typescript
 import * as styles from './MyWidget.css'
 // or for module CSS:
@@ -131,15 +137,15 @@ import style from './myWidget.module.css'
 
 ## Key Files
 
-| File | Purpose |
-|---|---|
-| `src/lib/config/schema.ts` | Master Zod schema for `config.jsonc` |
-| `src/widgets/helpers.ts` | `defineWidget` / `defineWidgetOptions` factories |
-| `src/widgets/index.ts` | Widget registry (add new widgets here) |
-| `src/widgets/schemas.ts` | Zod union of all widget option schemas |
-| `src/theme.css.ts` | Vanilla Extract global theme tokens |
-| `src/routeTree.gen.ts` | **Auto-generated** — never edit manually |
-| `config.jsonc` | Live dashboard configuration (project root) |
+| File                       | Purpose                                          |
+| -------------------------- | ------------------------------------------------ |
+| `src/lib/config/schema.ts` | Master Zod schema for `config.jsonc`             |
+| `src/widgets/helpers.ts`   | `defineWidget` / `defineWidgetOptions` factories |
+| `src/widgets/index.ts`     | Widget registry (add new widgets here)           |
+| `src/widgets/schemas.ts`   | Zod union of all widget option schemas           |
+| `src/theme.css.ts`         | Vanilla Extract global theme tokens              |
+| `src/routeTree.gen.ts`     | **Auto-generated** — never edit manually         |
+| `config.jsonc`             | Live dashboard configuration (project root)      |
 
 ---
 
