@@ -18,5 +18,9 @@
 		"editor.formatOnSave": true
 	},
 	"json.validate.enable": false,
-	"typescript.experimental.useTsgo": true
+	"typescript.experimental.useTsgo": true,
+	"chat.tools.terminal.autoApprove": {
+		"bun run typecheck": true,
+		"bun run lint": true
+	}
 }
