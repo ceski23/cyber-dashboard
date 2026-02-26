@@ -1,7 +1,6 @@
+import { transparentize } from '#lib/utils/style'
+import { vars } from '#theme.css'
 import { recipe } from '@vanilla-extract/recipes'
-
-import { transparentize } from '@/lib/utils/style'
-import { vars } from '@/theme.css'
 
 export const style = recipe({
 	base: {

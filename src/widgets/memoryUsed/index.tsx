@@ -1,6 +1,8 @@
+import { createTypedChart } from '#components/charts'
 import { experimental_streamedQuery, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { format, fromUnixTime } from 'date-fns'
 import { CircularBuffer } from 'mnemonist'
 import prettyBytes from 'pretty-bytes'
@@ -8,12 +10,10 @@ import { Tooltip } from 'recharts'
 import si from 'systeminformation'
 import z from 'zod'
 
-import { createTypedChart } from '@/components/charts'
-
 import { defineWidget } from '../helpers'
 
-import style from './memoryUsed.module.css'
 import { memoryUsedOptions } from './schema'
+import { memoryVar, styles } from './style.css'
 
 export type MemoryData = {
 	used: number
@@ -65,7 +65,7 @@ export const memoryUsed = defineWidget({
 		})
 		const currentUsed = data?.at(-1)?.used ?? 0
 		const currentTotal = data?.at(-1)?.total ?? 0
-		const currentUsagePercent = (currentUsed / currentTotal)
+		const currentUsagePercent = (currentTotal === 0 ? 0 : currentUsed / currentTotal)
 			.toLocaleString(undefined, { maximumFractionDigits: 0, style: 'percent' })
 			.slice(0, -1)
 
@@ -74,8 +74,8 @@ export const memoryUsed = defineWidget({
 				<p>
 					Memory usage:{' '}
 					<span
-						className={style.memory}
-						style={{ '--memory': currentUsagePercent }}
+						className={styles.value}
+						style={assignInlineVars({ [memoryVar]: currentUsagePercent })}
 					/>
 					({prettyBytes(currentUsed)} / {prettyBytes(currentTotal)})
 				</p>

@@ -1,8 +1,7 @@
+import { useAuthClient } from '#lib/auth/client'
 import { isNotNil } from 'es-toolkit'
 import { FunctionComponent } from 'react'
 import { match, P } from 'ts-pattern'
-
-import { useAuthClient } from '@/lib/auth/client'
 
 import { styles } from './style.css'
 

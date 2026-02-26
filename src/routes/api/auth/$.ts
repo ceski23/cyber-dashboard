@@ -1,7 +1,6 @@
+import { createAuth } from '#lib/auth'
+import { configMiddleware } from '#lib/config/middleware'
 import { createFileRoute } from '@tanstack/react-router'
-
-import { createAuth } from '@/lib/auth'
-import { configMiddleware } from '@/lib/config/middleware'
 
 export const Route = createFileRoute('/api/auth/$')({
 	server: {

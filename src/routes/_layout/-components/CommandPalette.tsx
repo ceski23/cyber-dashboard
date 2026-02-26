@@ -1,3 +1,5 @@
+import { Kbd } from '#components/kbd'
+import { reloadConfigFn } from '#lib/config'
 import { Dialog } from '@base-ui/react/dialog'
 import { formatForDisplay, useHotkey } from '@tanstack/react-hotkeys'
 import { useQueryClient } from '@tanstack/react-query'
@@ -7,9 +9,6 @@ import { Command } from 'cmdk'
 import { isNotNil } from 'es-toolkit'
 import { RotateCcwIcon, SearchIcon } from 'lucide-react'
 import { FunctionComponent, useState } from 'react'
-
-import { Kbd } from '@/components/kbd'
-import { reloadConfigFn } from '@/lib/config'
 
 import { styles } from './style.css'
 

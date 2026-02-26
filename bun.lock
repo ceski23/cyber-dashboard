@@ -19,6 +19,7 @@
         "@tanstack/react-start": "1.159.0",
         "@tanstack/router-plugin": "1.158.4",
         "@vanilla-extract/css": "1.18.0",
+        "@vanilla-extract/dynamic": "2.1.5",
         "@vanilla-extract/recipes": "0.5.7",
         "better-auth": "1.4.18",
         "clsx": "2.1.1",
@@ -40,7 +41,6 @@
         "recharts": "3.7.0",
         "systeminformation": "5.30.7",
         "ts-pattern": "5.9.0",
-        "vite-tsconfig-paths": "6.0.2",
         "zod": "4.3.6",
       },
       "devDependencies": {
@@ -510,6 +510,8 @@
 
     "@vanilla-extract/css": ["@vanilla-extract/css@1.18.0", "", { "dependencies": { "@emotion/hash": "^0.9.0", "@vanilla-extract/private": "^1.0.9", "css-what": "^6.1.0", "cssesc": "^3.0.0", "csstype": "^3.2.3", "dedent": "^1.5.3", "deep-object-diff": "^1.1.9", "deepmerge": "^4.2.2", "lru-cache": "^10.4.3", "media-query-parser": "^2.0.2", "modern-ahocorasick": "^1.0.0", "picocolors": "^1.0.0" } }, "sha512-/p0dwOjr0o8gE5BRQ5O9P0u/2DjUd6Zfga2JGmE4KaY7ZITWMszTzk4x4CPlM5cKkRr2ZGzbE6XkuPNfp9shSQ=="],
 
+    "@vanilla-extract/dynamic": ["@vanilla-extract/dynamic@2.1.5", "", { "dependencies": { "@vanilla-extract/private": "^1.0.9" } }, "sha512-QGIFGb1qyXQkbzx6X6i3+3LMc/iv/ZMBttMBL+Wm/DetQd36KsKsFg5CtH3qy+1hCA/5w93mEIIAiL4fkM8ycw=="],
+
     "@vanilla-extract/integration": ["@vanilla-extract/integration@8.0.7", "", { "dependencies": { "@babel/core": "^7.23.9", "@babel/plugin-syntax-typescript": "^7.23.3", "@vanilla-extract/babel-plugin-debug-ids": "^1.2.2", "@vanilla-extract/css": "^1.18.0", "dedent": "^1.5.3", "esbuild": "npm:esbuild@>=0.17.6 <0.28.0", "eval": "0.1.8", "find-up": "^5.0.0", "javascript-stringify": "^2.0.1", "mlly": "^1.4.2" } }, "sha512-ILob4F9cEHXpbWAVt3Y2iaQJpqYq/c/5TJC8Fz58C2XmX3QW2Y589krvViiyJhQfydCGK3EbwPQhVFjQaBeKfg=="],
 
     "@vanilla-extract/private": ["@vanilla-extract/private@1.0.9", "", {}, "sha512-gT2jbfZuaaCLrAxwXbRgIhGhcXbRZCG3v4TTUnjw0EJ7ArdBRxkq4msNJkbuRkCgfIK5ATmprB5t9ljvLeFDEA=="],
@@ -709,8 +711,6 @@
     "get-tsconfig": ["get-tsconfig@4.13.1", "", { "dependencies": { "resolve-pkg-maps": "^1.0.0" } }, "sha512-EoY1N2xCn44xU6750Sx7OjOIT59FkmstNc3X6y5xpz7D5cBtZRe/3pSlTkDJgqsOk3WwZPkWfonhhUJfttQo3w=="],
 
     "glob-parent": ["glob-parent@5.1.2", "", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
-
-    "globrex": ["globrex@0.1.2", "", {}, "sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg=="],
 
     "goober": ["goober@2.1.18", "", { "peerDependencies": { "csstype": "^3.0.10" } }, "sha512-2vFqsaDVIT9Gz7N6kAL++pLpp41l3PfDuusHcjnGLfR6+huZkl6ziX+zgVC3ZxpqWhzH6pyDdGrCeDhMIvwaxw=="],
 
@@ -964,8 +964,6 @@
 
     "ts-pattern": ["ts-pattern@5.9.0", "", {}, "sha512-6s5V71mX8qBUmlgbrfL33xDUwO0fq48rxAu2LBE11WBeGdpCPOsXksQbZJHvHwhrd3QjUusd3mAOM5Gg0mFBLg=="],
 
-    "tsconfck": ["tsconfck@3.1.6", "", { "peerDependencies": { "typescript": "^5.0.0" }, "optionalPeers": ["typescript"], "bin": { "tsconfck": "bin/tsconfck.js" } }, "sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w=="],
-
     "tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
     "tsx": ["tsx@4.21.0", "", { "dependencies": { "esbuild": "~0.27.0", "get-tsconfig": "^4.7.5" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "bin": { "tsx": "dist/cli.mjs" } }, "sha512-5C1sg4USs1lfG0GFb2RLXsdpXqBSEhAaA/0kPL01wxzpMqLILNxIxIOKiILz+cdg/pLnOUxFYOR5yhHU666wbw=="],
@@ -1001,8 +999,6 @@
     "vite-node": ["vite-node@3.2.4", "", { "dependencies": { "cac": "^6.7.14", "debug": "^4.4.1", "es-module-lexer": "^1.7.0", "pathe": "^2.0.3", "vite": "^5.0.0 || ^6.0.0 || ^7.0.0-0" }, "bin": { "vite-node": "vite-node.mjs" } }, "sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg=="],
 
     "vite-plugin-circular-dependency": ["vite-plugin-circular-dependency@0.5.0", "", { "dependencies": { "@rollup/pluginutils": "^5.1.0", "chalk": "^4.1.2" } }, "sha512-7SQX1IZbf5to/S3A3/syfntRNg20Cth6KgTCwHpNZIcuDCtPclV2Bwvdd9HWG+alKZ04mmdlchNOPQgBl7/vQQ=="],
-
-    "vite-tsconfig-paths": ["vite-tsconfig-paths@6.0.2", "", { "dependencies": { "debug": "^4.1.1", "globrex": "^0.1.2", "tsconfck": "^3.0.3" }, "peerDependencies": { "vite": "*" }, "optionalPeers": ["vite"] }, "sha512-c06LOO8fWB5RuEPpEIHXU9t7Dt4DoiPIljnKws9UygIaQo6PoFKawTftz5/QVcO+6pOs/HHWycnq4UrZkWVYnQ=="],
 
     "vitefu": ["vitefu@1.1.1", "", { "peerDependencies": { "vite": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0" }, "optionalPeers": ["vite"] }, "sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ=="],
 

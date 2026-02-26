@@ -1,9 +1,8 @@
+import { Widget } from '#components/widget'
+import { authMiddleware } from '#lib/auth/middleware'
+import { configMiddleware } from '#lib/config/middleware'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-
-import { Widget } from '@/components/widget'
-import { authMiddleware } from '@/lib/auth/middleware'
-import { configMiddleware } from '@/lib/config/middleware'
 
 const fetchData = createServerFn({ method: 'GET' })
 	.middleware([configMiddleware])

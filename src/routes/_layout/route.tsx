@@ -1,11 +1,10 @@
+import { AuthClientProvider, createAuthClient } from '#lib/auth/client'
+import { configMiddleware } from '#lib/config/middleware'
+import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { groupBy } from 'es-toolkit'
 import { useState } from 'react'
-
-import { AuthClientProvider, createAuthClient } from '@/lib/auth/client'
-import { configMiddleware } from '@/lib/config/middleware'
-import { widgets as widgetsDefs } from '@/widgets'
 
 import { Header } from './-components/Header'
 

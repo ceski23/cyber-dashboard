@@ -1,8 +1,6 @@
+import { useServiceStatus } from '#services/status'
 import { isNotNil } from 'es-toolkit'
 import { match } from 'ts-pattern'
-
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { useServiceStatus } from '@/services/status/useServiceStatus'
 
 import { defineWidget } from '../helpers'
 
@@ -15,17 +13,13 @@ export const serviceLink = defineWidget({
 		const statusQuery = useServiceStatus(status?.provider, status?.service)
 
 		return (
-			<Card
+			<a
+				href={url}
+				target="_blank"
+				rel="noopener noreferrer"
 				style={{ gridColumn: `span ${columns ?? 1}` }}
-				render={
-					<a
-						href={url}
-						target="_blank"
-						rel="noopener noreferrer"
-					/>
-				}
 			>
-				<CardHeader>
+				<div>
 					{isNotNil(icon) && (
 						<img
 							src={icon}
@@ -33,29 +27,29 @@ export const serviceLink = defineWidget({
 							style={{ width: 32, height: 32 }}
 						/>
 					)}
-					<CardTitle>{name}</CardTitle>
-					<CardDescription>{description}</CardDescription>
-				</CardHeader>
+					<div>{name}</div>
+					<div>{description}</div>
+				</div>
 				{match(statusQuery)
 					.with({ status: 'pending', isEnabled: true }, () => (
-						<CardFooter>
+						<div>
 							<span className="text-sm">Status: Loading... ⚫</span>
-						</CardFooter>
+						</div>
 					))
 					.with({ status: 'error' }, ({ error }) => (
-						<CardFooter>
+						<div>
 							<span className="text-sm">Status: {error.message} 🔴</span>
-						</CardFooter>
+						</div>
 					))
 					.with({ status: 'success' }, ({ data }) => (
-						<CardFooter>
+						<div>
 							<span className="text-sm">
 								Status: {data.label} {data.status === 'available' ? '🟢' : '🔴'}
 							</span>
-						</CardFooter>
+						</div>
 					))
 					.otherwise(() => null)}
-			</Card>
+			</a>
 		)
 	},
 	provideLinks: ({ url, name, icon }) => [

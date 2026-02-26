@@ -1,12 +1,12 @@
+import { configMiddleware } from '#lib/config/middleware'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { z } from 'zod'
 
-import { configMiddleware } from '@/lib/config/middleware'
-
 import { streamDockerStatus } from './docker'
 import { streamGatusStatus } from './gatus'
 import { streamPingStatus } from './ping'
+export { useServiceStatus } from './useServiceStatus'
 
 export type ServiceStatus = {
 	service: string

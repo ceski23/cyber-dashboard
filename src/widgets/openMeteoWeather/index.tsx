@@ -1,12 +1,11 @@
+import { configMiddleware } from '#lib/config/middleware'
+import { locationQuery } from '#services/location'
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { isNil } from 'es-toolkit'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
-
-import { configMiddleware } from '@/lib/config/middleware'
-import { locationQuery } from '@/services/location'
 
 import { defineWidget } from '../helpers'
 

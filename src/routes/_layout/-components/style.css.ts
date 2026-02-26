@@ -1,7 +1,6 @@
+import { transparentize } from '#lib/utils/style'
+import { media, vars } from '#theme.css'
 import { globalStyle, keyframes, style } from '@vanilla-extract/css'
-
-import { transparentize } from '@/lib/utils/style'
-import { media, vars } from '@/theme.css'
 
 export const pulse = keyframes({
 	'0%': { opacity: 0.5 },

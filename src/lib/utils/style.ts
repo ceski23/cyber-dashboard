@@ -4,3 +4,8 @@ export const blendWithColor = (color: string, color2: string, opacity: number) =
 export const transparentize = (color: string, opacity: number) => blendWithColor(color, 'transparent', 1 - opacity)
 
 export const pxToRem = (px: number) => `${px / 16}rem`
+
+export const getVarName = (variable: string): string => {
+	const matches = variable.match(/^var\((.*)\)$/)
+	return matches ? matches[1] : variable
+}

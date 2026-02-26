@@ -1,18 +1,18 @@
+import { createTypedChart } from '#components/charts'
 import { experimental_streamedQuery, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { format, fromUnixTime } from 'date-fns'
 import { CircularBuffer } from 'mnemonist'
 import { CartesianGrid, Tooltip } from 'recharts'
 import si from 'systeminformation'
 import z from 'zod'
 
-import { createTypedChart } from '@/components/charts'
-
 import { defineWidget } from '../helpers'
 
-import style from './cpuLoad.module.css'
 import { cpuLoadOptions } from './schema'
+import { loadVar, styles } from './style.css'
 
 export type CpuData = {
 	usage: number
@@ -70,8 +70,8 @@ export const cpuLoad = defineWidget({
 				<p>
 					CPU load:{' '}
 					<span
-						className={style.load}
-						style={{ '--load': currentLoadPercent }}
+						className={styles.value}
+						style={assignInlineVars({ [loadVar]: currentLoadPercent })}
 					/>
 				</p>
 				{showGraph && (

@@ -1,7 +1,6 @@
+import { statusProviderSchema } from '#services/status/schema'
+import { widgetsSchema } from '#widgets/schemas'
 import { z } from 'zod'
-
-import { statusProviderSchema } from '@/services/status/schema'
-import { widgetsSchema } from '@/widgets/schemas'
 
 export const configSchema = z.strictObject({
 	$schema: z.string().describe('The schema to verify this document against.').optional(),

@@ -1,6 +1,5 @@
+import { vars } from '#theme.css'
 import { style } from '@vanilla-extract/css'
-
-import { vars } from '@/theme.css'
 
 export const errorRoot = style({
 	display: 'flex',

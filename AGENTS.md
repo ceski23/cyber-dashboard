@@ -104,7 +104,7 @@ Theme tokens live in `src/theme.css.ts` (`vars.color.*`, `vars.spacing.*`, `vars
 ```typescript
 // src/components/MyWidget.css.ts
 import { style } from '@vanilla-extract/css'
-import { vars } from '@/theme.css'
+import { vars } from '#theme.css'
 
 export const root = style({
 	background: vars.color.backgroundAlt,
@@ -128,7 +128,7 @@ import style from './myWidget.module.css'
 - **`type` not `interface`** — oxlint enforced
 - **Arrow function expressions**, not function declarations
 - **Tabs** for indentation, single quotes (except JSX), 120-char line width
-- **`@/*` import alias** for `src/` — oxfmt auto-sorts imports into groups
+- **`#...` package subpath imports** for `src/` modules (e.g. `#lib/*`, `#components/*`, `#widgets`) — oxfmt auto-sorts imports into groups
 - `noUnusedLocals`/`noUnusedParameters` strict — prefix intentionally unused with `_`
 - `vite-plugin-circular-dependency` is active — avoid circular imports between modules
 - `src/components/ui/*` (shadcn/ui) is excluded from oxlint

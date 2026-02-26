@@ -5,8 +5,6 @@ import si from 'systeminformation'
 import { match } from 'ts-pattern'
 import z from 'zod'
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-
 import { defineWidget } from '../helpers'
 
 import { storageUsedOptions } from './schema'
@@ -45,11 +43,11 @@ export const storageUsed = defineWidget({
 		})
 
 		return (
-			<Card style={{ gridColumn: `span ${columns ?? 1}` }}>
-				<CardHeader>
+			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
+				<div>
 					<h2 className="text-lg font-semibold">Storage Usage</h2>
-				</CardHeader>
-				<CardContent>
+				</div>
+				<div>
 					{match(storageQuery)
 						.with({ status: 'pending' }, () => <div>Loading...</div>)
 						.with({ status: 'error' }, ({ error }) => <div>Error: {error.message}</div>)
@@ -62,8 +60,8 @@ export const storageUsed = defineWidget({
 							</div>
 						))
 						.otherwise(() => null)}
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 		)
 	},
 })

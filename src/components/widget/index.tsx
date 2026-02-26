@@ -1,8 +1,7 @@
+import { widgets, type WidgetType } from '#widgets'
 import { CircleAlertIcon } from 'lucide-react'
 import { FunctionComponent, useState } from 'react'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
-
-import { widgets, type WidgetType } from '@/widgets'
 
 import { errorRoot } from './style.css'
 
