@@ -24,6 +24,25 @@ const config = defineConfig({
 	optimizeDeps: {
 		exclude: ['cpu-features', 'ssh2'],
 	},
+	build: {
+		rolldownOptions: {
+			experimental: {
+				lazyBarrel: true,
+			},
+			output: {
+				codeSplitting: {
+					groups: [
+						{
+							name: 'vendor',
+							test: /node_modules/,
+							entriesAware: true,
+							entriesAwareMergeThreshold: 20_000,
+						},
+					],
+				},
+			},
+		},
+	},
 })
 
 export default config

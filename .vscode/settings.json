@@ -17,5 +17,6 @@
 		"editor.defaultFormatter": "oxc.oxc-vscode",
 		"editor.formatOnSave": true
 	},
-	"json.validate.enable": false
+	"json.validate.enable": false,
+	"typescript.experimental.useTsgo": true
 }
