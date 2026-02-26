@@ -107,6 +107,8 @@ export const vars = createGlobalTheme(':root', {
 		12: '3rem',
 		/** 64px */
 		16: '4rem',
+		/** 72px */
+		18: '4.5rem',
 		/** 80px */
 		20: '5rem',
 		/** 96px */

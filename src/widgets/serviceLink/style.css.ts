@@ -1,11 +1,18 @@
+import { getVarName } from '#lib/utils/style'
 import { vars } from '#theme.css'
-import { keyframes, style } from '@vanilla-extract/css'
+import { createVar, keyframes, style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
 
 const pulse = keyframes({
 	'0%': { opacity: 0.4 },
 	'50%': { opacity: 1 },
 	'100%': { opacity: 0.4 },
+})
+
+export const gradientStartVar = createVar({
+	syntax: '<percentage>',
+	initialValue: '100%',
+	inherits: false,
 })
 
 export const styles = {
@@ -22,8 +29,9 @@ export const styles = {
 			background: vars.color.panel,
 			textDecoration: 'none',
 			color: vars.color.foreground,
+			height: vars.spacing['18'],
 			cursor: 'pointer',
-			transition: 'border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease, background 0.4s ease',
+			transition: `border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease, background 0.4s ease, ${getVarName(gradientStartVar)} 0.5s ease`,
 			':hover': {
 				borderColor: vars.color.border,
 				transform: 'translateY(-2px)',
@@ -33,10 +41,10 @@ export const styles = {
 		variants: {
 			status: {
 				available: {
-					background: `linear-gradient(to right, transparent 60%, oklch(from oklch(0.72 0.18 142) l c h / 0.1)), ${vars.color.panel}`,
+					background: `linear-gradient(to right, transparent ${gradientStartVar}, oklch(from oklch(0.72 0.18 142) l c h / 0.1)), ${vars.color.panel}`,
 				},
 				unavailable: {
-					background: `linear-gradient(to right, transparent 60%, oklch(from oklch(0.65 0.22 25) l c h / 0.1)), ${vars.color.panel}`,
+					background: `linear-gradient(to right, transparent ${gradientStartVar}, oklch(from oklch(0.65 0.22 25) l c h / 0.1)), ${vars.color.panel}`,
 				},
 			},
 		},
@@ -54,7 +62,7 @@ export const styles = {
 		display: 'flex',
 		flexDirection: 'column',
 		gap: vars.spacing['0.5'],
-		minWidth: 0,
+		width: 0,
 		flex: 1,
 	}),
 

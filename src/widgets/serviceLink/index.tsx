@@ -1,12 +1,13 @@
 import { useServiceStatus } from '#services/status'
 import { Tooltip } from '@base-ui/react/tooltip'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { isNotNil } from 'es-toolkit'
 import { match } from 'ts-pattern'
 
 import { defineWidget } from '../helpers'
 
 import { serviceLinkOptions } from './schema'
-import { styles } from './style.css'
+import { gradientStartVar, styles } from './style.css'
 
 export const serviceLink = defineWidget({
 	type: 'service-link',
@@ -56,7 +57,12 @@ export const serviceLink = defineWidget({
 				target="_blank"
 				rel="noopener noreferrer"
 				className={styles.root({ status: statusDot.status })}
-				style={{ gridColumn: `span ${columns ?? 1}` }}
+				style={{
+					...assignInlineVars({
+						[gradientStartVar]: statusDot.status === undefined ? '100%' : '60%',
+					}),
+					gridColumn: `span ${columns ?? 1}`,
+				}}
 			>
 				{isNotNil(icon) && (
 					<img
