@@ -38,8 +38,6 @@ export const styles = {
 				unavailable: {
 					background: `linear-gradient(to right, transparent 60%, oklch(from oklch(0.65 0.22 25) l c h / 0.1)), ${vars.color.panel}`,
 				},
-				pending: {},
-				unknown: {},
 			},
 		},
 	}),

@@ -17,28 +17,34 @@ export const serviceLink = defineWidget({
 			.with({ status: 'pending' }, () => ({
 				dotClass: styles.statusDot({ status: 'pending' }),
 				label: 'Loading...',
+				status: undefined,
 			}))
 			.with({ status: 'error' }, ({ error }) => ({
 				dotClass: styles.statusDot({ status: 'unavailable' }),
 				label: error.message,
+				status: 'unavailable' as const,
 			}))
 			.with({ status: 'success' }, ({ data }) =>
 				match(data)
 					.with({ status: 'available' }, ({ label }) => ({
 						dotClass: styles.statusDot({ status: 'available' }),
 						label,
+						status: 'available' as const,
 					}))
 					.with({ status: 'unavailable' }, ({ label }) => ({
 						dotClass: styles.statusDot({ status: 'unavailable' }),
 						label,
+						status: 'unavailable' as const,
 					}))
 					.with({ status: 'pending' }, ({ label }) => ({
 						dotClass: styles.statusDot({ status: 'pending' }),
 						label,
+						status: undefined,
 					}))
 					.with({ status: 'unknown' }, ({ label }) => ({
 						dotClass: styles.statusDot({ status: 'unknown' }),
 						label,
+						status: undefined,
 					}))
 					.exhaustive(),
 			)
@@ -49,7 +55,7 @@ export const serviceLink = defineWidget({
 				href={url}
 				target="_blank"
 				rel="noopener noreferrer"
-				className={styles.root({ status: statusQuery.data?.status })}
+				className={styles.root({ status: statusDot.status })}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
 				{isNotNil(icon) && (
