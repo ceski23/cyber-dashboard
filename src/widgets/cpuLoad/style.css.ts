@@ -43,6 +43,7 @@ export const styles = {
 		pointerEvents: 'none',
 		zIndex: 0,
 		opacity: 0.4,
+		maskImage: 'linear-gradient(to right, transparent, transparent 140px, black 240px)',
 	}),
 
 	content: style({
