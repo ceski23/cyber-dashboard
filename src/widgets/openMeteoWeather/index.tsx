@@ -3,6 +3,7 @@ import { locationQuery } from '#services/location'
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
+import { format } from 'date-fns'
 import { isNil } from 'es-toolkit'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
@@ -10,50 +11,53 @@ import z from 'zod'
 import { defineWidget } from '../helpers'
 
 import { openMeteoWeatherOptions } from './schema'
+import { styles } from './style.css'
 
 const getWMOLabel = (code: number): string => {
 	switch (code) {
 		case 0:
 			return 'Clear sky'
 		case 1:
+			return 'Mainly clear'
 		case 2:
+			return 'Partly cloudy'
 		case 3:
-			return 'Mainly clear, partly cloudy, and overcast'
+			return 'Overcast'
 		case 45:
 		case 48:
-			return 'Fog and depositing rime fog'
+			return 'Foggy'
 		case 51:
 		case 53:
 		case 55:
-			return 'Drizzle: Light, moderate, and dense intensity'
+			return 'Drizzle'
 		case 56:
 		case 57:
-			return 'Freezing Drizzle: Light and dense intensity'
+			return 'Freezing drizzle'
 		case 61:
 		case 63:
 		case 65:
-			return 'Rain: Slight, moderate and heavy intensity'
+			return 'Rain'
 		case 66:
 		case 67:
-			return 'Freezing Rain: Light and heavy intensity'
+			return 'Freezing rain'
 		case 71:
 		case 73:
 		case 75:
-			return 'Snow fall: Slight, moderate, and heavy intensity'
+			return 'Snow'
 		case 77:
 			return 'Snow grains'
 		case 80:
 		case 81:
 		case 82:
-			return 'Rain showers: Slight, moderate, and violent'
+			return 'Rain showers'
 		case 85:
 		case 86:
-			return 'Snow showers slight and heavy'
+			return 'Snow showers'
 		case 95:
-			return 'Thunderstorm: Slight or moderate'
+			return 'Thunderstorm'
 		case 96:
 		case 99:
-			return 'Thunderstorm with slight and heavy hail'
+			return 'Thunderstorm w/ hail'
 		default:
 			return 'Unknown'
 	}
@@ -142,10 +146,53 @@ export const openMeteoWeather = defineWidget({
 			throw new Error(`Failed to fetch weather data: ${weatherError.message}`)
 		}
 
+		const tempUnit = '°C' // TODO: from config
+
 		return (
-			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
-				<div>Open Meteo Widget</div>
-				<pre>{JSON.stringify(data, null, 2)}</pre>
+			<div
+				className={styles.root}
+				style={{ gridColumn: `span ${columns ?? 1}` }}
+			>
+				<div className={styles.tempBlock}>
+					<span className={styles.temperature}>
+						{isNil(data) ? '—' : `${Math.round(data.temperature)}${tempUnit}`}
+					</span>
+					<span className={styles.condition}>{data?.weatherDescription ?? '—'}</span>
+				</div>
+
+				<div className={styles.infoBlock}>
+					<div className={styles.topRow}>
+						<span className={styles.header}>Weather</span>
+						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
+					</div>
+
+					<div className={styles.metricsRow}>
+						<div className={styles.metricItem}>
+							<span className={styles.metricLabel}>Feels like</span>
+							<span className={styles.metricValue}>
+								{isNil(data) ? '—' : `${Math.round(data.apparentTemperature)}${tempUnit}`}
+							</span>
+						</div>
+						<div className={styles.metricItem}>
+							<span className={styles.metricLabel}>Humidity</span>
+							<span className={styles.metricValue}>
+								{isNil(data) ? '—' : `${Math.round(data.relativeHumidity)} %`}
+							</span>
+						</div>
+						<div className={styles.metricItem}>
+							<span className={styles.metricLabel}>Precipitation</span>
+							<span className={styles.metricValue}>
+								{isNil(data) ? '—' : `${data.precipitation.toFixed(1)} mm`}
+							</span>
+						</div>
+						<div className={styles.metricItem}>
+							<span className={styles.metricLabel}>Pressure</span>
+							<span className={styles.metricValue}>
+								{isNil(data) ? '—' : `${Math.round(data.surfacePressure)} hPa`}
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		)
 	},

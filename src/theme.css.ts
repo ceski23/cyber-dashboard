@@ -81,6 +81,15 @@ export const vars = createGlobalTheme(':root', {
 		panel: 'oklch(0.2103 0.0059 285.89 / 55%)',
 		border: transparentize(colors.white, 0.1),
 		borderSubtle: transparentize(colors.white, 0.05),
+		aqi: {
+			good: 'oklch(0.72 0.18 142)',
+			fair: 'oklch(0.85 0.17 100)',
+			moderate: 'oklch(0.77 0.18 70)',
+			poor: 'oklch(0.70 0.18 45)',
+			veryPoor: 'oklch(0.65 0.22 25)',
+			extremelyPoor: 'oklch(0.60 0.18 300)',
+			unknown: 'oklch(0.5517 0.0138 285.94)',
+		},
 	},
 	spacing: {
 		/** 2px */
