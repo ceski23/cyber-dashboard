@@ -1,12 +1,12 @@
 import { createTypedChart } from '#components/charts'
+import { vars } from '#theme.css'
 import { experimental_streamedQuery, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import { format, fromUnixTime } from 'date-fns'
+import { MemoryStickIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
 import prettyBytes from 'pretty-bytes'
-import { Tooltip } from 'recharts'
 import si from 'systeminformation'
 import z from 'zod'
 
@@ -21,6 +21,8 @@ export type MemoryData = {
 	timestamp: number
 }
 
+const ITEMS_LIMIT = 10
+
 export const streamMemoryData = createServerFn({ method: 'GET' })
 	.inputValidator(
 		z.object({
@@ -29,14 +31,14 @@ export const streamMemoryData = createServerFn({ method: 'GET' })
 	)
 	.handler(async function* ({ data: { interval } }) {
 		const { signal } = getRequest()
-		const cache = new CircularBuffer<MemoryData>(Array, 20)
+		const cache = new CircularBuffer<MemoryData>(Array, ITEMS_LIMIT)
 
 		while (!signal.aborted) {
 			const { used, total } = await si.mem()
 
 			cache.push({
-				used: used,
-				total: total,
+				used,
+				total,
 				timestamp: Date.now(),
 			})
 
@@ -46,10 +48,9 @@ export const streamMemoryData = createServerFn({ method: 'GET' })
 		}
 	})
 
-const TypedChart = createTypedChart<{
-	usage: number
-	timestamp: number
-}>()
+const TypedChart = createTypedChart<{ usage: number; timestamp: number }>()
+
+const initialMemoryData: MemoryData = { used: 0, total: 0, timestamp: Date.now() }
 
 export const memoryUsed = defineWidget({
 	type: 'memory-used',
@@ -62,50 +63,99 @@ export const memoryUsed = defineWidget({
 				reducer: (_, chunk: MemoryData[]) => chunk.filter(Boolean),
 				streamFn: ({ signal }) => streamMemoryData({ signal, data: { interval: refreshInterval } }),
 			}),
+			initialData: [],
+			select: (data: MemoryData[]) => [initialMemoryData, ...data].slice(-ITEMS_LIMIT),
 		})
+
 		const currentUsed = data?.at(-1)?.used ?? 0
 		const currentTotal = data?.at(-1)?.total ?? 0
-		const currentUsagePercent = (currentTotal === 0 ? 0 : currentUsed / currentTotal)
-			.toLocaleString(undefined, { maximumFractionDigits: 0, style: 'percent' })
-			.slice(0, -1)
+		const usageFraction = currentTotal === 0 ? 0 : currentUsed / currentTotal
+		const usagePercent = String(Math.round(usageFraction * 100))
+		const currentAvailable = currentTotal - currentUsed
+
+		const statusConfig = (() => {
+			if (usageFraction >= 0.9) return { status: 'danger' as const, color: vars.color.red[500] }
+			if (usageFraction >= 0.7) return { status: 'warning' as const, color: vars.color.amber[500] }
+			return { status: 'normal' as const, color: vars.color.neutral[500] }
+		})()
 
 		return (
-			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
-				<p>
-					Memory usage:{' '}
+			<div
+				className={styles.root({ status: statusConfig.status })}
+				style={{ gridColumn: `span ${columns ?? 1}` }}
+			>
+				{showGraph && (
+					<div className={styles.chartOverlay}>
+						<TypedChart.AreaChart
+							width={0}
+							height={0}
+							style={{ width: '100%', height: '100%' }}
+							responsive
+							margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
+							data={data.map(item => ({
+								usage: item.total === 0 ? 0 : (item.used / item.total) * 100,
+								timestamp: item.timestamp,
+							}))}
+						>
+							<defs>
+								<linearGradient
+									id="colorMemory"
+									x1="0"
+									y1="0"
+									x2="0"
+									y2="1"
+								>
+									<stop
+										offset="5%"
+										stopColor={statusConfig.color}
+										stopOpacity={0.3}
+									/>
+									<stop
+										offset="95%"
+										stopColor={statusConfig.color}
+										stopOpacity={0}
+									/>
+								</linearGradient>
+							</defs>
+							{data.length > 1 && (
+								<TypedChart.Area
+									type="monotone"
+									dataKey="usage"
+									stroke={statusConfig.color}
+									strokeWidth={2}
+									fillOpacity={1}
+									fill="url(#colorMemory)"
+									isAnimationActive
+								/>
+							)}
+							<TypedChart.YAxis
+								type="number"
+								domain={[0, 100]}
+								hide
+							/>
+						</TypedChart.AreaChart>
+					</div>
+				)}
+				<div className={styles.content}>
+					<div className={styles.header}>
+						<div className={styles.iconRow}>
+							<div className={styles.iconBadge}>
+								<MemoryStickIcon size={16} />
+							</div>
+							<span className={styles.label}>Memory</span>
+						</div>
+						<span
+							className={styles.meta}
+							style={{ visibility: currentTotal > 0 ? 'visible' : 'hidden' }}
+						>
+							{prettyBytes(currentAvailable, { binary: true })} free
+						</span>
+					</div>
 					<span
 						className={styles.value}
-						style={assignInlineVars({ [memoryVar]: currentUsagePercent })}
+						style={assignInlineVars({ [memoryVar]: usagePercent })}
 					/>
-					({prettyBytes(currentUsed)} / {prettyBytes(currentTotal)})
-				</p>
-				{showGraph && (
-					<TypedChart.LineChart
-						style={{ width: '100%', aspectRatio: 1.618, maxWidth: 600 }}
-						responsive
-						data={data?.map(item => ({
-							usage: (item.used / item.total) * 100,
-							timestamp: item.timestamp,
-						}))}
-					>
-						<TypedChart.Line
-							dataKey="usage"
-							type="monotone"
-						/>
-						<TypedChart.YAxis
-							type="number"
-							domain={[0, 100]}
-							unit="%"
-						/>
-						<TypedChart.XAxis
-							dataKey="timestamp"
-							type="number"
-							tickFormatter={tick => format(fromUnixTime(tick / 1000), 'HH:mm:ss')}
-							domain={['dataMin', 'dataMax']}
-						/>
-						<Tooltip />
-					</TypedChart.LineChart>
-				)}
+				</div>
 			</div>
 		)
 	},
