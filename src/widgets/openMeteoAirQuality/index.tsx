@@ -1,8 +1,10 @@
 import { configMiddleware } from '#lib/config/middleware'
 import { locationQuery } from '#services/location'
+import type { vars } from '#theme.css'
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
+import { format } from 'date-fns'
 import { isNil } from 'es-toolkit'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
@@ -10,6 +12,7 @@ import z from 'zod'
 import { defineWidget } from '../helpers'
 
 import { openMeteoAirQualityOptions } from './schema'
+import { styles } from './style.css'
 
 const fetchCurrentWeather = createServerFn({ method: 'GET' })
 	.middleware([configMiddleware])
@@ -63,6 +66,18 @@ const fetchCurrentWeather = createServerFn({ method: 'GET' })
 		},
 	)
 
+type AqiTier = typeof vars.color.aqi extends Record<infer Tier, string> ? Tier : never
+
+const getAqiInfo = (aqi?: number): { label: string; tier: AqiTier } => {
+	if (aqi === undefined) return { label: 'Unknown', tier: 'unknown' }
+	if (aqi <= 20) return { label: 'Good', tier: 'good' }
+	if (aqi <= 40) return { label: 'Fair', tier: 'fair' }
+	if (aqi <= 60) return { label: 'Moderate', tier: 'moderate' }
+	if (aqi <= 80) return { label: 'Poor', tier: 'poor' }
+	if (aqi <= 100) return { label: 'Very Poor', tier: 'veryPoor' }
+	return { label: 'Extremely Poor', tier: 'extremelyPoor' }
+}
+
 export const openMeteoAirQuality = defineWidget({
 	type: 'open-meteo-air-quality',
 	optionsSchema: openMeteoAirQualityOptions,
@@ -83,10 +98,41 @@ export const openMeteoAirQuality = defineWidget({
 			throw new Error(`Failed to fetch weather data: ${weatherError.message}`)
 		}
 
+		const aqiInfo = getAqiInfo(data?.europeanAqi)
+
 		return (
-			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
-				<div>Open Meteo Air Quality Widget</div>
-				<pre>{JSON.stringify(data, null, 2)}</pre>
+			<div
+				className={styles.root}
+				style={{ gridColumn: `span ${columns ?? 1}` }}
+			>
+				<div className={styles.scoreBlock({ tier: aqiInfo.tier })}>
+					<span className={styles.aqiScore}>
+						{isNil(data?.europeanAqi) ? '—' : Math.round(data.europeanAqi)}
+					</span>
+					<span className={styles.aqiLabel}>{aqiInfo.label}</span>
+				</div>
+
+				<div className={styles.infoBlock}>
+					<div className={styles.topRow}>
+						<span className={styles.header}>Air Quality</span>
+						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
+					</div>
+
+					<div className={styles.metricsRow}>
+						<div className={styles.metricItem}>
+							<span className={styles.metricLabel}>PM2.5</span>
+							<span className={styles.metricValue}>
+								{isNil(data) ? '—' : `${data.pm25.toFixed(1)} µg/m³`}
+							</span>
+						</div>
+						<div className={styles.metricItem}>
+							<span className={styles.metricLabel}>PM10</span>
+							<span className={styles.metricValue}>
+								{isNil(data) ? '—' : `${data.pm10.toFixed(1)} µg/m³`}
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		)
 	},
