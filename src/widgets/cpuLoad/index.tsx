@@ -3,9 +3,8 @@ import { experimental_streamedQuery, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import { format, fromUnixTime } from 'date-fns'
+import { CpuIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
-import { CartesianGrid, Tooltip } from 'recharts'
 import si from 'systeminformation'
 import z from 'zod'
 
@@ -16,6 +15,7 @@ import { loadVar, styles } from './style.css'
 
 export type CpuData = {
 	usage: number
+	speed: number
 	timestamp: number
 }
 
@@ -33,10 +33,11 @@ export const streamCpuData = createServerFn({ method: 'GET' })
 		await Bun.sleep(1000)
 
 		while (!signal.aborted) {
-			const { currentLoad } = await si.currentLoad()
+			const [{ currentLoad }, { avg: speed }] = await Promise.all([si.currentLoad(), si.cpuCurrentSpeed()])
 
 			cache.push({
 				usage: Math.min(currentLoad, 1),
+				speed,
 				timestamp: Date.now(),
 			})
 
@@ -46,7 +47,14 @@ export const streamCpuData = createServerFn({ method: 'GET' })
 		}
 	})
 
+const PRIMARY_COLOR = '#3b82f6'
 const TypedChart = createTypedChart<CpuData>()
+
+const initialCpuData: CpuData = {
+	usage: 1,
+	speed: 0,
+	timestamp: Date.now(),
+}
 
 export const cpuLoad = defineWidget({
 	type: 'cpu-load',
@@ -55,86 +63,95 @@ export const cpuLoad = defineWidget({
 		const { data } = useQuery({
 			queryKey: ['cpuData', { refreshInterval }] as const,
 			queryFn: experimental_streamedQuery({
-				initialValue: new Array<CpuData>(),
+				initialValue: [initialCpuData],
 				reducer: (_, chunk: CpuData[]) => chunk.filter(Boolean),
 				streamFn: ({ signal }) => streamCpuData({ signal, data: { interval: refreshInterval } }),
 			}),
+			initialData: [initialCpuData],
+			select: data => [initialCpuData, ...data],
 		})
 		const currentLoad = data?.at(-1)?.usage ?? 0
 		const currentLoadPercent = currentLoad
 			.toLocaleString(undefined, { maximumFractionDigits: 0, style: 'percent' })
 			.slice(0, -1)
+		const currentSpeed = data?.at(-1)?.speed ?? 0
 
 		return (
-			<div style={{ gridColumn: `span ${columns ?? 1}` }}>
-				<p>
-					CPU load:{' '}
+			<div
+				className={styles.root}
+				style={{ gridColumn: `span ${columns ?? 1}` }}
+			>
+				{showGraph && (
+					<div className={styles.chartOverlay}>
+						<TypedChart.AreaChart
+							width={0}
+							height={0}
+							style={{ width: '100%', height: '100%' }}
+							responsive
+							margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+							data={data?.map(item => ({
+								usage: item.usage * 100,
+								speed: item.speed,
+								timestamp: item.timestamp,
+							}))}
+						>
+							<defs>
+								<linearGradient
+									id="colorCpu"
+									x1="0"
+									y1="0"
+									x2="0"
+									y2="1"
+								>
+									<stop
+										offset="5%"
+										stopColor={PRIMARY_COLOR}
+										stopOpacity={0.3}
+									/>
+									<stop
+										offset="95%"
+										stopColor={PRIMARY_COLOR}
+										stopOpacity={0}
+									/>
+								</linearGradient>
+							</defs>
+							<TypedChart.Area
+								type="monotone"
+								dataKey="usage"
+								stroke={PRIMARY_COLOR}
+								strokeWidth={2}
+								fillOpacity={1}
+								fill="url(#colorCpu)"
+								isAnimationActive
+							/>
+							<TypedChart.YAxis
+								type="number"
+								domain={[0, 100]}
+								hide
+							/>
+						</TypedChart.AreaChart>
+					</div>
+				)}
+				<div className={styles.content}>
+					<div className={styles.header}>
+						<div className={styles.iconRow}>
+							<div className={styles.iconBadge}>
+								<CpuIcon size={16} />
+							</div>
+							<span className={styles.label}>CPU Load</span>
+						</div>
+						<span
+							className={styles.meta}
+							style={{ visibility: currentSpeed > 0 ? 'visible' : 'hidden' }}
+						>
+							{currentSpeed.toLocaleString(undefined, { maximumFractionDigits: 2 })} GHz
+						</span>
+					</div>
 					<span
 						className={styles.value}
 						style={assignInlineVars({ [loadVar]: currentLoadPercent })}
 					/>
-				</p>
-				{showGraph && (
-					<TypedChart.AreaChart
-						style={{ width: '100%', aspectRatio: 1.618, maxWidth: 600 }}
-						responsive
-						data={data?.map(item => ({
-							usage: item.usage * 100,
-							timestamp: item.timestamp,
-						}))}
-					>
-						<defs>
-							<linearGradient
-								id="colorCpu"
-								x1="0"
-								y1="0"
-								x2="0"
-								y2="1"
-							>
-								<stop
-									offset="5%"
-									stopColor="#3b82f6"
-									stopOpacity={0.3}
-								/>
-								<stop
-									offset="95%"
-									stopColor="#3b82f6"
-									stopOpacity={0}
-								/>
-							</linearGradient>
-						</defs>
-						<CartesianGrid
-							strokeDasharray="3 3"
-							stroke="#27272a"
-							vertical={false}
-						/>
-						<TypedChart.Area
-							type="monotone"
-							dataKey="usage"
-							stroke="#3b82f6"
-							strokeWidth={2}
-							fillOpacity={1}
-							fill="url(#colorCpu)"
-						/>
-						<TypedChart.YAxis
-							type="number"
-							domain={[0, 100]}
-							unit="%"
-							tickLine={false}
-							axisLine={false}
-						/>
-						<TypedChart.XAxis
-							dataKey="timestamp"
-							type="number"
-							tickFormatter={tick => format(fromUnixTime(tick / 1000), 'HH:mm:ss')}
-							domain={['dataMin', 'dataMax']}
-							stroke="#52525b"
-							tickLine={false}
-							axisLine={false}
-						/>
-						<Tooltip />
-					</TypedChart.AreaChart>
-				)}
+				</div>
 			</div>
 		)
 	},
