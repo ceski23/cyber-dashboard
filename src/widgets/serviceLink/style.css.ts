@@ -9,7 +9,7 @@ const pulse = keyframes({
 	'100%': { opacity: 0.4 },
 })
 
-export const gradientStartVar = createVar({
+const gradientStartVar = createVar({
 	syntax: '<percentage>',
 	initialValue: '100%',
 	inherits: false,
@@ -42,9 +42,11 @@ export const styles = {
 			status: {
 				available: {
 					background: `linear-gradient(to right, transparent ${gradientStartVar}, oklch(from oklch(0.72 0.18 142) l c h / 0.1)), ${vars.color.panel}`,
+					[getVarName(gradientStartVar)]: '60%',
 				},
 				unavailable: {
 					background: `linear-gradient(to right, transparent ${gradientStartVar}, oklch(from oklch(0.65 0.22 25) l c h / 0.1)), ${vars.color.panel}`,
+					[getVarName(gradientStartVar)]: '60%',
 				},
 			},
 		},
