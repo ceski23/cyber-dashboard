@@ -11,61 +11,25 @@ export const media = {
 
 const colors = createGlobalTheme(':root', {
 	'@layer': 'theme.colors',
-	// indigo: {
-	// 	50: 'oklch(96.2% 0.018 272.314)',
-	// 	100: 'oklch(93% 0.034 272.788)',
-	// 	200: 'oklch(87% 0.065 274.039)',
-	// 	300: 'oklch(78.5% 0.115 274.713)',
-	// 	400: 'oklch(67.3% 0.182 276.935)',
-	// 	500: 'oklch(58.5% 0.233 277.117)',
-	// 	600: 'oklch(51.1% 0.262 276.966)',
-	// 	700: 'oklch(45.7% 0.24 277.023)',
-	// 	800: 'oklch(39.8% 0.195 277.366)',
-	// 	900: 'oklch(35.9% 0.144 278.697)',
-	// 	950: 'oklch(25.7% 0.09 281.288)',
-	// },
-	// neutral: {
-	// 	50: 'oklch(98.5% 0 0)',
-	// 	100: 'oklch(97% 0 0)',
-	// 	200: 'oklch(92.2% 0 0)',
-	// 	300: 'oklch(87% 0 0)',
-	// 	400: 'oklch(70.8% 0 0)',
-	// 	500: 'oklch(55.6% 0 0)',
-	// 	600: 'oklch(43.9% 0 0)',
-	// 	700: 'oklch(37.1% 0 0)',
-	// 	800: 'oklch(26.9% 0 0)',
-	// 	900: 'oklch(20.5% 0 0)',
-	// 	950: 'oklch(14.5% 0 0)',
-	// },
-	// zinc: {
-	// 	50: 'oklch(98.5% 0 0)',
-	// 	100: 'oklch(96.7% 0.001 286.375)',
-	// 	200: 'oklch(92% 0.004 286.32)',
-	// 	300: 'oklch(87.1% 0.006 286.286)',
-	// 	400: 'oklch(70.5% 0.015 286.067)',
-	// 	500: 'oklch(55.2% 0.016 285.938)',
-	// 	600: 'oklch(44.2% 0.017 285.786)',
-	// 	700: 'oklch(37% 0.013 285.805)',
-	// 	800: 'oklch(27.4% 0.006 286.033)',
-	// 	900: 'oklch(21% 0.006 285.885)',
-	// 	950: 'oklch(14.1% 0.005 285.823)',
-	// },
-	// red: {
-	// 	50: 'oklch(97.1% 0.013 17.38)',
-	// 	100: 'oklch(93.6% 0.032 17.717)',
-	// 	200: 'oklch(88.5% 0.062 18.334)',
-	// 	300: 'oklch(80.8% 0.114 19.571)',
-	// 	400: 'oklch(70.4% 0.191 22.216)',
-	// 	500: 'oklch(63.7% 0.237 25.331)',
-	// 	600: 'oklch(57.7% 0.245 27.325)',
-	// 	700: 'oklch(50.5% 0.213 27.518)',
-	// 	800: 'oklch(44.4% 0.177 26.899)',
-	// 	900: 'oklch(39.6% 0.141 25.723)',
-	// 	950: 'oklch(25.8% 0.092 26.042)',
-	// },
+	neutral: {
+		500: 'oklch(55.6% 0 0)',
+	},
+	red: {
+		400: 'oklch(70.4% 0.191 22.216)',
+		500: 'oklch(63.7% 0.237 25.331)',
+	},
+	amber: {
+		400: 'oklch(82.8% 0.189 84.429)',
+		500: 'oklch(76.9% 0.188 70.08)',
+	},
 	black: 'oklch(0% 0 0)',
 	white: 'oklch(100% 0 0)',
 	transparent: 'transparent',
+})
+
+const spacing = createGlobalTheme(':root', {
+	'@layer': 'theme.spacing',
+	base: '0.25rem',
 })
 
 export const vars = createGlobalTheme(':root', {
@@ -93,45 +57,45 @@ export const vars = createGlobalTheme(':root', {
 	},
 	spacing: {
 		/** 2px */
-		0.5: '0.125rem',
+		0.5: `calc(${spacing.base} * 0.5)`,
 		/** 4px */
-		1: '0.25rem',
+		1: `calc(${spacing.base} * 1)`,
 		/** 6px */
-		1.5: '0.375rem',
+		1.5: `calc(${spacing.base} * 1.5)`,
 		/** 8px */
-		2: '0.5rem',
+		2: `calc(${spacing.base} * 2)`,
 		/** 12px */
-		3: '0.75rem',
+		3: `calc(${spacing.base} * 3)`,
 		/** 16px */
-		4: '1rem',
+		4: `calc(${spacing.base} * 4)`,
 		/** 20px */
-		5: '1.25rem',
+		5: `calc(${spacing.base} * 5)`,
 		/** 24px */
-		6: '1.5rem',
+		6: `calc(${spacing.base} * 6)`,
 		/** 32px */
-		8: '2rem',
+		8: `calc(${spacing.base} * 8)`,
 		/** 40px */
-		10: '2.5rem',
+		10: `calc(${spacing.base} * 10)`,
 		/** 48px */
-		12: '3rem',
+		12: `calc(${spacing.base} * 12)`,
 		/** 64px */
-		16: '4rem',
+		16: `calc(${spacing.base} * 16)`,
 		/** 72px */
-		18: '4.5rem',
+		18: `calc(${spacing.base} * 18)`,
 		/** 80px */
-		20: '5rem',
+		20: `calc(${spacing.base} * 20)`,
 		/** 96px */
-		24: '6rem',
+		24: `calc(${spacing.base} * 24)`,
 		/** 128px */
-		32: '8rem',
+		32: `calc(${spacing.base} * 32)`,
 		/** 160px */
-		40: '10rem',
+		40: `calc(${spacing.base} * 40)`,
 		/** 192px */
-		48: '12rem',
+		48: `calc(${spacing.base} * 48)`,
 		/** 224px */
-		56: '14rem',
+		56: `calc(${spacing.base} * 56)`,
 		/** 256px */
-		64: '16rem',
+		64: `calc(${spacing.base} * 64)`,
 	},
 	text: {
 		/** 10px */
