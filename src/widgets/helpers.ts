@@ -1,3 +1,4 @@
+import type { QueryClient } from '@tanstack/react-query'
 import z from 'zod'
 
 export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> = {
@@ -10,6 +11,7 @@ export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> 
 		url: string
 		icon?: string
 	}>
+	loader?: (queryClient: QueryClient, options: z.infer<TSchema['shape']['options']>) => Promise<void>
 }
 
 export const defineWidget = <const TType extends string, TSchema extends z.ZodObject<{ type: z.ZodLiteral<TType> }>>({
@@ -17,11 +19,13 @@ export const defineWidget = <const TType extends string, TSchema extends z.ZodOb
 	optionsSchema,
 	type,
 	provideLinks,
+	loader,
 }: WidgetDefinition<TType, TSchema>) => ({
 	type,
 	Component,
 	schema: optionsSchema,
 	provideLinks,
+	loader,
 })
 
 export const defineWidgetOptions = <const TType extends string, TSchema extends z.ZodObject>(

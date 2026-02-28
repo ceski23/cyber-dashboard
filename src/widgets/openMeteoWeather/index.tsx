@@ -126,17 +126,26 @@ const fetchCurrentWeather = createServerFn({ method: 'GET' })
 		},
 	)
 
+const weatherDataQuery = (locationData?: { latitude: number; longitude: number }) =>
+	queryOptions({
+		queryKey: ['openMeteo', 'currentWeather', locationData],
+		queryFn: isNil(locationData)
+			? skipToken
+			: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
+	})
+
 export const openMeteoWeather = defineWidget({
 	type: 'open-meteo-weather',
 	optionsSchema: openMeteoWeatherOptions,
+	loader: async (queryClient, { location }) => {
+		if (location === 'auto' && typeof window === 'undefined') return
+
+		const locationData = await queryClient.ensureQueryData(locationQuery(location))
+		await queryClient.prefetchQuery(weatherDataQuery(locationData))
+	},
 	Component: ({ options: { location }, columns }) => {
 		const { data: locationData, error: locationError } = useQuery(locationQuery(location))
-		const { data, error: weatherError } = useQuery({
-			queryKey: ['openMeteo', 'currentWeather', locationData],
-			queryFn: isNil(locationData)
-				? skipToken
-				: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
-		})
+		const { data, error: weatherError } = useQuery(weatherDataQuery(locationData))
 
 		if (locationError) {
 			throw new Error(`Failed to determine location: ${locationError.message}`)

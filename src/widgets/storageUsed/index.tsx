@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { HardDriveIcon } from 'lucide-react'
@@ -36,15 +36,20 @@ export const fetchStorageData = createServerFn({ method: 'GET' })
 		}
 	})
 
+export const storageDataQuery = (drive: string) =>
+	queryOptions({
+		queryKey: ['storageData', { drive }] as const,
+		queryFn: () => fetchStorageData({ data: { drive } }),
+	})
+
 export const storageUsed = defineWidget({
 	type: 'storage-used',
 	optionsSchema: storageUsedOptions,
+	loader: async (queryClient, { drive }) => {
+		await queryClient.prefetchQuery(storageDataQuery(drive))
+	},
 	Component: ({ options: { drive }, columns }) => {
-		const storageQuery = useQuery({
-			queryKey: ['storageData', { drive }] as const,
-			queryFn: () => fetchStorageData({ data: { drive } }),
-		})
-
+		const storageQuery = useQuery(storageDataQuery(drive))
 		const usageFraction = storageQuery.data ? storageQuery.data.usage / storageQuery.data.size : 0
 		const usagePercent = String(Math.round(usageFraction * 100))
 		const totalSize = storageQuery.data?.size ?? 0

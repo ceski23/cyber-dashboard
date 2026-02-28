@@ -1,6 +1,7 @@
 import { Widget } from '#components/widget'
 import { authMiddleware } from '#lib/auth/middleware'
 import { configMiddleware } from '#lib/config/middleware'
+import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { isNotNil } from 'es-toolkit'
@@ -65,6 +66,24 @@ export const Route = createFileRoute('/_layout/')({
 	server: {
 		middleware: [authMiddleware],
 	},
-	loader: async () => await fetchData(),
+	loader: async ({ context }) => {
+		const { widgets } = await fetchData()
+		const prefetchPromises = widgets
+			.flatMap(widgetOrGroup => {
+				const widgetList = 'widgets' in widgetOrGroup ? widgetOrGroup.widgets : [widgetOrGroup]
+				return widgetList.flatMap(widget => {
+					const widgetDef = widgetsDefs[widget.type]
+					// @ts-expect-error should be correct based on the loader definition in the widget definitions.
+					return widgetDef.loader?.(context.queryClient, widget.options)
+				})
+			})
+			.filter(isNotNil)
+
+		await Promise.all(prefetchPromises)
+
+		return {
+			widgets,
+		}
+	},
 	component: DashboardPage,
 })

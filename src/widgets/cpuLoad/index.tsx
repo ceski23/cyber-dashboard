@@ -1,6 +1,6 @@
 import { createTypedChart } from '#components/charts'
 import { vars } from '#theme.css'
-import { experimental_streamedQuery, useQuery } from '@tanstack/react-query'
+import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
@@ -58,20 +58,26 @@ const initialCpuData: CpuData = {
 	timestamp: Date.now(),
 }
 
+const streamCpuDataQuery = (refreshInterval: number) =>
+	queryOptions({
+		queryKey: ['cpuData', { refreshInterval }] as const,
+		queryFn: experimental_streamedQuery({
+			initialValue: [initialCpuData],
+			reducer: (_, chunk: CpuData[]) => chunk.filter(Boolean),
+			streamFn: ({ signal }) => streamCpuData({ signal, data: { interval: refreshInterval } }),
+		}),
+		initialData: [],
+		select: (data: CpuData[]) => [initialCpuData, ...data].slice(-ITEMS_LIMIT),
+	})
+
 export const cpuLoad = defineWidget({
 	type: 'cpu-load',
 	optionsSchema: cpuLoadOptions,
+	loader: async (queryClient, { refreshInterval }) => {
+		await queryClient.ensureQueryData(streamCpuDataQuery(refreshInterval))
+	},
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
-		const { data } = useQuery({
-			queryKey: ['cpuData', { refreshInterval }] as const,
-			queryFn: experimental_streamedQuery({
-				initialValue: [initialCpuData],
-				reducer: (_, chunk: CpuData[]) => chunk.filter(Boolean),
-				streamFn: ({ signal }) => streamCpuData({ signal, data: { interval: refreshInterval } }),
-			}),
-			initialData: [],
-			select: (data: CpuData[]) => [initialCpuData, ...data].slice(-ITEMS_LIMIT),
-		})
+		const { data } = useQuery(streamCpuDataQuery(refreshInterval))
 		const currentLoad = data?.at(-1)?.usage ?? 0
 		const currentLoadPercent = currentLoad
 			.toLocaleString(undefined, { maximumFractionDigits: 0, style: 'percent' })

@@ -1,6 +1,6 @@
 import { createTypedChart } from '#components/charts'
 import { vars } from '#theme.css'
-import { experimental_streamedQuery, useQuery } from '@tanstack/react-query'
+import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
@@ -52,21 +52,26 @@ const TypedChart = createTypedChart<{ usage: number; timestamp: number }>()
 
 const initialMemoryData: MemoryData = { used: 0, total: 0, timestamp: Date.now() }
 
+const streamMemoryDataQuery = (refreshInterval: number) =>
+	queryOptions({
+		queryKey: ['memoryData', { refreshInterval }] as const,
+		queryFn: experimental_streamedQuery({
+			initialValue: new Array<MemoryData>(),
+			reducer: (_, chunk: MemoryData[]) => chunk.filter(Boolean),
+			streamFn: ({ signal }) => streamMemoryData({ signal, data: { interval: refreshInterval } }),
+		}),
+		initialData: [],
+		select: (data: MemoryData[]) => [initialMemoryData, ...data].slice(-ITEMS_LIMIT),
+	})
+
 export const memoryUsed = defineWidget({
 	type: 'memory-used',
 	optionsSchema: memoryUsedOptions,
+	loader: async (queryClient, { refreshInterval }) => {
+		await queryClient.ensureQueryData(streamMemoryDataQuery(refreshInterval))
+	},
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
-		const { data } = useQuery({
-			queryKey: ['memoryData', { refreshInterval }] as const,
-			queryFn: experimental_streamedQuery({
-				initialValue: new Array<MemoryData>(),
-				reducer: (_, chunk: MemoryData[]) => chunk.filter(Boolean),
-				streamFn: ({ signal }) => streamMemoryData({ signal, data: { interval: refreshInterval } }),
-			}),
-			initialData: [],
-			select: (data: MemoryData[]) => [initialMemoryData, ...data].slice(-ITEMS_LIMIT),
-		})
-
+		const { data } = useQuery(streamMemoryDataQuery(refreshInterval))
 		const currentUsed = data?.at(-1)?.used ?? 0
 		const currentTotal = data?.at(-1)?.total ?? 0
 		const usageFraction = currentTotal === 0 ? 0 : currentUsed / currentTotal

@@ -1,7 +1,7 @@
 import { configMiddleware } from '#lib/config/middleware'
 import { locationQuery } from '#services/location'
 import type { vars } from '#theme.css'
-import { skipToken, useQuery } from '@tanstack/react-query'
+import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { format } from 'date-fns'
@@ -78,17 +78,26 @@ const getAqiInfo = (aqi?: number): { label: string; tier: AqiTier } => {
 	return { label: 'Extremely Poor', tier: 'extremelyPoor' }
 }
 
+const airQualityDataQuery = (locationData?: { latitude: number; longitude: number }) =>
+	queryOptions({
+		queryKey: ['openMeteo', 'airQuality', locationData],
+		queryFn: isNil(locationData)
+			? skipToken
+			: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
+	})
+
 export const openMeteoAirQuality = defineWidget({
 	type: 'open-meteo-air-quality',
 	optionsSchema: openMeteoAirQualityOptions,
+	loader: async (queryClient, { location }) => {
+		if (location === 'auto' && typeof window === 'undefined') return
+
+		const locationData = await queryClient.ensureQueryData(locationQuery(location))
+		await queryClient.prefetchQuery(airQualityDataQuery(locationData))
+	},
 	Component: ({ options: { location }, columns }) => {
 		const { data: locationData, error: locationError } = useQuery(locationQuery(location))
-		const { data, error: weatherError } = useQuery({
-			queryKey: ['openMeteo', 'airQuality', locationData],
-			queryFn: isNil(locationData)
-				? skipToken
-				: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
-		})
+		const { data, error: weatherError } = useQuery(airQualityDataQuery(locationData))
 
 		if (locationError) {
 			throw new Error(`Failed to determine location: ${locationError.message}`)

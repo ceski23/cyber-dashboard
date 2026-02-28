@@ -1,12 +1,13 @@
 import { configMiddleware } from '#lib/config/middleware'
+import { experimental_streamedQuery, queryOptions, skipToken } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
+import { isNil } from 'es-toolkit'
 import { z } from 'zod'
 
 import { streamDockerStatus } from './docker'
 import { streamGatusStatus } from './gatus'
 import { streamPingStatus } from './ping'
-export { useServiceStatus } from './useServiceStatus'
 
 export type ServiceStatus = {
 	service: string
@@ -43,4 +44,26 @@ export const streamStatus = createServerFn({ method: 'GET' })
 				providerOptions satisfies never
 				throw new Error(`Unsupported status provider type`)
 		}
+	})
+
+export const serviceStatusQuery = (provider?: string, serviceId?: string) =>
+	queryOptions({
+		queryKey: ['servicesStatus', provider],
+		queryFn:
+			isNil(provider) || isNil(serviceId)
+				? skipToken
+				: experimental_streamedQuery({
+						initialValue: [] as ServiceStatus[],
+						reducer: (_prev, next: ServiceStatus[]) => next,
+						streamFn: ({ signal }) => streamStatus({ data: { provider }, signal }),
+					}),
+		select: (services: ServiceStatus[]) => {
+			const service = services.find(({ service }) => service === serviceId)
+
+			if (!service) {
+				throw new Error(`Service with id "${serviceId}" not found in provider "${provider}"`)
+			}
+
+			return service
+		},
 	})

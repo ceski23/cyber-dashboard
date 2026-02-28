@@ -1,5 +1,6 @@
-import { useServiceStatus } from '#services/status'
+import { serviceStatusQuery } from '#services/status'
 import { Tooltip } from '@base-ui/react/tooltip'
+import { useQuery } from '@tanstack/react-query'
 import { isNotNil } from 'es-toolkit'
 import { match } from 'ts-pattern'
 
@@ -11,8 +12,13 @@ import { styles } from './style.css'
 export const serviceLink = defineWidget({
 	type: 'service-link',
 	optionsSchema: serviceLinkOptions,
+	loader: async (queryClient, { status }) => {
+		if (isNotNil(status)) {
+			void queryClient.prefetchQuery(serviceStatusQuery(status.provider, status.service))
+		}
+	},
 	Component: ({ options: { status, url, icon, name, description }, columns }) => {
-		const statusQuery = useServiceStatus(status?.provider, status?.service)
+		const statusQuery = useQuery(serviceStatusQuery(status?.provider, status?.service))
 		const statusDot = match(statusQuery)
 			.with({ status: 'pending' }, () => ({
 				dotClass: styles.statusDot({ status: 'pending' }),
