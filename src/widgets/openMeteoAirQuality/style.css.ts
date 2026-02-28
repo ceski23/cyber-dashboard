@@ -5,106 +5,168 @@ import { recipe } from '@vanilla-extract/recipes'
 import { mapValues } from 'es-toolkit'
 
 export const styles = {
-	root: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'stretch',
-		gap: 0,
-		borderRadius: vars.radius.xl,
-		border: `1px solid ${vars.color.borderSubtle}`,
-		background: vars.color.panel,
-		color: vars.color.foreground,
-		overflow: 'hidden',
-	}),
-
-	scoreBlock: recipe({
+	root: recipe({
 		base: {
+			borderRadius: vars.radius['2xl'],
+			border: `1px solid ${transparentize(vars.color.white, 0.08)}`,
+			background: 'oklch(0.22 0.008 286 / 60%)',
+			backdropFilter: 'blur(20px)',
+			WebkitBackdropFilter: 'blur(20px)',
+			boxShadow: `inset 0 1px 0 ${transparentize(vars.color.white, 0.07)}, 0 8px 32px ${transparentize(vars.color.black, 0.4)}`,
+			color: vars.color.foreground,
+			overflow: 'hidden',
+			padding: vars.spacing[5],
 			display: 'flex',
 			flexDirection: 'column',
-			alignItems: 'center',
-			justifyContent: 'center',
-			gap: vars.spacing['0.5'],
-			paddingInline: vars.spacing[5],
-			paddingBlock: vars.spacing[4],
-			borderRight: `1px solid ${vars.color.borderSubtle}`,
-			flexShrink: 0,
+			gap: vars.spacing[4],
+			boxSizing: 'border-box',
+			position: 'relative',
+		},
+		variants: { tier: mapValues(vars.color.aqi, () => ({})) },
+	}),
+
+	glow: recipe({
+		base: {
+			position: 'absolute',
+			top: 0,
+			right: 0,
+			width: '100%',
+			height: '100%',
+			pointerEvents: 'none',
+			zIndex: 0,
+			transition: 'background 0.4s ease',
 		},
 		variants: {
 			tier: mapValues(vars.color.aqi, color => ({
-				color: color,
-				background: transparentize(color, 0.08),
+				background: `radial-gradient(ellipse at 0% 0%, ${transparentize(color, 0.2)} 0%, transparent 70%)`,
 			})),
 		},
 	}),
 
-	aqiScore: style({
-		fontSize: vars.text['3xl'],
-		fontWeight: 700,
-		lineHeight: 1,
-		fontVariantNumeric: 'tabular-nums',
-	}),
-
-	aqiLabel: style({
-		fontSize: vars.text.xs,
-		fontWeight: 500,
-	}),
-
-	infoBlock: style({
+	content: style({
+		position: 'relative',
 		display: 'flex',
 		flexDirection: 'column',
-		justifyContent: 'space-between',
-		gap: vars.spacing[3],
-		paddingInline: vars.spacing[4],
-		paddingBlock: vars.spacing[3],
-		flex: 1,
-		minWidth: 0,
+		gap: vars.spacing[4],
 	}),
 
 	topRow: style({
 		display: 'flex',
-		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		gap: vars.spacing[2],
 	}),
 
-	header: style({
-		fontSize: vars.text.xs,
-		fontWeight: 600,
+	widgetLabel: style({
+		fontSize: vars.text.xxs,
+		fontWeight: 700,
+		letterSpacing: '0.12em',
 		textTransform: 'uppercase',
-		letterSpacing: '0.08em',
 		color: vars.color.foregroundMuted,
 	}),
 
 	timestamp: style({
-		fontSize: vars.text.xs,
+		fontSize: vars.text.xxs,
 		color: vars.color.foregroundMuted,
+		letterSpacing: '0.03em',
 	}),
 
-	metricsRow: style({
+	heroRow: style({
 		display: 'flex',
-		flexDirection: 'row',
-		gap: vars.spacing[5],
+		alignItems: 'flex-end',
+		justifyContent: 'space-between',
+		gap: vars.spacing[4],
 	}),
 
-	metricItem: style({
+	aqiBlock: style({
+		display: 'flex',
+		flexDirection: 'column',
+		gap: vars.spacing[1],
+	}),
+
+	aqiScore: recipe({
+		base: {
+			fontSize: vars.text['5xl'],
+			fontWeight: 800,
+			lineHeight: 1,
+			letterSpacing: '-0.04em',
+			fontVariantNumeric: 'tabular-nums',
+			transition: 'color 0.4s ease',
+		},
+		variants: {
+			tier: mapValues(vars.color.aqi, color => ({ color })),
+		},
+	}),
+
+	aqiLabel: style({
+		fontSize: vars.text.sm,
+		color: vars.color.foregroundMuted,
+		fontWeight: 400,
+		letterSpacing: '0.01em',
+	}),
+
+	pm25Chip: style({
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'flex-end',
+		gap: vars.spacing['0.5'],
+		paddingBottom: vars.spacing[1],
+	}),
+
+	pm25ChipLabel: style({
+		fontSize: vars.text.xxs,
+		color: vars.color.foregroundMuted,
+		textTransform: 'uppercase',
+		letterSpacing: '0.1em',
+		fontWeight: 600,
+	}),
+
+	pm25ChipValue: style({
+		fontSize: vars.text['2xl'],
+		fontWeight: 700,
+		fontVariantNumeric: 'tabular-nums',
+		color: vars.color.foregroundAlt,
+		lineHeight: 1,
+	}),
+
+	pm25ChipUnit: style({
+		fontSize: vars.text.xxs,
+		color: vars.color.foregroundMuted,
+		fontWeight: 400,
+	}),
+
+	divider: style({
+		height: '1px',
+		background: transparentize(vars.color.white, 0.06),
+	}),
+
+	statsRow: style({
+		display: 'grid',
+		gridTemplateColumns: '1fr 1fr 1fr',
+		gap: vars.spacing[2],
+	}),
+
+	statItem: style({
 		display: 'flex',
 		flexDirection: 'column',
 		gap: vars.spacing['0.5'],
+		padding: `${vars.spacing[2]} ${vars.spacing[3]}`,
+		background: transparentize(vars.color.white, 0.03),
+		borderRadius: vars.radius.lg,
+		border: `1px solid ${transparentize(vars.color.white, 0.05)}`,
 	}),
 
-	metricLabel: style({
-		fontSize: vars.text.xs,
-		color: vars.color.foregroundMuted,
-		textTransform: 'uppercase',
-		letterSpacing: '0.06em',
-		fontWeight: 500,
-	}),
-
-	metricValue: style({
+	statValue: style({
 		fontSize: vars.text.sm,
 		fontWeight: 600,
 		color: vars.color.foreground,
 		fontVariantNumeric: 'tabular-nums',
+	}),
+
+	statLabel: style({
+		fontSize: vars.text.xxs,
+		color: vars.color.foregroundMuted,
+		textTransform: 'uppercase',
+		letterSpacing: '0.07em',
+		fontWeight: 500,
 	}),
 }

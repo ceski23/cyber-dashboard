@@ -1,6 +1,6 @@
 import { configMiddleware } from '#lib/config/middleware'
 import { locationQuery } from '#services/location'
-import { skipToken, useQuery } from '@tanstack/react-query'
+import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { format } from 'date-fns'
@@ -96,6 +96,7 @@ const fetchCurrentWeather = createServerFn({ method: 'GET' })
 					temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
 					wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
 					precipitation_unit: units === 'metric' ? 'mm' : 'inch',
+					domains: 'cams_europe',
 				},
 				undefined,
 				undefined,
@@ -162,43 +163,47 @@ export const openMeteoWeather = defineWidget({
 				className={styles.root}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
-				<div className={styles.tempBlock}>
-					<span className={styles.temperature}>
-						{isNil(data) ? '—' : `${Math.round(data.temperature)}${tempUnit}`}
-					</span>
-					<span className={styles.condition}>{data?.weatherDescription ?? '—'}</span>
-				</div>
-
-				<div className={styles.infoBlock}>
+				<div className={styles.glow} />
+				<div className={styles.content}>
 					<div className={styles.topRow}>
-						<span className={styles.header}>Weather</span>
+						<span className={styles.widgetLabel}>Weather</span>
 						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
 					</div>
-
-					<div className={styles.metricsRow}>
-						<div className={styles.metricItem}>
-							<span className={styles.metricLabel}>Feels like</span>
-							<span className={styles.metricValue}>
-								{isNil(data) ? '—' : `${Math.round(data.apparentTemperature)}${tempUnit}`}
+					<div className={styles.heroRow}>
+						<div className={styles.tempBlock}>
+							<span className={styles.temperature}>
+								{isNil(data) ? '—' : `${Math.round(data.temperature)}${tempUnit}`}
+							</span>
+							<span className={styles.condition}>{data?.weatherDescription ?? '—'}</span>
+						</div>
+						<div className={styles.feelsChip}>
+							<span className={styles.feelsLabel}>Feels like</span>
+							<span className={styles.feelsValue}>
+								{isNil(data) ? '—' : `${Math.round(data.apparentTemperature)}°`}
 							</span>
 						</div>
-						<div className={styles.metricItem}>
-							<span className={styles.metricLabel}>Humidity</span>
-							<span className={styles.metricValue}>
+					</div>
+
+					<div className={styles.divider} />
+
+					<div className={styles.statsRow}>
+						<div className={styles.statItem}>
+							<span className={styles.statValue}>
 								{isNil(data) ? '—' : `${Math.round(data.relativeHumidity)} %`}
 							</span>
+							<span className={styles.statLabel}>Humidity</span>
 						</div>
-						<div className={styles.metricItem}>
-							<span className={styles.metricLabel}>Precipitation</span>
-							<span className={styles.metricValue}>
+						<div className={styles.statItem}>
+							<span className={styles.statValue}>
 								{isNil(data) ? '—' : `${data.precipitation.toFixed(1)} mm`}
 							</span>
+							<span className={styles.statLabel}>Precip.</span>
 						</div>
-						<div className={styles.metricItem}>
-							<span className={styles.metricLabel}>Pressure</span>
-							<span className={styles.metricValue}>
+						<div className={styles.statItem}>
+							<span className={styles.statValue}>
 								{isNil(data) ? '—' : `${Math.round(data.surfacePressure)} hPa`}
 							</span>
+							<span className={styles.statLabel}>Pressure</span>
 						</div>
 					</div>
 				</div>
