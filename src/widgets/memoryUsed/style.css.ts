@@ -44,11 +44,11 @@ export const styles = {
 		zIndex: 0,
 		opacity: 0.4,
 		maskImage: 'linear-gradient(to right, transparent, transparent 140px, black 240px)',
+		paddingLeft: 100,
 	}),
 
 	content: style({
 		position: 'relative',
-		zIndex: 1,
 		padding: vars.spacing[5],
 		height: '100%',
 		display: 'flex',
