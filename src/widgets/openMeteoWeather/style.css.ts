@@ -78,6 +78,9 @@ export const styles = {
 		letterSpacing: '-0.04em',
 		fontVariantNumeric: 'tabular-nums',
 		color: vars.color.foreground,
+		display: 'flex',
+		alignItems: 'center',
+		gap: vars.spacing[3],
 	}),
 
 	condition: style({
@@ -87,12 +90,18 @@ export const styles = {
 		letterSpacing: '0.01em',
 	}),
 
+	weatherIcon: style({
+		width: '2.25rem',
+		height: '2.25rem',
+		color: vars.color.foregroundMuted,
+		strokeWidth: 1.5,
+	}),
+
 	feelsChip: style({
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'flex-end',
 		gap: vars.spacing['0.5'],
-		paddingBottom: vars.spacing[1],
 	}),
 
 	feelsLabel: style({

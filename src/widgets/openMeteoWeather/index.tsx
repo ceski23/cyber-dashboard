@@ -5,6 +5,19 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { format } from 'date-fns'
 import { isNil } from 'es-toolkit'
+import {
+	CircleQuestionMarkIcon,
+	Cloud,
+	CloudDrizzle,
+	CloudFog,
+	CloudLightning,
+	CloudRain,
+	CloudSnow,
+	CloudSun,
+	Snowflake,
+	Sun,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
 
@@ -13,53 +26,53 @@ import { defineWidget } from '../helpers'
 import { openMeteoWeatherOptions } from './schema'
 import { styles } from './style.css'
 
-const getWMOLabel = (code: number): string => {
+const getWMO = (code?: number): { label: string; icon: LucideIcon } => {
 	switch (code) {
 		case 0:
-			return 'Clear sky'
+			return { label: 'Clear sky', icon: Sun }
 		case 1:
-			return 'Mainly clear'
+			return { label: 'Mainly clear', icon: Sun }
 		case 2:
-			return 'Partly cloudy'
+			return { label: 'Partly cloudy', icon: CloudSun }
 		case 3:
-			return 'Overcast'
+			return { label: 'Overcast', icon: Cloud }
 		case 45:
 		case 48:
-			return 'Foggy'
+			return { label: 'Foggy', icon: CloudFog }
 		case 51:
 		case 53:
 		case 55:
-			return 'Drizzle'
+			return { label: 'Drizzle', icon: CloudDrizzle }
 		case 56:
 		case 57:
-			return 'Freezing drizzle'
+			return { label: 'Freezing drizzle', icon: CloudDrizzle }
 		case 61:
 		case 63:
 		case 65:
-			return 'Rain'
+			return { label: 'Rain', icon: CloudRain }
 		case 66:
 		case 67:
-			return 'Freezing rain'
-		case 71:
-		case 73:
-		case 75:
-			return 'Snow'
-		case 77:
-			return 'Snow grains'
+			return { label: 'Freezing rain', icon: CloudRain }
 		case 80:
 		case 81:
 		case 82:
-			return 'Rain showers'
+			return { label: 'Rain showers', icon: CloudRain }
+		case 71:
+		case 73:
+		case 75:
+			return { label: 'Snow', icon: CloudSnow }
 		case 85:
 		case 86:
-			return 'Snow showers'
+			return { label: 'Snow showers', icon: CloudSnow }
+		case 77:
+			return { label: 'Snow grains', icon: Snowflake }
 		case 95:
-			return 'Thunderstorm'
+			return { label: 'Thunderstorm', icon: CloudLightning }
 		case 96:
 		case 99:
-			return 'Thunderstorm w/ hail'
+			return { label: 'Thunderstorm w/ hail', icon: CloudLightning }
 		default:
-			return 'Unknown'
+			return { label: 'Unknown', icon: CircleQuestionMarkIcon }
 	}
 }
 
@@ -121,7 +134,7 @@ const fetchCurrentWeather = createServerFn({ method: 'GET' })
 				apparentTemperature: response.current.variables(2)!.value(),
 				precipitation: response.current.variables(3)!.value(),
 				weatherCode: response.current.variables(4)!.value(),
-				weatherDescription: getWMOLabel(response.current.variables(4)!.value()),
+				weatherDescription: getWMO(response.current.variables(4)!.value()).label,
 				surfacePressure: response.current.variables(5)!.value(),
 			}
 		},
@@ -157,6 +170,7 @@ export const openMeteoWeather = defineWidget({
 		}
 
 		const tempUnit = '°C' // TODO: from config
+		const WeatherIcon = getWMO(data?.weatherCode).icon
 
 		return (
 			<div
@@ -173,6 +187,7 @@ export const openMeteoWeather = defineWidget({
 						<div className={styles.tempBlock}>
 							<span className={styles.temperature}>
 								{isNil(data) ? '—' : `${Math.round(data.temperature)}${tempUnit}`}
+								<WeatherIcon className={styles.weatherIcon} />
 							</span>
 							<span className={styles.condition}>{data?.weatherDescription ?? '—'}</span>
 						</div>
