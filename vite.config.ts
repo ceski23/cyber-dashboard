@@ -26,9 +26,6 @@ const config = defineConfig({
 	},
 	build: {
 		rolldownOptions: {
-			experimental: {
-				lazyBarrel: true,
-			},
 			output: {
 				codeSplitting: {
 					groups: [
