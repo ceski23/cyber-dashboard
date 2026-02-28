@@ -1,15 +1,53 @@
+import { transparentize } from '#lib/utils/style'
 import { vars } from '#theme.css'
 import { style } from '@vanilla-extract/css'
 
-export const errorRoot = style({
-	display: 'flex',
-	justifyContent: 'space-between',
-	alignItems: 'center',
-	fontSize: vars.text.sm,
-	paddingInline: vars.spacing[2],
-	paddingBlock: vars.spacing[1.5],
-	borderRadius: vars.radius.md,
-	// border: `1px solid ${transparentize(vars.color.danger, 0.1)}`,
-	// backgroundColor: transparentize(vars.color.danger, 0.05),
-	// color: vars.color.dangerForeground,
-})
+export const styles = {
+	errorRoot: style({
+		position: 'relative',
+		overflow: 'hidden',
+		borderRadius: vars.radius.xl,
+		border: `1px solid ${transparentize(vars.color.red[500], 0.2)}`,
+		backgroundColor: transparentize(vars.color.red[500], 0.05),
+		color: vars.color.red[400],
+		height: vars.spacing[32],
+		padding: vars.spacing[5],
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: vars.spacing[4],
+		fontSize: vars.text.sm,
+	}),
+
+	errorMessage: style({
+		color: 'inherit',
+		opacity: 0.8,
+	}),
+
+	errorButton: style({
+		paddingInline: vars.spacing[3],
+		paddingBlock: vars.spacing[1.5],
+		borderRadius: vars.radius.md,
+		border: `1px solid ${transparentize(vars.color.red[500], 0.3)}`,
+		background: transparentize(vars.color.red[500], 0.1),
+		color: vars.color.red[400],
+		fontSize: vars.text.xs,
+		cursor: 'pointer',
+		width: '100%',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: vars.spacing[2],
+		transition: 'background-color 0.2s ease',
+		':hover': {
+			background: transparentize(vars.color.red[500], 0.2),
+		},
+	}),
+
+	errorHeader: style({
+		display: 'flex',
+		alignItems: 'flex-start',
+		gap: vars.spacing[2],
+	}),
+}
