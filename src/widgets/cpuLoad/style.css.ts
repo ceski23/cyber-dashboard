@@ -18,6 +18,7 @@ export const styles = {
 			border: `1px solid ${vars.color.borderSubtle}`,
 			background: vars.color.panel,
 			height: vars.spacing[32],
+			backdropFilter: 'blur(10px)',
 			transition: `border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease`,
 		},
 		variants: {

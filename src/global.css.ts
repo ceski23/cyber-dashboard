@@ -10,8 +10,8 @@ globalStyle('html, body', {
 	width: '100%',
 	fontFamily: vars.font.sans,
 	color: vars.color.foreground,
+	background: `radial-gradient(circle, ${transparentize(vars.color.white, 0.05)} 1px, transparent 1px) 0 0 / 24px 24px repeat`,
 	backgroundColor: vars.color.background,
-	background: 'radial-gradient(ellipse at top, #18181b 0%, #000000 55%, #000000 100%)',
 })
 
 globalStyle('::selection', {

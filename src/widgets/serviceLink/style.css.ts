@@ -27,6 +27,7 @@ export const styles = {
 			borderRadius: vars.radius.xl,
 			border: `1px solid ${vars.color.borderSubtle}`,
 			background: vars.color.panel,
+			backdropFilter: 'blur(10px)',
 			textDecoration: 'none',
 			color: vars.color.foreground,
 			height: vars.spacing['18'],
