@@ -153,7 +153,7 @@ export const memoryUsed = defineWidget({
 							className={styles.meta}
 							style={{ visibility: currentTotal > 0 ? 'visible' : 'hidden' }}
 						>
-							{prettyBytes(currentAvailable, { binary: true })} free
+							{prettyBytes(currentAvailable)} free
 						</span>
 					</div>
 					<span
