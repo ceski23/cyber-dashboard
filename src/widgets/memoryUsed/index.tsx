@@ -4,6 +4,7 @@ import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/re
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
+import { isNotNil } from 'es-toolkit'
 import { MemoryStickIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
 import prettyBytes from 'pretty-bytes'
@@ -95,7 +96,7 @@ export const memoryUsed = defineWidget({
 							style={{ width: '100%', height: '100%' }}
 							responsive
 							margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
-							data={data.map(item => ({
+							data={data?.map(item => ({
 								usage: item.total === 0 ? 0 : (item.used / item.total) * 100,
 								timestamp: item.timestamp,
 							}))}
@@ -120,7 +121,7 @@ export const memoryUsed = defineWidget({
 									/>
 								</linearGradient>
 							</defs>
-							{data.length > 1 && (
+							{isNotNil(data) && data.length > 1 && (
 								<TypedChart.Area
 									type="monotone"
 									dataKey="usage"

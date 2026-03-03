@@ -4,6 +4,7 @@ import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/re
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
+import { isNotNil } from 'es-toolkit'
 import { CpuIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
 import si from 'systeminformation'
@@ -126,7 +127,7 @@ export const cpuLoad = defineWidget({
 									/>
 								</linearGradient>
 							</defs>
-							{data.length > 1 && (
+							{isNotNil(data) && data.length > 1 && (
 								<TypedChart.Area
 									type="monotone"
 									dataKey="usage"
