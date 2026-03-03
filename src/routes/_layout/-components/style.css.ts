@@ -105,8 +105,7 @@ export const styles = {
 		overlay: style({
 			position: 'fixed',
 			inset: 0,
-			backgroundColor: transparentize(vars.color.background, 0.5),
-			backdropFilter: 'blur(6px)',
+			backgroundColor: transparentize(vars.color.background, 0.8),
 			opacity: 1,
 			transition: 'opacity 0.3s ease',
 			selectors: {
