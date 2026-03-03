@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router'
 import type { ComponentProps, FunctionComponent } from 'react'
-
 import { CommandPalette } from './CommandPalette'
 import { styles } from './style.css'
 import { User } from './User'

@@ -1,5 +1,4 @@
 import { createServerFn, createServerOnlyFn } from '@tanstack/react-start'
-
 import { EnvProvider, ConfigLoader, JsoncProvider, JsonProvider, YamlProvider } from './configLoader'
 import { configSchema, type DashboardConfig } from './schema'
 

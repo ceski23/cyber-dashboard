@@ -4,7 +4,6 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { isNil } from 'es-toolkit'
 import { z } from 'zod'
-
 import { streamDockerStatus } from './docker'
 import { streamGatusStatus } from './gatus'
 import { streamPingStatus } from './ping'

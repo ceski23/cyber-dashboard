@@ -2,9 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import ky from 'ky'
 import { z } from 'zod'
-
 import type { ServiceStatus } from '..'
-
 import { gatusOptions } from './schema'
 
 const gatusResponseSchema = z.array(

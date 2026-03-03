@@ -9,7 +9,6 @@ import { Command } from 'cmdk'
 import { isNotNil } from 'es-toolkit'
 import { RotateCcwIcon, SearchIcon } from 'lucide-react'
 import { FunctionComponent, useState } from 'react'
-
 import { styles } from './style.css'
 
 type CommandPaletteProps = {

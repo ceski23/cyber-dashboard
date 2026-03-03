@@ -20,9 +20,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
-
 import { defineWidget } from '../helpers'
-
 import { openMeteoWeatherOptions } from './schema'
 import { styles } from './style.css'
 

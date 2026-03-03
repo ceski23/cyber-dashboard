@@ -1,5 +1,4 @@
 import { createGlobalTheme } from '@vanilla-extract/css'
-
 import { transparentize } from './lib/utils/style'
 
 export const media = {

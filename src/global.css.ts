@@ -1,5 +1,4 @@
 import { globalStyle } from '@vanilla-extract/css'
-
 import { transparentize } from './lib/utils/style'
 import { vars } from './theme.css'
 

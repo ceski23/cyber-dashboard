@@ -5,7 +5,6 @@ import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { isNotNil } from 'es-toolkit'
-
 import * as styles from './-components/index.css'
 
 const fetchData = createServerFn({ method: 'GET' })

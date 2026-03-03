@@ -8,9 +8,7 @@ import { CpuIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
 import si from 'systeminformation'
 import z from 'zod'
-
 import { defineWidget } from '../helpers'
-
 import { cpuLoadOptions } from './schema'
 import { loadVar, styles } from './style.css'
 

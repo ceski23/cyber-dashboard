@@ -1,5 +1,4 @@
 import { z } from 'zod'
-
 import { defineWidgetOptions } from '../helpers'
 
 export const openMeteoAirQualityOptions = defineWidgetOptions(

@@ -6,9 +6,7 @@ import prettyBytes from 'pretty-bytes'
 import si from 'systeminformation'
 import { match } from 'ts-pattern'
 import z from 'zod'
-
 import { defineWidget } from '../helpers'
-
 import { storageUsedOptions } from './schema'
 import { storageVar, styles } from './style.css'
 

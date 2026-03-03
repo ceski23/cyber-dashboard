@@ -2,9 +2,7 @@ import { redirect } from '@tanstack/react-router'
 import { createMiddleware } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { isNil } from 'es-toolkit'
-
 import { configMiddleware } from '../config/middleware'
-
 import { createAuth } from './index'
 
 export const authMiddleware = createMiddleware()

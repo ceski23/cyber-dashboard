@@ -9,9 +9,7 @@ import { CircularBuffer } from 'mnemonist'
 import prettyBytes from 'pretty-bytes'
 import si from 'systeminformation'
 import z from 'zod'
-
 import { defineWidget } from '../helpers'
-
 import { memoryUsedOptions } from './schema'
 import { memoryVar, styles } from './style.css'
 

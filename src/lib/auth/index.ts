@@ -2,7 +2,6 @@ import { createServerOnlyFn } from '@tanstack/react-start'
 import { betterAuth } from 'better-auth'
 import { genericOAuth } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
-
 import { type DashboardConfig } from '../config'
 
 export const createAuth = createServerOnlyFn(async ({ auth, baseUrl }: DashboardConfig) => {

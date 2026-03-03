@@ -1,5 +1,4 @@
 import z from 'zod'
-
 import { cpuLoad } from './cpuLoad'
 import { memoryUsed } from './memoryUsed'
 import { openMeteoAirQuality } from './openMeteoAirQuality'

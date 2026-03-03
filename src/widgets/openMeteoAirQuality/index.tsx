@@ -8,9 +8,7 @@ import { format } from 'date-fns'
 import { isNil } from 'es-toolkit'
 import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
-
 import { defineWidget } from '../helpers'
-
 import { openMeteoAirQualityOptions } from './schema'
 import { styles } from './style.css'
 

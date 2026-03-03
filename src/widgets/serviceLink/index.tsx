@@ -3,9 +3,7 @@ import { Tooltip } from '@base-ui/react/tooltip'
 import { useQuery } from '@tanstack/react-query'
 import { isNotNil } from 'es-toolkit'
 import { match } from 'ts-pattern'
-
 import { defineWidget } from '../helpers'
-
 import { serviceLinkOptions } from './schema'
 import { styles } from './style.css'
 

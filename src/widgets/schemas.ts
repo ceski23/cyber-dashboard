@@ -1,5 +1,4 @@
 import { z } from 'zod'
-
 import { cpuLoadOptions } from './cpuLoad/schema'
 import { memoryUsedOptions } from './memoryUsed/schema'
 import { openMeteoAirQualityOptions } from './openMeteoAirQuality/schema'

@@ -1,9 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import Docker from 'dockerode'
-
 import type { ServiceStatus } from '..'
-
 import { dockerOptions } from './schema'
 
 const mapDockerStateToStatus = (state: string): ServiceStatus['status'] => {

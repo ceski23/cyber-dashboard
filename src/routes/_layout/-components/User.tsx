@@ -2,7 +2,6 @@ import { useAuthClient } from '#lib/auth/client'
 import { isNotNil } from 'es-toolkit'
 import { FunctionComponent } from 'react'
 import { match, P } from 'ts-pattern'
-
 import { styles } from './style.css'
 
 export const User: FunctionComponent = () => {

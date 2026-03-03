@@ -15,22 +15,9 @@
 	"trailingComma": "all",
 	"useTabs": true,
 	"ignorePatterns": ["src/routeTree.gen.ts", ".output"],
-	"experimentalSortImports": {
-		"groups": [
-			["side-effect"],
-			["builtin"],
-			["external", "type-external"],
-			["internal", "type-internal"],
-			["parent", "type-parent"],
-			["sibling", "type-sibling"],
-			["index", "type-index"],
-		],
+	"sortImports": {
+		"newlinesBetween": false,
+		"groups": [["side_effect"], ["builtin"], ["external"], ["internal"], ["parent"], ["sibling"], ["index"]],
 	},
-	"experimentalTailwindcss": {
-		"stylesheet": "src/styles.css",
-		"attributes": ["class", "className"],
-		"functions": ["clsx", "cn"],
-		"preserveWhitespace": true,
-	},
-	"experimentalSortPackageJson": false,
+	"sortPackageJson": false,
 }

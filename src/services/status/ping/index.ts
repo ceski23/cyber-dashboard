@@ -1,9 +1,7 @@
 import { PromisePool } from '@supercharge/promise-pool'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-
 import type { ServiceStatus } from '..'
-
 import { pingOptions } from './schema'
 
 type PingParams = {
