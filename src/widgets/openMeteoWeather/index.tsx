@@ -1,4 +1,3 @@
-import { configMiddleware } from '#lib/config/middleware'
 import { locationQuery } from '#services/location'
 import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
@@ -75,7 +74,6 @@ const getWMO = (code?: number): { label: string; icon: LucideIcon } => {
 }
 
 const fetchCurrentWeather = createServerFn({ method: 'GET' })
-	.middleware([configMiddleware])
 	.inputValidator(
 		z.object({
 			latitude: z.number().min(-90).max(90),

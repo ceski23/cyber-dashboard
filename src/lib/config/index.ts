@@ -2,7 +2,11 @@ import { createServerFn, createServerOnlyFn } from '@tanstack/react-start'
 import { EnvProvider, ConfigLoader, JsoncProvider, JsonProvider, YamlProvider } from './configLoader'
 import { configSchema, type DashboardConfig } from './schema'
 
-let config: DashboardConfig | undefined = undefined
+const configKey = Symbol.for('dashboardConfig')
+
+declare const globalThis: {
+	[configKey]?: DashboardConfig
+}
 
 const configLoader = new ConfigLoader()
 	.merge(new JsonProvider('config.json'))
@@ -12,11 +16,11 @@ const configLoader = new ConfigLoader()
 	.merge(new EnvProvider('CONFIG_'))
 
 export const getConfig = createServerOnlyFn(async (force: boolean = false) => {
-	if (force || !config) {
-		config = await configLoader.extract(configSchema)
+	if (force || !globalThis[configKey]) {
+		globalThis[configKey] = await configLoader.extract(configSchema)
 	}
 
-	return config
+	return globalThis[configKey]
 })
 
 export const reloadConfigFn = createServerFn({ method: 'POST' }).handler(async () => {
