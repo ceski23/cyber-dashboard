@@ -9,10 +9,8 @@ export const styles = {
 		base: {
 			borderRadius: vars.radius['2xl'],
 			border: `1px solid ${transparentize(vars.color.white, 0.08)}`,
-			background: 'oklch(0.22 0.008 286 / 60%)',
+			background: vars.color.panel,
 			backdropFilter: 'blur(20px)',
-			WebkitBackdropFilter: 'blur(20px)',
-			boxShadow: `inset 0 1px 0 ${transparentize(vars.color.white, 0.07)}, 0 8px 32px ${transparentize(vars.color.black, 0.4)}`,
 			color: vars.color.foreground,
 			overflow: 'hidden',
 			padding: vars.spacing[5],

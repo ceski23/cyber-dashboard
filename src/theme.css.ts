@@ -1,4 +1,4 @@
-import { createGlobalTheme } from '@vanilla-extract/css'
+import { createGlobalTheme, globalStyle } from '@vanilla-extract/css'
 import { transparentize } from './lib/utils/style'
 
 export const media = {
@@ -11,15 +11,15 @@ export const media = {
 const colors = createGlobalTheme(':root', {
 	'@layer': 'theme.colors',
 	neutral: {
-		500: 'oklch(55.6% 0 0)',
+		500: 'light-dark(oklch(55.6% 0 0), oklch(55.6% 0 0))',
 	},
 	red: {
-		400: 'oklch(70.4% 0.191 22.216)',
-		500: 'oklch(63.7% 0.237 25.331)',
+		400: 'light-dark(oklch(57% 0.191 22.216), oklch(70.4% 0.191 22.216))',
+		500: 'light-dark(oklch(50% 0.237 25.331), oklch(63.7% 0.237 25.331))',
 	},
 	amber: {
-		400: 'oklch(82.8% 0.189 84.429)',
-		500: 'oklch(76.9% 0.188 70.08)',
+		400: 'light-dark(oklch(62% 0.189 84.429), oklch(82.8% 0.189 84.429))',
+		500: 'light-dark(oklch(57% 0.188 70.08), oklch(76.9% 0.188 70.08))',
 	},
 	black: 'oklch(0% 0 0)',
 	white: 'oklch(100% 0 0)',
@@ -35,15 +35,15 @@ export const vars = createGlobalTheme(':root', {
 	'@layer': 'theme',
 	color: {
 		...colors,
-		primary: 'oklch(58.5% 0.233 277.117)',
-		background: colors.black,
-		backgroundAlt: 'oklch(0.2739 0.0055 286.03)',
-		foreground: 'oklch(0.9674 0.0013 286.37)',
-		foregroundAlt: 'oklch(0.8711 0.0055 286.29)',
-		foregroundMuted: 'oklch(0.5517 0.0138 285.94)',
-		panel: 'oklch(0.2103 0.0059 285.89 / 55%)',
-		border: transparentize(colors.white, 0.1),
-		borderSubtle: transparentize(colors.white, 0.05),
+		primary: 'light-dark(oklch(42% 0.233 277.117), oklch(58.5% 0.233 277.117))',
+		background: `light-dark(oklch(98% 0.003 286), ${colors.black})`,
+		backgroundAlt: 'light-dark(oklch(92% 0.006 286), oklch(0.2739 0.0055 286.03))',
+		foreground: 'light-dark(oklch(11% 0.012 286), oklch(0.9674 0.0013 286.37))',
+		foregroundAlt: 'light-dark(oklch(22% 0.012 286), oklch(0.8711 0.0055 286.29))',
+		foregroundMuted: 'light-dark(oklch(42% 0.012 286), oklch(0.5517 0.0138 285.94))',
+		panel: 'light-dark(oklch(97% 0.003 286 / 80%), oklch(0.2103 0.0059 285.89 / 55%))',
+		border: `light-dark(oklch(0% 0 0 / 14%), ${transparentize(colors.white, 0.1)})`,
+		borderSubtle: `light-dark(oklch(0% 0 0 / 7%), ${transparentize(colors.white, 0.05)})`,
 		aqi: {
 			good: 'oklch(0.72 0.18 142)',
 			fair: 'oklch(0.85 0.17 100)',
@@ -155,4 +155,16 @@ export const vars = createGlobalTheme(':root', {
 		glowEmerald: '0 0 10px rgba(16, 185, 129, 0.4)',
 		glowRed: '0 0 10px rgba(239, 68, 68, 0.4)',
 	},
+})
+
+globalStyle('[data-theme="light"]', {
+	colorScheme: 'light',
+})
+
+globalStyle('[data-theme="dark"]', {
+	colorScheme: 'dark',
+})
+
+globalStyle('[data-theme="auto"]', {
+	colorScheme: 'light dark',
 })

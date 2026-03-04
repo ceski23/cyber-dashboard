@@ -10,8 +10,8 @@ globalStyle('html, body', {
 	fontFamily: vars.font.sans,
 	color: vars.color.foreground,
 	background: `
-		radial-gradient(circle, ${transparentize(vars.color.white, 0.05)} 1px, transparent 1px) 0 0 / 24px 24px repeat,
-		linear-gradient(155deg,oklch(0 0 0) 0%, oklch(0.1 0 0) 20%, oklch(0 0 0) 40%, oklch(0.1 0 0) 70%, oklch(0 0 0) 100%)
+		radial-gradient(circle, light-dark(${transparentize(vars.color.black, 0.1)}, ${transparentize(vars.color.white, 0.07)}) 1px, transparent 1px) 0 0 / 24px 24px repeat,
+		linear-gradient(155deg, light-dark(oklch(1 0 0), oklch(0 0 0)) 0%, light-dark(oklch(0.87 0 0), oklch(0.13 0 0)) 20%, light-dark(oklch(1 0 0), oklch(0 0 0)) 40%, light-dark(oklch(0.87 0 0), oklch(0.13 0 0)) 70%, light-dark(oklch(1 0 0), oklch(0 0 0)) 100%)
 	`,
 	backgroundColor: vars.color.background,
 })

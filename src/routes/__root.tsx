@@ -1,5 +1,6 @@
 import '#theme.css'
 import '#global.css'
+import { useTheme } from '#lib/utils/theme'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { hotkeysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
 import type { QueryClient } from '@tanstack/react-query'
@@ -34,7 +35,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 	}),
 	shellComponent: ({ children }) => (
-		<html lang="en">
+		<html
+			lang="en"
+			data-theme={useTheme().theme}
+		>
 			<head>
 				<HeadContent />
 			</head>

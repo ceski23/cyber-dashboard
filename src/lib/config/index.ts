@@ -4,6 +4,7 @@ import { configSchema, type DashboardConfig } from './schema'
 
 const configKey = Symbol.for('dashboardConfig')
 
+// oxlint-disable-next-line no-shadow-restricted-names
 declare const globalThis: {
 	[configKey]?: DashboardConfig
 }

@@ -23,6 +23,7 @@ export const styles = {
 	errorMessage: style({
 		color: 'inherit',
 		opacity: 0.8,
+		flex: 1,
 	}),
 
 	errorButton: style({
@@ -49,5 +50,6 @@ export const styles = {
 		display: 'flex',
 		alignItems: 'flex-start',
 		gap: vars.spacing[2],
+		marginRight: 'auto',
 	}),
 }
