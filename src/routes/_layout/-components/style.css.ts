@@ -19,6 +19,7 @@ export const styles = {
 			paddingRight: vars.spacing[6],
 			background: transparentize(vars.color.background, 0.2),
 			backdropFilter: 'blur(8px)',
+			gap: vars.spacing[4],
 			'@media': {
 				[media.lg]: {
 					paddingLeft: vars.spacing[8],
@@ -30,11 +31,15 @@ export const styles = {
 			display: 'flex',
 			flex: 1,
 			justifyContent: 'flex-start',
+			minWidth: 0,
 		}),
 		right: style({
 			display: 'flex',
 			flex: 1,
+			alignItems: 'center',
 			justifyContent: 'flex-end',
+			gap: vars.spacing[2],
+			minWidth: 0,
 		}),
 		title: style({
 			fontSize: vars.text.xl,
@@ -42,6 +47,9 @@ export const styles = {
 			transition: 'color 0.2s',
 			color: vars.color.foreground,
 			textDecoration: 'none',
+			textOverflow: 'ellipsis',
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
 			':hover': {
 				color: vars.color.primary,
 			},

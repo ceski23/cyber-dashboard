@@ -1,4 +1,4 @@
-import { vars } from '#theme.css'
+import { media, vars } from '#theme.css'
 import { style } from '@vanilla-extract/css'
 
 export const page = style({
@@ -7,9 +7,14 @@ export const page = style({
 
 export const grid = style({
 	display: 'grid',
-	gridTemplateColumns: 'repeat(12, 1fr)',
+	gridTemplateColumns: 'repeat(6, 1fr)',
 	gap: vars.spacing[4],
 	alignItems: 'start',
+	'@media': {
+		[media.lg]: {
+			gridTemplateColumns: 'repeat(12, 1fr)',
+		},
+	},
 })
 
 export const group = style({
