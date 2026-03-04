@@ -38,6 +38,7 @@ export const storageDataQuery = (drive: string) =>
 	queryOptions({
 		queryKey: ['storageData', { drive }] as const,
 		queryFn: () => fetchStorageData({ data: { drive } }),
+		throwOnError: true,
 	})
 
 export const storageUsed = defineWidget({
@@ -81,9 +82,6 @@ export const storageUsed = defineWidget({
 					<div className={styles.bottom}>
 						{match(storageQuery)
 							.with({ status: 'pending' }, () => null)
-							.with({ status: 'error' }, ({ error }) => (
-								<span className={styles.meta}>{error.message}</span>
-							))
 							.otherwise(() => (
 								<>
 									<span
