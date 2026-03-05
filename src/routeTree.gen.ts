@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutLoginRouteImport } from './routes/_layout/login'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
@@ -36,10 +42,12 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
+  '/$': typeof SplatRoute
   '/login': typeof LayoutLoginRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
+  '/$': typeof SplatRoute
   '/login': typeof LayoutLoginRoute
   '/': typeof LayoutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -47,25 +55,40 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteRouteWithChildren
+  '/$': typeof SplatRoute
   '/_layout/login': typeof LayoutLoginRoute
   '/_layout/': typeof LayoutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/api/auth/$'
+  fullPaths: '/' | '/$' | '/login' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/api/auth/$'
-  id: '__root__' | '/_layout' | '/_layout/login' | '/_layout/' | '/api/auth/$'
+  to: '/$' | '/login' | '/' | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/_layout'
+    | '/$'
+    | '/_layout/login'
+    | '/_layout/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  SplatRoute: typeof SplatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout': {
       id: '/_layout'
       path: ''
@@ -113,6 +136,7 @@ const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  SplatRoute: SplatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
