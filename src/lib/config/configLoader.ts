@@ -1,5 +1,6 @@
 import { parseJSON, parseYAML, parseJSONC } from 'confbox'
 import { defu } from 'defu'
+import { type z, type ZodType } from 'zod'
 
 type Dict = Record<string, unknown>
 
@@ -233,7 +234,7 @@ export class ConfigLoader {
 	/**
 	 * Load and extract configuration with Zod validation
 	 */
-	async extract<T>(schema: { parse: (data: unknown) => T }): Promise<T> {
+	async extract<T extends ZodType>(schema: T): Promise<z.infer<T>> {
 		const config = await this.load()
 		return schema.parse(config)
 	}
