@@ -2,6 +2,7 @@ import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
 import viteReact from '@vitejs/plugin-react'
+import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import circleDependency from 'vite-plugin-circular-dependency'
 
@@ -18,6 +19,7 @@ const config = defineConfig({
 		}),
 		vanillaExtractPlugin(),
 		tanstackStart(),
+		nitro({ preset: 'bun' }),
 		viteReact(),
 		circleDependency(),
 	],
