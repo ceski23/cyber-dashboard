@@ -76,7 +76,7 @@ export const cpuLoad = defineWidget({
 		await queryClient.ensureQueryData(streamCpuDataQuery(refreshInterval))
 	},
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
-		const { data } = useQuery(streamCpuDataQuery(refreshInterval))
+		const { data, error } = useQuery(streamCpuDataQuery(refreshInterval))
 		const currentLoad = data?.at(-1)?.usage ?? 0
 		const currentLoadPercent = currentLoad
 			.toLocaleString(undefined, { maximumFractionDigits: 0, style: 'percent' })
@@ -87,6 +87,10 @@ export const cpuLoad = defineWidget({
 			if (currentLoad >= 0.7) return { status: 'warning' as const, color: vars.color.amber[500] }
 			return { status: 'normal' as const, color: vars.color.neutral[500] }
 		})()
+
+		if (error) {
+			throw new Error(`Failed to fetch CPU data: ${error.message}`)
+		}
 
 		return (
 			<div

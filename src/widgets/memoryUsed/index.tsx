@@ -70,7 +70,7 @@ export const memoryUsed = defineWidget({
 		await queryClient.ensureQueryData(streamMemoryDataQuery(refreshInterval))
 	},
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
-		const { data } = useQuery(streamMemoryDataQuery(refreshInterval))
+		const { data, error } = useQuery(streamMemoryDataQuery(refreshInterval))
 		const currentUsed = data?.at(-1)?.used ?? 0
 		const currentTotal = data?.at(-1)?.total ?? 0
 		const usageFraction = currentTotal === 0 ? 0 : currentUsed / currentTotal
@@ -82,6 +82,10 @@ export const memoryUsed = defineWidget({
 			if (usageFraction >= 0.7) return { status: 'warning' as const, color: vars.color.amber[500] }
 			return { status: 'normal' as const, color: vars.color.neutral[500] }
 		})()
+
+		if (error) {
+			throw new Error(`Failed to fetch memory data: ${error.message}`)
+		}
 
 		return (
 			<div

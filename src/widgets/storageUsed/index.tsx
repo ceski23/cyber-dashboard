@@ -38,7 +38,6 @@ export const storageDataQuery = (drive: string) =>
 	queryOptions({
 		queryKey: ['storageData', { drive }] as const,
 		queryFn: () => fetchStorageData({ data: { drive } }),
-		throwOnError: true,
 	})
 
 export const storageUsed = defineWidget({
@@ -58,6 +57,10 @@ export const storageUsed = defineWidget({
 			if (usageFraction >= 0.7) return { status: 'warning' as const }
 			return { status: 'normal' as const }
 		})()
+
+		if (storageQuery.isError) {
+			throw new Error(`Failed to fetch storage data: ${storageQuery.error.message}`)
+		}
 
 		return (
 			<div
