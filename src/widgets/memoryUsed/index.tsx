@@ -59,16 +59,12 @@ const streamMemoryDataQuery = (refreshInterval: number) =>
 			reducer: (_, chunk: MemoryData[]) => chunk.filter(Boolean),
 			streamFn: ({ signal }) => streamMemoryData({ signal, data: { interval: refreshInterval } }),
 		}),
-		initialData: [],
 		select: (data: MemoryData[]) => [initialMemoryData, ...data].slice(-ITEMS_LIMIT),
 	})
 
 export const memoryUsed = defineWidget({
 	type: 'memory-used',
 	optionsSchema: memoryUsedOptions,
-	loader: async (queryClient, { refreshInterval }) => {
-		await queryClient.ensureQueryData(streamMemoryDataQuery(refreshInterval))
-	},
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
 		const { data, error } = useQuery(streamMemoryDataQuery(refreshInterval))
 		const currentUsed = data?.at(-1)?.used ?? 0

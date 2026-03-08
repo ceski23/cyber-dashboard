@@ -65,16 +65,12 @@ const streamCpuDataQuery = (refreshInterval: number) =>
 			reducer: (_, chunk: CpuData[]) => chunk.filter(Boolean),
 			streamFn: ({ signal }) => streamCpuData({ signal, data: { interval: refreshInterval } }),
 		}),
-		initialData: [],
 		select: (data: CpuData[]) => [initialCpuData, ...data].slice(-ITEMS_LIMIT),
 	})
 
 export const cpuLoad = defineWidget({
 	type: 'cpu-load',
 	optionsSchema: cpuLoadOptions,
-	loader: async (queryClient, { refreshInterval }) => {
-		await queryClient.ensureQueryData(streamCpuDataQuery(refreshInterval))
-	},
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
 		const { data, error } = useQuery(streamCpuDataQuery(refreshInterval))
 		const currentLoad = data?.at(-1)?.usage ?? 0
