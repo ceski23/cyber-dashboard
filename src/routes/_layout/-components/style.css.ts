@@ -131,7 +131,7 @@ export const styles = {
 			transform: 'translate(-50%, 0)',
 			borderRadius: vars.radius.xl,
 			border: `1px solid ${vars.color.border}`,
-			backgroundColor: '#18181b',
+			backgroundColor: `oklch(from ${vars.color.panel} l c h / 100%)`,
 			boxShadow: vars.shadow.panel,
 			opacity: 1,
 			transition: 'opacity 0.3s ease, transform 0.2s ease',
