@@ -16,6 +16,10 @@ globalStyle('html, body', {
 	backgroundColor: vars.color.background,
 })
 
+globalStyle('*, *::before, *::after', {
+	outlineColor: vars.color.primary,
+})
+
 globalStyle('::selection', {
 	background: transparentize(vars.color.primary, 0.5),
 	color: vars.color.foreground,
