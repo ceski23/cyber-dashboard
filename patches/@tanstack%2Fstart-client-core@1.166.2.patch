@@ -1,0 +1,34 @@
+diff --git a/dist/esm/client-rpc/serverFnFetcher.js b/dist/esm/client-rpc/serverFnFetcher.js
+index 1aeb63a67c233a9a05205894462d5f389e5b48bc..3c472a5320ba93a66b59b7c1fc0a7aadae5845bd 100644
+--- a/dist/esm/client-rpc/serverFnFetcher.js
++++ b/dist/esm/client-rpc/serverFnFetcher.js
+@@ -192,22 +192,13 @@ async function processServerFnResponse({
+     if (buffer.length === 0 && done) {
+       throw new Error("Stream ended before first object");
+     }
+-    if (buffer.endsWith("\n")) {
+-      const lines = buffer.split("\n").filter(Boolean);
+-      const firstLine = lines[0];
+-      if (!firstLine) throw new Error("No JSON line in the first chunk");
+-      firstObject = JSON.parse(firstLine);
+-      firstRead = true;
+-      buffer = lines.slice(1).join("\n");
+-    } else {
+-      const newlineIndex = buffer.indexOf("\n");
+-      if (newlineIndex >= 0) {
+-        const line = buffer.slice(0, newlineIndex).trim();
+-        buffer = buffer.slice(newlineIndex + 1);
+-        if (line.length > 0) {
+-          firstObject = JSON.parse(line);
+-          firstRead = true;
+-        }
++    const newlineIndex = buffer.indexOf('\n')
++    if (newlineIndex >= 0) {
++      const line = buffer.slice(0, newlineIndex).trim()
++      buffer = buffer.slice(newlineIndex + 1)
++      if (line.length > 0) {
++        firstObject = JSON.parse(line)
++        firstRead = true
+       }
+     }
+   }

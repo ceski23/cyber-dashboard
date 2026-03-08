@@ -10,11 +10,11 @@ import { styles } from './style.css'
 export const serviceLink = defineWidget({
 	type: 'service-link',
 	optionsSchema: serviceLinkOptions,
-	loader: async (queryClient, { status }) => {
-		if (isNotNil(status)) {
-			void queryClient.prefetchQuery(serviceStatusQuery(status.provider, status.service))
-		}
-	},
+	// loader: async (queryClient, { status }) => {
+	// 	if (isNotNil(status)) {
+	// 		void queryClient.prefetchQuery(serviceStatusQuery(status.provider, status.service))
+	// 	}
+	// },
 	Component: ({ options: { status, url, icon, name, description }, columns }) => {
 		const statusQuery = useQuery(serviceStatusQuery(status?.provider, status?.service))
 		const statusDot = match(statusQuery)
