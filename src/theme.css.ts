@@ -44,6 +44,9 @@ export const vars = createGlobalTheme(':root', {
 		panel: 'light-dark(oklch(97% 0.003 286 / 80%), oklch(0.2103 0.0059 285.89 / 55%))',
 		border: `light-dark(oklch(0% 0 0 / 14%), ${transparentize(colors.white, 0.1)})`,
 		borderSubtle: `light-dark(oklch(0% 0 0 / 7%), ${transparentize(colors.white, 0.05)})`,
+		success: 'light-dark(oklch(52% 0.18 142), oklch(72% 0.18 142))',
+		warning: colors.amber[500],
+		error: colors.red[500],
 		aqi: {
 			good: 'oklch(0.72 0.18 142)',
 			fair: 'oklch(0.85 0.17 100)',

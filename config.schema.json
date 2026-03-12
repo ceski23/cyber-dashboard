@@ -307,6 +307,52 @@
 								},
 								"required": ["id", "type", "options"],
 								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
+										"const": "gatus",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"default": "Gatus",
+												"description": "Display name for the widget.",
+												"type": "string"
+											},
+											"url": {
+												"type": "string",
+												"format": "uri",
+												"description": "Base URL of the Gatus instance."
+											},
+											"refreshInterval": {
+												"default": 30000,
+												"description": "Interval in milliseconds to refresh Gatus data.",
+												"type": "number",
+												"minimum": 5000
+											}
+										},
+										"required": ["url"],
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
 							}
 						]
 					},
@@ -610,6 +656,52 @@
 															"type": "string"
 														}
 													},
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "gatus",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"default": "Gatus",
+															"description": "Display name for the widget.",
+															"type": "string"
+														},
+														"url": {
+															"type": "string",
+															"format": "uri",
+															"description": "Base URL of the Gatus instance."
+														},
+														"refreshInterval": {
+															"default": 30000,
+															"description": "Interval in milliseconds to refresh Gatus data.",
+															"type": "number",
+															"minimum": 5000
+														}
+													},
+													"required": ["url"],
 													"additionalProperties": false,
 													"description": "The configuration options for the widget."
 												}

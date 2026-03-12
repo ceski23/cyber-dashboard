@@ -26,6 +26,7 @@ export const authMiddleware = createMiddleware()
 				}
 
 				const credentials = authHeader.split(' ').at(1)
+				// @ts-expect-error
 				const decoded = Buffer.from(credentials, 'base64').toString()
 				const [user, pass] = decoded.split(':')
 

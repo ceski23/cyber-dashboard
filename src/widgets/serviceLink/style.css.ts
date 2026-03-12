@@ -1,4 +1,4 @@
-import { getVarName } from '#lib/utils/style'
+import { getVarName, transparentize } from '#lib/utils/style'
 import { vars } from '#theme.css'
 import { createVar, keyframes, style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
@@ -42,11 +42,11 @@ export const styles = {
 		variants: {
 			status: {
 				available: {
-					background: `linear-gradient(to right, transparent ${gradientStartVar}, oklch(from oklch(0.72 0.18 142) l c h / 0.1)), ${vars.color.panel}`,
+					background: `linear-gradient(to right, transparent ${gradientStartVar}, ${transparentize(vars.color.success, 0.1)}), ${vars.color.panel}`,
 					[getVarName(gradientStartVar)]: '60%',
 				},
 				unavailable: {
-					background: `linear-gradient(to right, transparent ${gradientStartVar}, oklch(from oklch(0.65 0.22 25) l c h / 0.1)), ${vars.color.panel}`,
+					background: `linear-gradient(to right, transparent ${gradientStartVar}, ${transparentize(vars.color.error, 0.1)}), ${vars.color.panel}`,
 					[getVarName(gradientStartVar)]: '60%',
 				},
 			},
@@ -86,38 +86,6 @@ export const styles = {
 		whiteSpace: 'nowrap',
 	}),
 
-	tooltipPopup: style({
-		background: vars.color.backgroundAlt,
-		color: vars.color.foreground,
-		border: `1px solid ${vars.color.border}`,
-		borderRadius: vars.radius.md,
-		paddingBlock: vars.spacing[1],
-		paddingInline: vars.spacing[2],
-		fontSize: vars.text.xs,
-		whiteSpace: 'nowrap',
-		boxShadow: vars.shadow.panel,
-		'@media': {
-			'(prefers-reduced-motion: no-preference)': {
-				transition: 'opacity 0.2s ease, transform 0.2s ease',
-				selectors: {
-					'&:is([data-starting-style], [data-ending-style])': { opacity: 0 },
-					'&:is([data-starting-style], [data-ending-style])[data-side="top"]': {
-						transform: 'translateY(8px)',
-					},
-					'&:is([data-starting-style], [data-ending-style])[data-side="bottom"]': {
-						transform: 'translateY(-8px)',
-					},
-					'&:is([data-starting-style], [data-ending-style])[data-side="left"]': {
-						transform: 'translateX(8px)',
-					},
-					'&:is([data-starting-style], [data-ending-style])[data-side="right"]': {
-						transform: 'translateX(-8px)',
-					},
-				},
-			},
-		},
-	}),
-
 	statusDot: recipe({
 		base: {
 			display: 'block',
@@ -136,12 +104,12 @@ export const styles = {
 		variants: {
 			status: {
 				available: {
-					backgroundColor: 'oklch(0.72 0.18 142)',
-					boxShadow: '0 0 5px oklch(0.72 0.18 142 / 60%)',
+					backgroundColor: vars.color.success,
+					boxShadow: `0 0 5px ${transparentize(vars.color.success, 0.6)}`,
 				},
 				unavailable: {
-					backgroundColor: 'oklch(0.65 0.22 25)',
-					boxShadow: '0 0 5px oklch(0.65 0.22 25 / 60%)',
+					backgroundColor: vars.color.error,
+					boxShadow: `0 0 5px ${transparentize(vars.color.error, 0.6)}`,
 				},
 				pending: {
 					backgroundColor: vars.color.foregroundMuted,

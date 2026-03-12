@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { cpuLoadOptions } from './cpuLoad/schema'
+import { gatusOptions } from './gatus/schema'
 import { memoryUsedOptions } from './memoryUsed/schema'
 import { openMeteoAirQualityOptions } from './openMeteoAirQuality/schema'
 import { openMeteoWeatherOptions } from './openMeteoWeather/schema'
@@ -13,4 +14,5 @@ export const widgetsSchema = z.union([
 	openMeteoWeatherOptions,
 	openMeteoAirQualityOptions,
 	storageUsedOptions,
+	gatusOptions,
 ])

@@ -1,5 +1,5 @@
+import { StyledTooltip } from '#components/tooltip'
 import { serviceStatusQuery } from '#services/status'
-import { Tooltip } from '@base-ui/react/tooltip'
 import { useQuery } from '@tanstack/react-query'
 import { isNotNil } from 'es-toolkit'
 import { match } from 'ts-pattern'
@@ -74,20 +74,9 @@ export const serviceLink = defineWidget({
 					{isNotNil(description) && <span className={styles.description}>{description}</span>}
 				</div>
 				{status && (
-					<Tooltip.Root>
-						<Tooltip.Trigger
-							delay={100}
-							render={<span className={statusDot.dotClass} />}
-						/>
-						<Tooltip.Portal>
-							<Tooltip.Positioner
-								sideOffset={8}
-								side="top"
-							>
-								<Tooltip.Popup className={styles.tooltipPopup}>{statusDot.label}</Tooltip.Popup>
-							</Tooltip.Positioner>
-						</Tooltip.Portal>
-					</Tooltip.Root>
+					<StyledTooltip content={statusDot.label}>
+						<span className={statusDot.dotClass} />
+					</StyledTooltip>
 				)}
 			</a>
 		)

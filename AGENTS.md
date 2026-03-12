@@ -132,6 +132,7 @@ import style from './myWidget.module.css'
 - `noUnusedLocals`/`noUnusedParameters` strict — prefix intentionally unused with `_`
 - `vite-plugin-circular-dependency` is active — avoid circular imports between modules
 - `src/components/ui/*` (shadcn/ui) is excluded from oxlint
+- **Don't use single-letter variable names** (e.g. `e`, `i`, `d`) — be descriptive for readability, even in small scopes like array methods
 
 ---
 
