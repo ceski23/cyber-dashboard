@@ -1,3 +1,5 @@
+import { Card } from '#components/card'
+import { Stat } from '#components/stat'
 import { locationQuery } from '#services/location'
 import { vars } from '#theme.css'
 import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
@@ -108,15 +110,19 @@ export const openMeteoAirQuality = defineWidget({
 		const aqiInfo = getAqiInfo(data?.europeanAqi)
 
 		return (
-			<div
-				className={styles.root({ tier: aqiInfo.tier })}
+			<Card.Root
+				className={styles.root}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
 				<div className={styles.glow({ tier: aqiInfo.tier })} />
 
-				<div className={styles.content}>
+				<Card.Content
+					className={styles.content}
+					padding="lg"
+					gap="md"
+				>
 					<div className={styles.topRow}>
-						<span className={styles.widgetLabel}>Air Quality</span>
+						<Card.Eyebrow>Air Quality</Card.Eyebrow>
 						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
 					</div>
 
@@ -136,30 +142,24 @@ export const openMeteoAirQuality = defineWidget({
 						</div> */}
 					</div>
 
-					<div className={styles.divider} />
+					<Card.Divider />
 
-					<div className={styles.statsRow}>
-						<div className={styles.statItem}>
-							<span className={styles.statValue}>
-								{isNil(data) ? '—' : `${data.pm25.toFixed(1)} µg/m³`}
-							</span>
-							<span className={styles.statLabel}>PM 2.5</span>
-						</div>
-						<div className={styles.statItem}>
-							<span className={styles.statValue}>
-								{isNil(data) ? '—' : `${data.pm10.toFixed(1)} µg/m³`}
-							</span>
-							<span className={styles.statLabel}>PM 10</span>
-						</div>
-						<div className={styles.statItem}>
-							<span className={styles.statValue}>
-								{isNil(data) ? '—' : `${data.carbonMonoxide.toFixed(1)} µg/m³`}
-							</span>
-							<span className={styles.statLabel}>CO</span>
-						</div>
-					</div>
-				</div>
-			</div>
+					<Stat.Row>
+						<Stat.Item
+							value={isNil(data) ? '—' : `${data.pm25.toFixed(1)} µg/m³`}
+							label="PM 2.5"
+						/>
+						<Stat.Item
+							value={isNil(data) ? '—' : `${data.pm10.toFixed(1)} µg/m³`}
+							label="PM 10"
+						/>
+						<Stat.Item
+							value={isNil(data) ? '—' : `${data.carbonMonoxide.toFixed(1)} µg/m³`}
+							label="CO"
+						/>
+					</Stat.Row>
+				</Card.Content>
+			</Card.Root>
 		)
 	},
 })

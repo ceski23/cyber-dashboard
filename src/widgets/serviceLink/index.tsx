@@ -1,3 +1,4 @@
+import { Card } from '#components/card'
 import { StyledTooltip } from '#components/tooltip'
 import { serviceStatusQuery } from '#services/status'
 import { useQuery } from '@tanstack/react-query'
@@ -55,11 +56,16 @@ export const serviceLink = defineWidget({
 			.exhaustive()
 
 		return (
-			<a
-				href={url}
-				target="_blank"
-				rel="noopener noreferrer"
+			<Card.Root
+				render={
+					<a
+						href={url}
+						target="_blank"
+						rel="noopener noreferrer"
+					/>
+				}
 				className={styles.root({ status: statusDot.status })}
+				interactive
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
 				{isNotNil(icon) && (
@@ -78,7 +84,7 @@ export const serviceLink = defineWidget({
 						<span className={statusDot.dotClass} />
 					</StyledTooltip>
 				)}
-			</a>
+			</Card.Root>
 		)
 	},
 	provideLinks: ({ url, name, icon }) => [

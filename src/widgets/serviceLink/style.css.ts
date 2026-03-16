@@ -24,20 +24,10 @@ export const styles = {
 			gap: vars.spacing[4],
 			paddingInline: vars.spacing[5],
 			paddingBlock: vars.spacing[3],
-			borderRadius: vars.radius.xl,
-			border: `1px solid ${vars.color.borderSubtle}`,
-			background: vars.color.panel,
-			backdropFilter: 'blur(10px)',
 			textDecoration: 'none',
 			color: vars.color.foreground,
 			height: vars.spacing['18'],
-			cursor: 'pointer',
-			transition: `border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease, background 0.4s ease, ${getVarName(gradientStartVar)} 0.5s ease`,
-			':hover': {
-				borderColor: vars.color.border,
-				transform: 'translateY(-2px)',
-				boxShadow: vars.shadow.panel,
-			},
+			transition: `background 0.4s ease, ${getVarName(gradientStartVar)} 0.5s ease`,
 		},
 		variants: {
 			status: {

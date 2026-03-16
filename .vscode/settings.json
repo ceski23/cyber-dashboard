@@ -21,7 +21,9 @@
 	"typescript.experimental.useTsgo": true,
 	"chat.tools.terminal.autoApprove": {
 		"bun run typecheck": true,
-		"bun run lint": true
+		"bun run lint": true,
+		"bun run format:check": true,
+		"bun run format": true
 	},
 	"editor.defaultFormatter": "oxc.oxc-vscode",
 	"editor.formatOnSave": true,

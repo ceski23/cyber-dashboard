@@ -1,3 +1,4 @@
+import { Card } from '#components/card'
 import { widgets, type WidgetType } from '#widgets'
 import { CircleAlertIcon, RotateCcwIcon } from 'lucide-react'
 import { FunctionComponent, useState } from 'react'
@@ -35,22 +36,29 @@ const WidgetErrorFallback: FunctionComponent<WidgetErrorFallbackProps> = ({
 	resetErrorBoundary,
 	columns = 1,
 }) => (
-	<div
+	<Card.Root
 		className={styles.errorRoot}
+		tone="danger"
 		style={{ gridColumn: `span ${columns}` }}
 	>
-		<div className={styles.errorHeader}>
-			<CircleAlertIcon size={24} />
-			<span className={styles.errorMessage}>
-				{error instanceof Error ? error.message : 'An unexpected error occurred.'}
-			</span>
-		</div>
-		<button
-			className={styles.errorButton}
-			onClick={resetErrorBoundary}
+		<Card.Content
+			className={styles.errorContent}
+			padding="lg"
+			gap="md"
 		>
-			<RotateCcwIcon size={16} />
-			Try again
-		</button>
-	</div>
+			<Card.Header className={styles.errorHeader}>
+				<CircleAlertIcon size={24} />
+				<span className={styles.errorMessage}>
+					{error instanceof Error ? error.message : 'An unexpected error occurred.'}
+				</span>
+			</Card.Header>
+			<button
+				className={styles.errorButton}
+				onClick={resetErrorBoundary}
+			>
+				<RotateCcwIcon size={16} />
+				Try again
+			</button>
+		</Card.Content>
+	</Card.Root>
 )

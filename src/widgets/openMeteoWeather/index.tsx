@@ -1,3 +1,5 @@
+import { Card } from '#components/card'
+import { Stat } from '#components/stat'
 import { locationQuery } from '#services/location'
 import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
@@ -169,14 +171,18 @@ export const openMeteoWeather = defineWidget({
 		const WeatherIcon = getWMO(data?.weatherCode).icon
 
 		return (
-			<div
+			<Card.Root
 				className={styles.root}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
 				<div className={styles.glow} />
-				<div className={styles.content}>
+				<Card.Content
+					className={styles.content}
+					padding="lg"
+					gap="md"
+				>
 					<div className={styles.topRow}>
-						<span className={styles.widgetLabel}>Weather</span>
+						<Card.Eyebrow>Weather</Card.Eyebrow>
 						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
 					</div>
 					<div className={styles.heroRow}>
@@ -195,30 +201,24 @@ export const openMeteoWeather = defineWidget({
 						</div>
 					</div>
 
-					<div className={styles.divider} />
+					<Card.Divider />
 
-					<div className={styles.statsRow}>
-						<div className={styles.statItem}>
-							<span className={styles.statValue}>
-								{isNil(data) ? '—' : `${Math.round(data.relativeHumidity)} %`}
-							</span>
-							<span className={styles.statLabel}>Humidity</span>
-						</div>
-						<div className={styles.statItem}>
-							<span className={styles.statValue}>
-								{isNil(data) ? '—' : `${data.precipitation.toFixed(1)} mm`}
-							</span>
-							<span className={styles.statLabel}>Precip.</span>
-						</div>
-						<div className={styles.statItem}>
-							<span className={styles.statValue}>
-								{isNil(data) ? '—' : `${Math.round(data.surfacePressure)} hPa`}
-							</span>
-							<span className={styles.statLabel}>Pressure</span>
-						</div>
-					</div>
-				</div>
-			</div>
+					<Stat.Row>
+						<Stat.Item
+							value={isNil(data) ? '—' : `${Math.round(data.relativeHumidity)} %`}
+							label="Humidity"
+						/>
+						<Stat.Item
+							value={isNil(data) ? '—' : `${data.precipitation.toFixed(1)} mm`}
+							label="Precip."
+						/>
+						<Stat.Item
+							value={isNil(data) ? '—' : `${Math.round(data.surfacePressure)} hPa`}
+							label="Pressure"
+						/>
+					</Stat.Row>
+				</Card.Content>
+			</Card.Root>
 		)
 	},
 })

@@ -4,19 +4,17 @@ import { style } from '@vanilla-extract/css'
 
 export const styles = {
 	errorRoot: style({
-		position: 'relative',
-		overflow: 'hidden',
-		borderRadius: vars.radius.xl,
-		border: `1px solid ${transparentize(vars.color.red[500], 0.2)}`,
-		backgroundColor: transparentize(vars.color.red[500], 0.05),
-		color: vars.color.red[400],
 		height: vars.spacing[32],
-		padding: vars.spacing[5],
+	}),
+
+	errorContent: style({
 		display: 'flex',
 		flexDirection: 'column',
+		height: '100%',
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: vars.spacing[4],
+		color: vars.color.red[400],
 		fontSize: vars.text.sm,
 	}),
 

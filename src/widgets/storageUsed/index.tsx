@@ -1,3 +1,4 @@
+import { Card } from '#components/card'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
@@ -63,25 +64,26 @@ export const storageUsed = defineWidget({
 		}
 
 		return (
-			<div
-				className={styles.root({ status: statusConfig.status })}
+			<Card.Root
+				className={styles.root}
+				tone={statusConfig.status === 'normal' ? 'default' : statusConfig.status}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
-				<div className={styles.content}>
-					<div className={styles.header}>
-						<div className={styles.iconRow}>
-							<div className={styles.iconBadge}>
-								<HardDriveIcon size={16} />
-							</div>
-							<span className={styles.label}>{drive}</span>
-						</div>
+				<Card.Content
+					className={styles.content}
+					padding="lg"
+				>
+					<Card.Header
+						icon={<HardDriveIcon size={16} />}
+						label={drive}
+					>
 						<span
 							className={styles.meta}
 							style={{ visibility: totalSize > 0 ? 'visible' : 'hidden' }}
 						>
 							{prettyBytes(totalSize)} total
 						</span>
-					</div>
+					</Card.Header>
 					<div className={styles.bottom}>
 						{match(storageQuery)
 							.with({ status: 'pending' }, () => null)
@@ -100,8 +102,8 @@ export const storageUsed = defineWidget({
 								</>
 							))}
 					</div>
-				</div>
-			</div>
+				</Card.Content>
+			</Card.Root>
 		)
 	},
 })

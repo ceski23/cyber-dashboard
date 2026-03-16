@@ -1,3 +1,4 @@
+import { Card } from '#components/card'
 import { createTypedChart } from '#components/charts'
 import { vars } from '#theme.css'
 import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/react-query'
@@ -89,8 +90,9 @@ export const cpuLoad = defineWidget({
 		}
 
 		return (
-			<div
-				className={styles.root({ status: statusConfig.status })}
+			<Card.Root
+				className={styles.root}
+				tone={statusConfig.status === 'normal' ? 'default' : statusConfig.status}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
 				{showGraph && (
@@ -146,27 +148,27 @@ export const cpuLoad = defineWidget({
 						</TypedChart.AreaChart>
 					</div>
 				)}
-				<div className={styles.content}>
-					<div className={styles.header}>
-						<div className={styles.iconRow}>
-							<div className={styles.iconBadge}>
-								<CpuIcon size={16} />
-							</div>
-							<span className={styles.label}>CPU Load</span>
-						</div>
+				<Card.Content
+					className={styles.content}
+					padding="lg"
+				>
+					<Card.Header
+						icon={<CpuIcon size={16} />}
+						label="CPU Load"
+					>
 						<span
 							className={styles.meta}
 							style={{ visibility: currentSpeed > 0 ? 'visible' : 'hidden' }}
 						>
 							{currentSpeed.toLocaleString(undefined, { maximumFractionDigits: 2 })} GHz
 						</span>
-					</div>
+					</Card.Header>
 					<span
 						className={styles.value}
 						style={assignInlineVars({ [loadVar]: currentLoadPercent })}
 					/>
-				</div>
-			</div>
+				</Card.Content>
+			</Card.Root>
 		)
 	},
 })

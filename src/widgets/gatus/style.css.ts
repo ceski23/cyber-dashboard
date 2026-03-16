@@ -11,22 +11,12 @@ const pulse = keyframes({
 
 export const styles = {
 	root: style({
-		position: 'relative',
 		display: 'flex',
 		flexDirection: 'column',
-		borderRadius: vars.radius.xl,
-		border: `1px solid ${vars.color.borderSubtle}`,
-		background: vars.color.panel,
 		height: vars.spacing[64],
-		backdropFilter: 'blur(10px)',
-		overflow: 'hidden',
 	}),
 
 	header: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
 		paddingBlock: vars.spacing[3],
 		paddingInline: vars.spacing[4],
 		gap: vars.spacing[2],
@@ -34,24 +24,11 @@ export const styles = {
 		borderBottom: `1px solid ${vars.color.borderSubtle}`,
 	}),
 
-	headerLeft: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-	}),
-
 	icon: style({
 		width: '18px',
 		height: '18px',
 		objectFit: 'contain',
 		flexShrink: 0,
-	}),
-
-	title: style({
-		fontSize: vars.text.sm,
-		fontWeight: 600,
-		color: vars.color.foreground,
 	}),
 
 	badge: recipe({

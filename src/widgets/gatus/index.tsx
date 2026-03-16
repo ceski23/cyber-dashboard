@@ -1,3 +1,4 @@
+import { Card } from '#components/card'
 import { StyledTooltip } from '#components/tooltip'
 import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
@@ -104,25 +105,27 @@ export const gatusWidget = defineWidget({
 		const hasGroups = Object.keys(grouped).some(group => group !== '')
 
 		return (
-			<div
+			<Card.Root
 				className={styles.root}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
-				<div className={styles.header}>
-					<div className={styles.headerLeft}>
+				<Card.Header
+					className={styles.header}
+					icon={
 						<img
 							src={GATUS_ICON_URL}
 							alt="Gatus"
 							className={styles.icon}
 						/>
-						<span className={styles.title}>{name}</span>
-					</div>
+					}
+					label={name}
+				>
 					{totalCount > 0 && (
 						<span className={styles.badge({ status: badgeStatus })}>
 							{upCount} / {totalCount}
 						</span>
 					)}
-				</div>
+				</Card.Header>
 
 				<div className={styles.list}>
 					{endpoints.length === 0 ? (
@@ -192,7 +195,7 @@ export const gatusWidget = defineWidget({
 						))
 					)}
 				</div>
-			</div>
+			</Card.Root>
 		)
 	},
 	provideLinks: ({ url, name }) => [

@@ -5,22 +5,8 @@ import { recipe } from '@vanilla-extract/recipes'
 import { mapValues } from 'es-toolkit'
 
 export const styles = {
-	root: recipe({
-		base: {
-			borderRadius: vars.radius['2xl'],
-			border: `1px solid ${transparentize(vars.color.white, 0.08)}`,
-			background: vars.color.panel,
-			backdropFilter: 'blur(20px)',
-			color: vars.color.foreground,
-			overflow: 'hidden',
-			padding: vars.spacing[5],
-			display: 'flex',
-			flexDirection: 'column',
-			gap: vars.spacing[4],
-			boxSizing: 'border-box',
-			position: 'relative',
-		},
-		variants: { tier: mapValues(vars.color.aqi, () => ({})) },
+	root: style({
+		minHeight: vars.spacing[48],
 	}),
 
 	glow: recipe({
@@ -42,24 +28,13 @@ export const styles = {
 	}),
 
 	content: style({
-		position: 'relative',
-		display: 'flex',
-		flexDirection: 'column',
-		gap: vars.spacing[4],
+		minHeight: '100%',
 	}),
 
 	topRow: style({
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-	}),
-
-	widgetLabel: style({
-		fontSize: vars.text.xxs,
-		fontWeight: 700,
-		letterSpacing: '0.12em',
-		textTransform: 'uppercase',
-		color: vars.color.foregroundMuted,
 	}),
 
 	timestamp: style({
@@ -130,41 +105,5 @@ export const styles = {
 		fontSize: vars.text.xxs,
 		color: vars.color.foregroundMuted,
 		fontWeight: 400,
-	}),
-
-	divider: style({
-		height: '1px',
-		background: transparentize(vars.color.white, 0.06),
-	}),
-
-	statsRow: style({
-		display: 'grid',
-		gridTemplateColumns: '1fr 1fr 1fr',
-		gap: vars.spacing[2],
-	}),
-
-	statItem: style({
-		display: 'flex',
-		flexDirection: 'column',
-		gap: vars.spacing['0.5'],
-		padding: `${vars.spacing[2]} ${vars.spacing[3]}`,
-		background: transparentize(vars.color.white, 0.03),
-		borderRadius: vars.radius.lg,
-		border: `1px solid ${transparentize(vars.color.white, 0.05)}`,
-	}),
-
-	statValue: style({
-		fontSize: vars.text.sm,
-		fontWeight: 600,
-		color: vars.color.foreground,
-		fontVariantNumeric: 'tabular-nums',
-	}),
-
-	statLabel: style({
-		fontSize: vars.text.xxs,
-		color: vars.color.foregroundMuted,
-		textTransform: 'uppercase',
-		letterSpacing: '0.07em',
-		fontWeight: 500,
 	}),
 }
