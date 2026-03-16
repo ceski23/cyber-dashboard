@@ -22,5 +22,8 @@
 	"chat.tools.terminal.autoApprove": {
 		"bun run typecheck": true,
 		"bun run lint": true
-	}
+	},
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "file"
 }
