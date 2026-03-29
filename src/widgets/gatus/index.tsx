@@ -1,3 +1,4 @@
+import { Badge } from '#components/badge'
 import { Card } from '#components/card'
 import { Skeleton } from '#components/skeleton'
 import { StyledTooltip } from '#components/tooltip'
@@ -55,9 +56,10 @@ export const gatusWidget = defineWidget({
 					label={name}
 				>
 					{totalCount > 0 && (
-						<span className={styles.badge({ status: badgeStatus })}>
-							{upCount} / {totalCount}
-						</span>
+						<Badge
+							variant={badgeStatus}
+							text={`${upCount} / ${totalCount}`}
+						/>
 					)}
 				</Card.Header>
 

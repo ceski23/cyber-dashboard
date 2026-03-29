@@ -1,3 +1,4 @@
+import { Badge } from '#components/badge'
 import { Card } from '#components/card'
 import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
@@ -82,17 +83,19 @@ export const blockyWidget = defineWidget({
 										</div>
 									}
 								>
-									<span className={styles.statusChip({ status: status.value })}>
-										<span className={styles.statusDot({ status: status.value })} />
-										{status.label}
-									</span>
+									<Badge
+										variant={isEnabled ? 'success' : 'error'}
+										text={status.label}
+										withDot
+									/>
 								</StyledTooltip>
 							))
 							.with({ isLoading: false }, () => (
-								<span className={styles.statusChip({ status: status.value })}>
-									<span className={styles.statusDot({ status: status.value })} />
-									{status.label}
-								</span>
+								<Badge
+									variant={isEnabled ? 'success' : 'error'}
+									text={status.label}
+									withDot
+								/>
 							))
 							.otherwise(() => null)}
 

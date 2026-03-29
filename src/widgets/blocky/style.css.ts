@@ -57,38 +57,6 @@ export const styles = {
 		marginLeft: 'auto',
 	}),
 
-	statusChip: recipe({
-		base: {
-			fontSize: vars.text.xxs,
-			fontWeight: 600,
-			letterSpacing: '0.06em',
-			textTransform: 'uppercase',
-			paddingInline: vars.spacing[2],
-			paddingBlock: vars.spacing[1],
-			borderRadius: vars.radius.full,
-			border: '1px solid',
-		},
-		variants: {
-			status: {
-				enabled: {
-					color: vars.color.success,
-					borderColor: transparentize(vars.color.success, 0.35),
-					background: transparentize(vars.color.success, 0.08),
-				},
-				disabled: {
-					color: vars.color.error,
-					borderColor: transparentize(vars.color.error, 0.35),
-					background: transparentize(vars.color.error, 0.08),
-				},
-				loading: {
-					color: vars.color.foregroundMuted,
-					borderColor: transparentize(vars.color.white, 0.1),
-					background: 'transparent',
-				},
-			},
-		},
-	}),
-
 	toggleButton: recipe({
 		base: {
 			display: 'flex',
@@ -138,33 +106,6 @@ export const styles = {
 		padding: vars.spacing[3],
 		flex: 1,
 		alignContent: 'end',
-	}),
-
-	statusDot: recipe({
-		base: {
-			display: 'inline-block',
-			width: '6px',
-			height: '6px',
-			borderRadius: vars.radius.full,
-			flexShrink: 0,
-			verticalAlign: 'middle',
-			marginRight: vars.spacing[1],
-		},
-		variants: {
-			status: {
-				enabled: {
-					backgroundColor: vars.color.success,
-					boxShadow: `0 0 5px ${transparentize(vars.color.success, 0.6)}`,
-				},
-				disabled: {
-					backgroundColor: vars.color.error,
-					boxShadow: `0 0 5px ${transparentize(vars.color.error, 0.6)}`,
-				},
-				loading: {
-					backgroundColor: vars.color.foregroundMuted,
-				},
-			},
-		},
 	}),
 
 	tooltipGroups: style({

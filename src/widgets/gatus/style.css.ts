@@ -31,34 +31,6 @@ export const styles = {
 		flexShrink: 0,
 	}),
 
-	badge: recipe({
-		base: {
-			fontSize: vars.text.xxs,
-			fontWeight: 600,
-			paddingBlock: vars.spacing['0.5'],
-			paddingInline: vars.spacing[1.5],
-			borderRadius: vars.radius.full,
-			flexShrink: 0,
-			fontVariantNumeric: 'tabular-nums',
-		},
-		variants: {
-			status: {
-				success: {
-					color: vars.color.success,
-					background: transparentize(vars.color.success, 0.15),
-				},
-				warning: {
-					color: vars.color.warning,
-					background: transparentize(vars.color.warning, 0.15),
-				},
-				error: {
-					color: vars.color.error,
-					background: transparentize(vars.color.error, 0.15),
-				},
-			},
-		},
-	}),
-
 	list: style({
 		flex: 1,
 		overflowY: 'auto',
