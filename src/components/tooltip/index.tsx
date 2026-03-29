@@ -8,6 +8,7 @@ type Props = {
 	delay?: number
 	side?: 'top' | 'bottom' | 'left' | 'right'
 	sideOffset?: number
+	align?: 'start' | 'center' | 'end'
 }
 
 export const StyledTooltip: FunctionComponent<Props> = ({
@@ -16,6 +17,7 @@ export const StyledTooltip: FunctionComponent<Props> = ({
 	delay = 100,
 	side = 'top',
 	sideOffset = 8,
+	align = 'center',
 }) => (
 	<Tooltip.Root>
 		<Tooltip.Trigger
@@ -26,6 +28,7 @@ export const StyledTooltip: FunctionComponent<Props> = ({
 			<Tooltip.Positioner
 				sideOffset={sideOffset}
 				side={side}
+				align={align}
 			>
 				<Tooltip.Popup className={tooltipPopup}>{content}</Tooltip.Popup>
 			</Tooltip.Positioner>

@@ -148,6 +148,7 @@ export const gatusWidget = defineWidget({
 									return (
 										<StyledTooltip
 											key={endpoint.key}
+											align="start"
 											content={
 												<div className={styles.tooltipContent}>
 													<div className={styles.tooltipName}>{endpoint.name}</div>
