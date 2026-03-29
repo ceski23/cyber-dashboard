@@ -4,7 +4,8 @@ import { configMiddleware } from '#lib/config/middleware'
 import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { isNotNil } from 'es-toolkit'
+import { isNotNil, withTimeout } from 'es-toolkit'
+import { ms } from 'ms'
 import * as styles from './-components/index.css'
 
 const fetchData = createServerFn({ method: 'GET' })
@@ -77,8 +78,9 @@ export const Route = createFileRoute('/_layout/')({
 				})
 			})
 			.filter(isNotNil)
+			.map(promise => withTimeout(() => promise, ms('1s')))
 
-		await Promise.all(prefetchPromises)
+		await Promise.allSettled(prefetchPromises)
 
 		return {
 			widgets,
