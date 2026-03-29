@@ -425,6 +425,61 @@
 									},
 									"type": {
 										"type": "string",
+										"const": "proxmox",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"default": "Proxmox",
+												"description": "Display name for the widget.",
+												"type": "string"
+											},
+											"url": {
+												"type": "string",
+												"format": "uri",
+												"description": "Base URL of the Proxmox VE instance (e.g. https://proxmox.local:8006)."
+											},
+											"node": {
+												"default": "pve",
+												"description": "Name of the Proxmox node to monitor.",
+												"type": "string"
+											},
+											"apiToken": {
+												"type": "string",
+												"description": "Proxmox API token in the format USER@REALM!TOKENID=SECRET (e.g. root@pam!mytoken=abc123...)."
+											},
+											"refreshInterval": {
+												"default": 30000,
+												"description": "Interval in milliseconds to refresh Proxmox data.",
+												"type": "number",
+												"minimum": 1000
+											}
+										},
+										"required": ["url", "apiToken"],
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
 										"const": "blocky",
 										"description": "The type of the widget."
 									},
@@ -872,6 +927,61 @@
 														}
 													},
 													"required": ["url"],
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "proxmox",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"default": "Proxmox",
+															"description": "Display name for the widget.",
+															"type": "string"
+														},
+														"url": {
+															"type": "string",
+															"format": "uri",
+															"description": "Base URL of the Proxmox VE instance (e.g. https://proxmox.local:8006)."
+														},
+														"node": {
+															"default": "pve",
+															"description": "Name of the Proxmox node to monitor.",
+															"type": "string"
+														},
+														"apiToken": {
+															"type": "string",
+															"description": "Proxmox API token in the format USER@REALM!TOKENID=SECRET (e.g. root@pam!mytoken=abc123...)."
+														},
+														"refreshInterval": {
+															"default": 30000,
+															"description": "Interval in milliseconds to refresh Proxmox data.",
+															"type": "number",
+															"minimum": 1000
+														}
+													},
+													"required": ["url", "apiToken"],
 													"additionalProperties": false,
 													"description": "The configuration options for the widget."
 												}

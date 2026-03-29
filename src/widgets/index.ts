@@ -5,6 +5,7 @@ import { gatusWidget } from './gatus'
 import { memoryUsed } from './memoryUsed'
 import { openMeteoAirQuality } from './openMeteoAirQuality'
 import { openMeteoWeather } from './openMeteoWeather'
+import { proxmoxWidget } from './proxmox'
 import { serviceLink } from './serviceLink'
 import { storageUsed } from './storageUsed'
 import { traefikWidget } from './traefik'
@@ -18,6 +19,7 @@ export const widgets = {
 	[storageUsed.type]: storageUsed,
 	[gatusWidget.type]: gatusWidget,
 	[traefikWidget.type]: traefikWidget,
+	[proxmoxWidget.type]: proxmoxWidget,
 	[blockyWidget.type]: blockyWidget,
 }
 

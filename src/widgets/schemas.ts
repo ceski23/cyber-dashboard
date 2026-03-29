@@ -5,6 +5,7 @@ import { gatusOptions } from './gatus/schema'
 import { memoryUsedOptions } from './memoryUsed/schema'
 import { openMeteoAirQualityOptions } from './openMeteoAirQuality/schema'
 import { openMeteoWeatherOptions } from './openMeteoWeather/schema'
+import { proxmoxOptions } from './proxmox/schema'
 import { serviceLinkOptions } from './serviceLink/schema'
 import { storageUsedOptions } from './storageUsed/schema'
 import { traefikOptions } from './traefik/schema'
@@ -18,5 +19,6 @@ export const widgetsSchema = z.union([
 	storageUsedOptions,
 	gatusOptions,
 	traefikOptions,
+	proxmoxOptions,
 	blockyOptions,
 ])
