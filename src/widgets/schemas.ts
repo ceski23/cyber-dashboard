@@ -7,6 +7,7 @@ import { openMeteoAirQualityOptions } from './openMeteoAirQuality/schema'
 import { openMeteoWeatherOptions } from './openMeteoWeather/schema'
 import { serviceLinkOptions } from './serviceLink/schema'
 import { storageUsedOptions } from './storageUsed/schema'
+import { traefikOptions } from './traefik/schema'
 
 export const widgetsSchema = z.union([
 	cpuLoadOptions,
@@ -16,5 +17,6 @@ export const widgetsSchema = z.union([
 	openMeteoAirQualityOptions,
 	storageUsedOptions,
 	gatusOptions,
+	traefikOptions,
 	blockyOptions,
 ])

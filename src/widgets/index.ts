@@ -7,6 +7,7 @@ import { openMeteoAirQuality } from './openMeteoAirQuality'
 import { openMeteoWeather } from './openMeteoWeather'
 import { serviceLink } from './serviceLink'
 import { storageUsed } from './storageUsed'
+import { traefikWidget } from './traefik'
 
 export const widgets = {
 	[cpuLoad.type]: cpuLoad,
@@ -16,6 +17,7 @@ export const widgets = {
 	[openMeteoAirQuality.type]: openMeteoAirQuality,
 	[storageUsed.type]: storageUsed,
 	[gatusWidget.type]: gatusWidget,
+	[traefikWidget.type]: traefikWidget,
 	[blockyWidget.type]: blockyWidget,
 }
 
