@@ -123,6 +123,12 @@ import style from './myWidget.module.css'
 
 ---
 
+## Design Guidelines
+
+Refer to `DESIGN.md` for detailed design guidelines, including visual style, color usage, typography, and code style conventions.
+
+---
+
 ## Code Style (oxlint + oxfmt enforced)
 
 - **`type` not `interface`** — oxlint enforced
