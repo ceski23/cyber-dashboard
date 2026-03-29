@@ -61,6 +61,7 @@
 		"lucide-react": "1.7.0",
 		"mnemonist": "0.40.3",
 		"modern-css-reset": "1.4.0",
+		"ms": "4.0.0-nightly.202508271359",
 		"nitro": "npm:nitro-nightly@3.0.1-20260227-181935-bfbb207c",
 		"openmeteo": "1.2.3",
 		"pretty-bytes": "7.1.0",

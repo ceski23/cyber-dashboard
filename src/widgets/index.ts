@@ -1,4 +1,5 @@
 import z from 'zod'
+import { blockyWidget } from './blocky'
 import { cpuLoad } from './cpuLoad'
 import { gatusWidget } from './gatus'
 import { memoryUsed } from './memoryUsed'
@@ -15,6 +16,7 @@ export const widgets = {
 	[openMeteoAirQuality.type]: openMeteoAirQuality,
 	[storageUsed.type]: storageUsed,
 	[gatusWidget.type]: gatusWidget,
+	[blockyWidget.type]: blockyWidget,
 }
 
 export type WidgetType = {
