@@ -1,150 +1,15 @@
 import { Card } from '#components/card'
+import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
 import { locationQuery } from '#services/location'
-import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
-import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
+import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import { isNil } from 'es-toolkit'
-import {
-	CircleQuestionMarkIcon,
-	Cloud,
-	CloudDrizzle,
-	CloudFog,
-	CloudLightning,
-	CloudRain,
-	CloudSnow,
-	CloudSun,
-	Snowflake,
-	Sun,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import { fetchWeatherApi } from 'openmeteo'
-import z from 'zod'
+import { match } from 'ts-pattern'
 import { defineWidget } from '../helpers'
+import { weatherDataQuery } from './data'
 import { openMeteoWeatherOptions } from './schema'
 import { styles } from './style.css'
-
-const getWMO = (code?: number): { label: string; icon: LucideIcon } => {
-	switch (code) {
-		case 0:
-			return { label: 'Clear sky', icon: Sun }
-		case 1:
-			return { label: 'Mainly clear', icon: Sun }
-		case 2:
-			return { label: 'Partly cloudy', icon: CloudSun }
-		case 3:
-			return { label: 'Overcast', icon: Cloud }
-		case 45:
-		case 48:
-			return { label: 'Foggy', icon: CloudFog }
-		case 51:
-		case 53:
-		case 55:
-			return { label: 'Drizzle', icon: CloudDrizzle }
-		case 56:
-		case 57:
-			return { label: 'Freezing drizzle', icon: CloudDrizzle }
-		case 61:
-		case 63:
-		case 65:
-			return { label: 'Rain', icon: CloudRain }
-		case 66:
-		case 67:
-			return { label: 'Freezing rain', icon: CloudRain }
-		case 80:
-		case 81:
-		case 82:
-			return { label: 'Rain showers', icon: CloudRain }
-		case 71:
-		case 73:
-		case 75:
-			return { label: 'Snow', icon: CloudSnow }
-		case 85:
-		case 86:
-			return { label: 'Snow showers', icon: CloudSnow }
-		case 77:
-			return { label: 'Snow grains', icon: Snowflake }
-		case 95:
-			return { label: 'Thunderstorm', icon: CloudLightning }
-		case 96:
-		case 99:
-			return { label: 'Thunderstorm w/ hail', icon: CloudLightning }
-		default:
-			return { label: 'Unknown', icon: CircleQuestionMarkIcon }
-	}
-}
-
-const fetchCurrentWeather = createServerFn({ method: 'GET' })
-	.inputValidator(
-		z.object({
-			latitude: z.number().min(-90).max(90),
-			longitude: z.number().min(-180).max(180),
-		}),
-	)
-	.handler(
-		async ({
-			data: { latitude, longitude },
-			// context: {
-			// 	config: { units },
-			// },
-		}) => {
-			const { signal } = getRequest()
-			const units = 'metric' // TODO: get from config
-			const response = await fetchWeatherApi(
-				'https://api.open-meteo.com/v1/forecast',
-				{
-					latitude,
-					longitude,
-					current: [
-						'temperature_2m',
-						'relative_humidity_2m',
-						'apparent_temperature',
-						'precipitation',
-						'weather_code',
-						'surface_pressure',
-					],
-					temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
-					wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
-					precipitation_unit: units === 'metric' ? 'mm' : 'inch',
-					domains: 'cams_europe',
-				},
-				undefined,
-				undefined,
-				undefined,
-				{ signal },
-			).then(responses => {
-				const response = responses.at(0)
-				const current = response?.current()
-				const utcOffsetSeconds = response?.utcOffsetSeconds()
-
-				return !current || isNil(utcOffsetSeconds) ? undefined : { current, utcOffsetSeconds }
-			})
-
-			if (!response) {
-				throw new Error('No response from Open Meteo API')
-			}
-
-			return {
-				time: new Date((Number(response.current.time()) + response.utcOffsetSeconds) * 1000),
-				temperature: response.current.variables(0)!.value(),
-				relativeHumidity: response.current.variables(1)!.value(),
-				apparentTemperature: response.current.variables(2)!.value(),
-				precipitation: response.current.variables(3)!.value(),
-				weatherCode: response.current.variables(4)!.value(),
-				weatherDescription: getWMO(response.current.variables(4)!.value()).label,
-				surfacePressure: response.current.variables(5)!.value(),
-			}
-		},
-	)
-
-const weatherDataQuery = (locationData?: { latitude: number; longitude: number }) =>
-	queryOptions({
-		queryKey: ['openMeteo', 'currentWeather', locationData],
-		queryFn: isNil(locationData)
-			? skipToken
-			: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
-	})
+import { getWMO } from './utils'
 
 export const openMeteoWeather = defineWidget({
 	type: 'open-meteo-weather',
@@ -157,18 +22,17 @@ export const openMeteoWeather = defineWidget({
 	},
 	Component: ({ options: { location }, columns }) => {
 		const { data: locationData, error: locationError } = useQuery(locationQuery(location))
-		const { data, error: weatherError } = useQuery(weatherDataQuery(locationData))
+		const weatherQuery = useQuery(weatherDataQuery(locationData))
 
 		if (locationError) {
 			throw new Error(`Failed to determine location: ${locationError.message}`)
 		}
 
-		if (weatherError) {
-			throw new Error(`Failed to fetch weather data: ${weatherError.message}`)
+		if (weatherQuery.error) {
+			throw new Error(`Failed to fetch weather data: ${weatherQuery.error.message}`)
 		}
 
-		const tempUnit = '°C' // TODO: from config
-		const WeatherIcon = getWMO(data?.weatherCode).icon
+		const { icon: WeatherIcon, label: weatherDescription } = getWMO(weatherQuery.data?.weatherCode)
 
 		return (
 			<Card.Root
@@ -183,40 +47,80 @@ export const openMeteoWeather = defineWidget({
 				>
 					<div className={styles.topRow}>
 						<Card.Eyebrow>Weather</Card.Eyebrow>
-						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
+						{weatherQuery.data?.time && (
+							<span className={styles.timestamp}>Updated {format(weatherQuery.data.time, 'HH:mm')}</span>
+						)}
 					</div>
-					<div className={styles.heroRow}>
-						<div className={styles.tempBlock}>
-							<span className={styles.temperature}>
-								{isNil(data) ? '—' : `${Math.round(data.temperature)}${tempUnit}`}
-								<WeatherIcon className={styles.weatherIcon} />
-							</span>
-							<span className={styles.condition}>{data?.weatherDescription ?? '—'}</span>
-						</div>
-						<div className={styles.feelsChip}>
-							<span className={styles.feelsLabel}>Feels like</span>
-							<span className={styles.feelsValue}>
-								{isNil(data) ? '—' : `${Math.round(data.apparentTemperature)}°`}
-							</span>
-						</div>
-					</div>
-
-					<Card.Divider />
-
-					<Stat.Row>
-						<Stat.Item
-							value={isNil(data) ? '—' : `${Math.round(data.relativeHumidity)}%`}
-							label="Humidity"
-						/>
-						<Stat.Item
-							value={isNil(data) ? '—' : `${data.precipitation.toFixed(1)} mm`}
-							label="Precip."
-						/>
-						<Stat.Item
-							value={isNil(data) ? '—' : `${Math.round(data.surfacePressure)} hPa`}
-							label="Pressure"
-						/>
-					</Stat.Row>
+					{match(weatherQuery)
+						.with({ status: 'pending' }, () => (
+							<>
+								<div className={styles.heroRow}>
+									<div className={styles.tempBlock}>
+										<Skeleton
+											height={52}
+											width={180}
+										/>
+										<Skeleton
+											height={16}
+											width={96}
+										/>
+									</div>
+									<div className={styles.feelsChip}>
+										<Skeleton
+											height={12}
+											width={56}
+										/>
+										<Skeleton
+											height={28}
+											width={44}
+										/>
+									</div>
+								</div>
+								<Card.Divider />
+								<div className={styles.skeletonStatRow}>
+									{Array.from({ length: 3 }, (_, skeletonIdx) => (
+										<Skeleton
+											key={skeletonIdx}
+											height={56}
+										/>
+									))}
+								</div>
+							</>
+						))
+						.otherwise(({ data }) => (
+							<>
+								<div className={styles.heroRow}>
+									<div className={styles.tempBlock}>
+										<span className={styles.temperature}>
+											{`${Math.round(data.temperature)}${data?.units.temperature}`}
+											<WeatherIcon className={styles.weatherIcon} />
+										</span>
+										<span className={styles.condition}>{weatherDescription}</span>
+									</div>
+									<div className={styles.feelsChip}>
+										<span className={styles.feelsLabel}>Feels like</span>
+										<span className={styles.feelsValue}>
+											{`${Math.round(data.apparentTemperature)}${data?.units.temperature}`}
+										</span>
+									</div>
+								</div>
+								<Card.Divider />
+								<Stat.Row>
+									<Stat.Item
+										value={`${Math.round(data.relativeHumidity)}%`}
+										label="Humidity"
+									/>
+									<Stat.Item
+										value={`${data.precipitation.toFixed(1)} ${data?.units.precipitation}`}
+										label="Precip."
+									/>
+									<Stat.Item
+										value={`${Math.round(data.surfacePressure)} hPa`}
+										label="Pressure"
+									/>
+								</Stat.Row>
+							</>
+						))}
 				</Card.Content>
 			</Card.Root>
 		)

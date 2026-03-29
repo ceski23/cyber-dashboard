@@ -94,4 +94,10 @@ export const styles = {
 		color: vars.color.foregroundAlt,
 		lineHeight: 1,
 	}),
+
+	skeletonStatRow: style({
+		display: 'grid',
+		gridTemplateColumns: 'repeat(3, 1fr)',
+		gap: vars.spacing[2],
+	}),
 }

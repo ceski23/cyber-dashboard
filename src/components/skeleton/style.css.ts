@@ -24,7 +24,7 @@ globalStyle(':root', {
 
 export const skeleton = style({
 	display: 'block',
-	borderRadius: vars.radius.sm,
+	borderRadius: vars.radius.lg,
 	backgroundColor: transparentize(vars.color.backgroundAlt, 0.5),
 	backgroundImage: `linear-gradient(90deg, transparent 25%, light-dark(${transparentize(vars.color.black, 0.08)}, ${transparentize(vars.color.white, 0.12)}) 50%, transparent 75%)`,
 	backgroundSize: '200vw 100%',

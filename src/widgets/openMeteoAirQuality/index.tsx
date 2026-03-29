@@ -1,90 +1,15 @@
 import { Card } from '#components/card'
+import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
 import { locationQuery } from '#services/location'
-import { vars } from '#theme.css'
-import { queryOptions, skipToken, useQuery } from '@tanstack/react-query'
-import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
+import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import { isNil } from 'es-toolkit'
-import { fetchWeatherApi } from 'openmeteo'
-import z from 'zod'
+import { match } from 'ts-pattern'
 import { defineWidget } from '../helpers'
+import { airQualityDataQuery } from './data'
 import { openMeteoAirQualityOptions } from './schema'
 import { styles } from './style.css'
-
-const fetchCurrentWeather = createServerFn({ method: 'GET' })
-	.inputValidator(
-		z.object({
-			latitude: z.number().min(-90).max(90),
-			longitude: z.number().min(-180).max(180),
-		}),
-	)
-	.handler(
-		async ({
-			data: { latitude, longitude },
-			// context: {
-			// 	config: { units },
-			// },
-		}) => {
-			const { signal } = getRequest()
-			const units = 'metric' // TODO: get from config
-			const response = await fetchWeatherApi(
-				'https://air-quality-api.open-meteo.com/v1/air-quality',
-				{
-					latitude,
-					longitude,
-					current: ['pm10', 'pm2_5', 'european_aqi', 'carbon_monoxide'],
-					temperature_unit: units === 'metric' ? 'celsius' : 'fahrenheit',
-					wind_speed_unit: units === 'metric' ? 'kmh' : 'mph',
-					precipitation_unit: units === 'metric' ? 'mm' : 'inch',
-					domains: 'cams_europe',
-				},
-				undefined,
-				undefined,
-				undefined,
-				{ signal },
-			).then(responses => {
-				const response = responses.at(0)
-				const current = response?.current()
-				const utcOffsetSeconds = response?.utcOffsetSeconds()
-
-				return !current || isNil(utcOffsetSeconds) ? undefined : { current, utcOffsetSeconds }
-			})
-
-			if (!response) {
-				throw new Error('No response from Open Meteo API')
-			}
-
-			return {
-				time: new Date((Number(response.current.time()) + response.utcOffsetSeconds) * 1000),
-				pm10: response.current.variables(0)!.value(),
-				pm25: response.current.variables(1)!.value(),
-				europeanAqi: response.current.variables(2)!.value(),
-				carbonMonoxide: response.current.variables(3)!.value(),
-			}
-		},
-	)
-
-type AqiTier = typeof vars.color.aqi extends Record<infer Tier, string> ? Tier : never
-
-const getAqiInfo = (aqi?: number): { label: string; tier: AqiTier } => {
-	if (aqi === undefined) return { label: 'Unknown', tier: 'unknown' }
-	if (aqi <= 20) return { label: 'Good', tier: 'good' }
-	if (aqi <= 40) return { label: 'Fair', tier: 'fair' }
-	if (aqi <= 60) return { label: 'Moderate', tier: 'moderate' }
-	if (aqi <= 80) return { label: 'Poor', tier: 'poor' }
-	if (aqi <= 100) return { label: 'Very Poor', tier: 'veryPoor' }
-	return { label: 'Extremely Poor', tier: 'extremelyPoor' }
-}
-
-const airQualityDataQuery = (locationData?: { latitude: number; longitude: number }) =>
-	queryOptions({
-		queryKey: ['openMeteo', 'airQuality', locationData],
-		queryFn: isNil(locationData)
-			? skipToken
-			: async ({ signal }) => fetchCurrentWeather({ data: locationData, signal }),
-	})
+import { getAqiInfo } from './utils'
 
 export const openMeteoAirQuality = defineWidget({
 	type: 'open-meteo-air-quality',
@@ -97,17 +22,17 @@ export const openMeteoAirQuality = defineWidget({
 	},
 	Component: ({ options: { location }, columns }) => {
 		const { data: locationData, error: locationError } = useQuery(locationQuery(location))
-		const { data, error: weatherError } = useQuery(airQualityDataQuery(locationData))
+		const airQualityQuery = useQuery(airQualityDataQuery(locationData))
 
 		if (locationError) {
 			throw new Error(`Failed to determine location: ${locationError.message}`)
 		}
 
-		if (weatherError) {
-			throw new Error(`Failed to fetch weather data: ${weatherError.message}`)
+		if (airQualityQuery.error) {
+			throw new Error(`Failed to fetch air quality data: ${airQualityQuery.error.message}`)
 		}
 
-		const aqiInfo = getAqiInfo(data?.europeanAqi)
+		const aqiInfo = getAqiInfo(airQualityQuery.data?.europeanAqi)
 
 		return (
 			<Card.Root
@@ -123,41 +48,66 @@ export const openMeteoAirQuality = defineWidget({
 				>
 					<div className={styles.topRow}>
 						<Card.Eyebrow>Air Quality</Card.Eyebrow>
-						{data?.time && <span className={styles.timestamp}>Updated {format(data.time, 'HH:mm')}</span>}
+						{airQualityQuery.data?.time && (
+							<span className={styles.timestamp}>
+								Updated {format(airQualityQuery.data.time, 'HH:mm')}
+							</span>
+						)}
 					</div>
 
-					<div className={styles.heroRow}>
-						<div className={styles.aqiBlock}>
-							<span className={styles.aqiScore({ tier: aqiInfo.tier })}>
-								{isNil(data?.europeanAqi) ? '—' : Math.round(data.europeanAqi)}
-							</span>
-							<span className={styles.aqiLabel}>{aqiInfo.label}</span>
-						</div>
-						{/* <div className={styles.pm25Chip}>
-							<span className={styles.pm25ChipLabel}>PM 2.5</span>
-							<span className={styles.pm25ChipValue}>
-								{isNil(data) ? '—' : data.pm25.toFixed(1)}
-								<span className={styles.pm25ChipUnit}> µg/m³</span>
-							</span>
-						</div> */}
-					</div>
-
-					<Card.Divider />
-
-					<Stat.Row>
-						<Stat.Item
-							value={isNil(data) ? '—' : `${data.pm25.toFixed(1)} µg/m³`}
-							label="PM 2.5"
-						/>
-						<Stat.Item
-							value={isNil(data) ? '—' : `${data.pm10.toFixed(1)} µg/m³`}
-							label="PM 10"
-						/>
-						<Stat.Item
-							value={isNil(data) ? '—' : `${data.carbonMonoxide.toFixed(1)} µg/m³`}
-							label="CO"
-						/>
-					</Stat.Row>
+					{match(airQualityQuery)
+						.with({ status: 'pending' }, () => (
+							<>
+								<div className={styles.heroRow}>
+									<div className={styles.aqiBlock}>
+										<Skeleton
+											height={52}
+											width={80}
+										/>
+										<Skeleton
+											height={16}
+											width={96}
+										/>
+									</div>
+								</div>
+								<Card.Divider />
+								<div className={styles.skeletonStatRow}>
+									{Array.from({ length: 3 }, (_, skeletonIdx) => (
+										<Skeleton
+											key={skeletonIdx}
+											height={56}
+										/>
+									))}
+								</div>
+							</>
+						))
+						.otherwise(({ data }) => (
+							<>
+								<div className={styles.heroRow}>
+									<div className={styles.aqiBlock}>
+										<span className={styles.aqiScore({ tier: aqiInfo.tier })}>
+											{Math.round(data.europeanAqi)}
+										</span>
+										<span className={styles.aqiLabel}>{aqiInfo.label}</span>
+									</div>
+								</div>
+								<Card.Divider />
+								<Stat.Row>
+									<Stat.Item
+										value={`${data.pm25.toFixed(1)} µg/m³`}
+										label="PM 2.5"
+									/>
+									<Stat.Item
+										value={`${data.pm10.toFixed(1)} µg/m³`}
+										label="PM 10"
+									/>
+									<Stat.Item
+										value={`${data.carbonMonoxide.toFixed(1)} µg/m³`}
+										label="CO"
+									/>
+								</Stat.Row>
+							</>
+						))}
 				</Card.Content>
 			</Card.Root>
 		)
