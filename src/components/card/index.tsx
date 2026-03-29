@@ -2,8 +2,10 @@ import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import type { RecipeVariants } from '@vanilla-extract/recipes'
 import clsx from 'clsx'
+import { isNotNil } from 'es-toolkit'
 import type { FunctionComponent, ReactElement } from 'react'
 import type { PropsWithChildren } from 'react'
+import { match, P } from 'ts-pattern'
 import * as styles from './style.css'
 
 type RootVariants = RecipeVariants<typeof styles.root>
@@ -44,11 +46,11 @@ type HeaderProps = PropsWithChildren<{
 	className?: string
 	icon?: ReactElement
 	label?: string
+	labelHref?: string
 }>
 
-const Header: FunctionComponent<HeaderProps> = ({ className, icon, label, children, ...props }) => {
-	const hasLabel = label != null && label !== ''
-	const showIconRow = icon != null || hasLabel
+const Header: FunctionComponent<HeaderProps> = ({ className, icon, label, labelHref, children, ...props }) => {
+	const showIconRow = isNotNil(icon) || isNotNil(label)
 
 	return (
 		<div
@@ -58,7 +60,19 @@ const Header: FunctionComponent<HeaderProps> = ({ className, icon, label, childr
 			{showIconRow && (
 				<div className={styles.iconRow}>
 					{icon != null && <div className={styles.iconBadge}>{icon}</div>}
-					{hasLabel && <span className={styles.label}>{label}</span>}
+					{match({ label, labelHref })
+						.with({ label: P.string, labelHref: P.string }, ({ labelHref }) => (
+							<a
+								href={labelHref}
+								target="_blank"
+								rel="noopener noreferrer"
+								className={styles.labelLink}
+							>
+								{label}
+							</a>
+						))
+						.with({ label: P.string }, () => <span className={styles.label}>{label}</span>)
+						.otherwise(() => null)}
 				</div>
 			)}
 			{children}

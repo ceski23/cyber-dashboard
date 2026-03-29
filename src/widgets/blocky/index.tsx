@@ -53,6 +53,7 @@ export const blockyWidget = defineWidget({
 				<Card.Header
 					className={styles.header}
 					label={name}
+					labelHref={url}
 					icon={
 						<img
 							src={BLOCKY_ICON_URL}

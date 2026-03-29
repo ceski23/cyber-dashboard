@@ -69,6 +69,7 @@ export const traefikWidget = defineWidget({
 						/>
 					}
 					label={name}
+					labelHref={url}
 				>
 					<div className={styles.headerActions}>
 						{statusInfo != null && (

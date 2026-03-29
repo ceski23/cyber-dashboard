@@ -130,3 +130,13 @@ export const label = style({
 	fontSize: vars.text.sm,
 	color: vars.color.foregroundAlt,
 })
+
+export const labelLink = style([
+	label,
+	{
+		textDecoration: 'none',
+		':hover': {
+			textDecoration: 'underline',
+		},
+	},
+])

@@ -54,6 +54,7 @@ export const gatusWidget = defineWidget({
 						/>
 					}
 					label={name}
+					labelHref={url}
 				>
 					{totalCount > 0 && (
 						<Badge

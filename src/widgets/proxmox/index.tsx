@@ -37,6 +37,7 @@ export const proxmoxWidget = defineWidget({
 				<Card.Header
 					className={styles.header}
 					label={name}
+					labelHref={url}
 					icon={
 						<img
 							src={PROXMOX_ICON_URL}
