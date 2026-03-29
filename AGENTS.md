@@ -37,7 +37,12 @@ bun run generate:schema
 
 ### Widget System (`src/widgets/`)
 
-All widgets follow the same two-file pattern:
+All widgets share a core two-file pattern. Larger widgets may add supporting files:
+
+- **`schema.ts`** — widget options schema (required)
+- **`index.tsx`** — widget definition and component (required)
+- **`data.ts`** — server functions, query options, Zod schemas, and data types (when data fetching is non-trivial)
+- **`utils.ts`** — pure utility functions and hooks (formatters, custom hooks, etc.)
 
 **`schema.ts`** — define options using `defineWidgetOptions(type, zodSchema)`:
 
@@ -85,6 +90,8 @@ reducer: (_prev, next) => next,
 
 See `src/widgets/cpuLoad/index.tsx` and `src/services/status/index.ts` for full examples.
 
+For widgets with server functions and query options extracted to `data.ts`, see `src/widgets/gatus/` and `src/widgets/blocky/` as reference implementations.
+
 ### Status Providers (`src/services/status/`)
 
 Pluggable backends (docker, gatus, ping) returning `ServiceStatus[]`. The `streamStatus` server function dispatches to the correct provider based on `config.statusProviders[name].type`. Widget instances reference providers by name via `status.provider`.
@@ -92,6 +99,61 @@ Pluggable backends (docker, gatus, ping) returning `ServiceStatus[]`. The `strea
 ### Authentication (`src/lib/auth/`)
 
 Auth is **config-driven** — instantiated at runtime from `config.auth` (not hardcoded env vars). Supports `basic` or `oidc`. `tanstackStartCookies()` **must be the last plugin** in the better-auth plugins array.
+
+---
+
+## Library Conventions
+
+### `ms` — Human-readable millisecond values
+
+Use the `ms` package when specifying large millisecond values in config schemas, constants, or comparisons. Import as `import { ms } from 'ms'`.
+
+```typescript
+// ✅ Prefer
+z.number().min(ms('5s')).default(ms('30s'))
+if (remaining > ms('10m')) ...
+
+// ❌ Avoid
+z.number().min(5000).default(30000)
+if (remaining > 600000) ...
+```
+
+### `ts-pattern` — Exhaustive pattern matching
+
+Use `match(...)` from `ts-pattern` instead of nested ternary chains or long `if/else` blocks when branching on discriminated unions or multi-condition inputs. Import with `import { match, P } from 'ts-pattern'`.
+
+```typescript
+// ✅ Prefer
+const label = match(status)
+	.with('available', () => 'Up')
+	.with('unavailable', () => 'Down')
+	.with('unknown', () => '—')
+	.exhaustive()
+
+// ❌ Avoid
+const label = status === 'available' ? 'Up' : status === 'unavailable' ? 'Down' : '—'
+```
+
+### `Skeleton` — Loading states
+
+Always use `<Skeleton />` from `#components/skeleton` for loading states. Never use plain text like "Loading…". Render skeleton rows that structurally match the widget's content layout.
+
+```tsx
+import { Skeleton } from '#components/skeleton'
+
+{isLoading ? (
+	<div className={styles.skeletonList}>
+		{Array.from({ length: 5 }, (_, skeletonIdx) => (
+			<div key={skeletonIdx} className={styles.skeletonRow}>
+				<Skeleton width={8} height={8} borderRadius="50%" />
+				<Skeleton height={14} style={{ flex: 1 }} />
+			</div>
+		))}
+	</div>
+) : (
+	/* actual content */
+)}
+```
 
 ---
 
@@ -163,7 +225,7 @@ src/
   routes/           # TanStack file-based routing (createFileRoute)
   components/       # Reusable UI components
     ui/             # shadcn/ui (linting excluded)
-  widgets/          # One folder per widget type: index.tsx + schema.ts
+  widgets/          # One folder per widget type: schema.ts + index.tsx [+ data.ts + utils.ts]
   services/         # Server-side data providers (status, location)
   lib/
     auth/           # better-auth setup (config-driven, not env-driven)

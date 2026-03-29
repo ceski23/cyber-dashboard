@@ -1,106 +1,40 @@
 import { Card } from '#components/card'
+import { Skeleton } from '#components/skeleton'
 import { StyledTooltip } from '#components/tooltip'
-import { experimental_streamedQuery, queryOptions, useQuery } from '@tanstack/react-query'
-import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
+import { useQuery } from '@tanstack/react-query'
 import { groupBy } from 'es-toolkit'
-import ky from 'ky'
 import { Fragment } from 'react'
-import { z } from 'zod'
+import { match } from 'ts-pattern'
 import { defineWidget } from '../helpers'
+import { gatusWidgetQuery } from './data'
 import { gatusOptions } from './schema'
 import { styles } from './style.css'
+import { formatDuration } from './utils'
 
 const GATUS_ICON_URL = 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gatus.svg'
-
-const gatusEndpointSchema = z.object({
-	name: z.string(),
-	key: z.string(),
-	group: z.string().optional(),
-	results: z
-		.array(
-			z.object({
-				duration: z.number(),
-				success: z.boolean(),
-			}),
-		)
-		.optional(),
-})
-
-const gatusResponseSchema = z.array(gatusEndpointSchema)
-
-type GatusEndpoint = {
-	key: string
-	name: string
-	group?: string
-	status: 'available' | 'unavailable' | 'unknown'
-	durationMs: number
-	history: Array<{ success: boolean; durationMs: number }>
-}
-
-const streamGatusWidgetData = createServerFn({ method: 'GET' })
-	.inputValidator(
-		z.object({
-			baseUrl: z.string(),
-			refreshInterval: z.number(),
-		}),
-	)
-	.handler(async function* ({ data: { baseUrl, refreshInterval } }) {
-		const { signal } = getRequest()
-		const apiClient = ky.create({ prefixUrl: baseUrl })
-
-		while (!signal.aborted) {
-			const raw = await apiClient
-				.get('api/v1/endpoints/statuses', { signal })
-				.json()
-				.then(data => gatusResponseSchema.parse(data))
-
-			yield raw.map<GatusEndpoint>(endpoint => {
-				const results = endpoint.results ?? []
-				const lastResult = results.at(-1)
-				const isSuccess = lastResult?.success
-
-				return {
-					key: endpoint.key,
-					name: endpoint.name,
-					group: endpoint.group,
-					status: isSuccess === undefined ? 'unknown' : isSuccess ? 'available' : 'unavailable',
-					durationMs: lastResult ? Math.round(lastResult.duration / 1_000_000) : 0,
-					history: results.map(result => ({
-						success: result.success,
-						durationMs: Math.round(result.duration / 1_000_000),
-					})),
-				}
-			})
-
-			await Bun.sleep(refreshInterval)
-		}
-	})
-
-const streamGatusWidgetQuery = (baseUrl: string, refreshInterval: number) =>
-	queryOptions({
-		queryKey: ['gatusWidgetData', { baseUrl, refreshInterval }] as const,
-		queryFn: experimental_streamedQuery({
-			initialValue: [] as GatusEndpoint[],
-			reducer: (_, chunk: GatusEndpoint[]) => chunk,
-			streamFn: ({ signal }) => streamGatusWidgetData({ data: { baseUrl, refreshInterval }, signal }),
-		}),
-	})
-
-const formatDuration = (ms: number) => (ms < 1 ? '<1ms' : `${ms}ms`)
+const SKELETON_ROW_COUNT = 5
 
 export const gatusWidget = defineWidget({
 	type: 'gatus',
 	optionsSchema: gatusOptions,
+	loader: async (queryClient, { url, refreshInterval }) => {
+		await queryClient.prefetchQuery(gatusWidgetQuery(url, refreshInterval))
+	},
 	Component: ({ options: { name, url, refreshInterval }, columns }) => {
-		const { data: endpoints = [], error } = useQuery(streamGatusWidgetQuery(url, refreshInterval))
+		const { data: endpoints = [], error, isLoading } = useQuery(gatusWidgetQuery(url, refreshInterval))
 
 		if (error) throw new Error(`Failed to load Gatus data: ${error.message}`)
 
 		const upCount = endpoints.filter(endpoint => endpoint.status === 'available').length
 		const totalCount = endpoints.length
-		const badgeStatus =
-			totalCount === 0 ? 'warning' : upCount === totalCount ? 'success' : upCount === 0 ? 'error' : 'warning'
+		const badgeStatus = match({ totalCount, upCount })
+			.with({ totalCount: 0 }, () => 'warning' as const)
+			.when(
+				({ upCount, totalCount }) => upCount === totalCount,
+				() => 'success' as const,
+			)
+			.with({ upCount: 0 }, () => 'error' as const)
+			.otherwise(() => 'warning' as const)
 		const grouped = groupBy(endpoints, endpoint => endpoint.group ?? '')
 		const hasGroups = Object.keys(grouped).some(group => group !== '')
 
@@ -128,8 +62,36 @@ export const gatusWidget = defineWidget({
 				</Card.Header>
 
 				<div className={styles.list}>
-					{endpoints.length === 0 ? (
-						<div className={styles.empty}>Loading…</div>
+					{isLoading ? (
+						<div className={styles.skeletonList}>
+							<div className={styles.skeletonRow}>
+								<Skeleton
+									width={100}
+									height={14}
+									className={styles.skeletonGroupHeader}
+								/>
+							</div>
+							{Array.from({ length: SKELETON_ROW_COUNT }, (_, skeletonIdx) => (
+								<div
+									key={skeletonIdx}
+									className={styles.skeletonRow}
+								>
+									<Skeleton
+										width={8}
+										height={8}
+										borderRadius="50%"
+									/>
+									<Skeleton
+										height={14}
+										style={{ flex: 1 }}
+									/>
+									<Skeleton
+										width={36}
+										height={14}
+									/>
+								</div>
+							))}
+						</div>
 					) : (
 						Object.entries(grouped).map(([group, items]) => (
 							<Fragment key={group}>
