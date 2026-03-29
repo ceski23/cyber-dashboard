@@ -205,7 +205,7 @@ export const openMeteoWeather = defineWidget({
 
 					<Stat.Row>
 						<Stat.Item
-							value={isNil(data) ? '—' : `${Math.round(data.relativeHumidity)} %`}
+							value={isNil(data) ? '—' : `${Math.round(data.relativeHumidity)}%`}
 							label="Humidity"
 						/>
 						<Stat.Item
