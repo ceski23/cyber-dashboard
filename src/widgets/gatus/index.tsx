@@ -28,6 +28,7 @@ export const gatusWidget = defineWidget({
 
 		const upCount = endpoints.filter(endpoint => endpoint.status === 'available').length
 		const totalCount = endpoints.length
+		const unavailableEndpoints = endpoints.filter(endpoint => endpoint.status !== 'available')
 		const badgeStatus = match({ totalCount, upCount })
 			.with({ totalCount: 0 }, () => 'warning' as const)
 			.when(
@@ -56,12 +57,38 @@ export const gatusWidget = defineWidget({
 					label={name}
 					labelHref={url}
 				>
-					{totalCount > 0 && (
+					{totalCount > 0 && unavailableEndpoints.length > 0 ? (
+						<StyledTooltip
+							side="bottom"
+							align="end"
+							content={
+								<div className={styles.badgeTooltip}>
+									<div className={styles.badgeTooltipLabel}>Unavailable</div>
+									<ul className={styles.badgeTooltipList}>
+										{unavailableEndpoints.map(endpoint => (
+											<li
+												key={endpoint.key}
+												className={styles.badgeTooltipItem}
+											>
+												<span className={styles.badgeTooltipDot({ status: endpoint.status })} />
+												{endpoint.name}
+											</li>
+										))}
+									</ul>
+								</div>
+							}
+						>
+							<Badge
+								variant={badgeStatus}
+								text={`${upCount} / ${totalCount}`}
+							/>
+						</StyledTooltip>
+					) : totalCount > 0 ? (
 						<Badge
 							variant={badgeStatus}
 							text={`${upCount} / ${totalCount}`}
 						/>
-					)}
+					) : null}
 				</Card.Header>
 
 				<div className={styles.list}>

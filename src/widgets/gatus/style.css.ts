@@ -175,4 +175,53 @@ export const styles = {
 		color: vars.color.foregroundMuted,
 		fontVariantNumeric: 'tabular-nums',
 	}),
+
+	badgeTooltip: style({
+		display: 'flex',
+		flexDirection: 'column',
+		gap: vars.spacing[1.5],
+		paddingInline: vars.spacing[2],
+		paddingBlock: vars.spacing[1.5],
+	}),
+
+	badgeTooltipLabel: style({
+		fontSize: vars.text.xxs,
+		fontWeight: 600,
+		color: vars.color.foregroundMuted,
+		textTransform: 'uppercase',
+		letterSpacing: '0.08em',
+	}),
+
+	badgeTooltipList: style({
+		display: 'flex',
+		flexDirection: 'column',
+		gap: vars.spacing[0.5],
+		listStyle: 'none',
+		padding: 0,
+		margin: 0,
+	}),
+
+	badgeTooltipItem: style({
+		display: 'flex',
+		alignItems: 'center',
+		gap: vars.spacing[2],
+		fontSize: vars.text.xs,
+		color: vars.color.foreground,
+	}),
+
+	badgeTooltipDot: recipe({
+		base: {
+			width: 6,
+			height: 6,
+			flexShrink: 0,
+			borderRadius: vars.radius.full,
+		},
+		variants: {
+			status: {
+				unavailable: { backgroundColor: vars.color.error },
+				unknown: { backgroundColor: vars.color.foregroundMuted },
+				available: { backgroundColor: vars.color.success },
+			},
+		},
+	}),
 }
