@@ -31,7 +31,7 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }
 
 	const handleReloadConfig = async () => {
 		await reloadConfig()
-		void queryClient.invalidateQueries()
+		await queryClient.resetQueries()
 		await router.invalidate()
 		setOpen(false)
 	}
