@@ -60,20 +60,6 @@ export const styles = {
 		marginLeft: 'auto',
 	}),
 
-	list: style({
-		flex: 1,
-		paddingBlock: vars.spacing[1],
-	}),
-
-	row: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-		paddingBlock: vars.spacing[1.5],
-		paddingInline: vars.spacing[4],
-	}),
-
 	rowLink: style({
 		fontSize: vars.text.sm,
 		fontWeight: 500,
@@ -147,29 +133,11 @@ export const styles = {
 	}),
 
 	statsRow: style({
-		gridTemplateColumns: 'repeat(3, 1fr)',
-		padding: vars.spacing[3],
 		borderBottom: `1px solid ${vars.color.borderSubtle}`,
 		flexShrink: 0,
 	}),
 
 	skeletonStatItem: style({
 		borderRadius: vars.radius.lg,
-	}),
-
-	skeletonList: style({
-		display: 'flex',
-		flexDirection: 'column',
-		paddingBlock: vars.spacing[1],
-		rowGap: vars.spacing[1.5],
-	}),
-
-	skeletonRow: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-		paddingBlock: vars.spacing[1.5],
-		paddingInline: vars.spacing[4],
 	}),
 }

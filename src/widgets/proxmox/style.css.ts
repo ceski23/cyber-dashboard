@@ -105,9 +105,4 @@ export const styles = {
 		fontWeight: 400,
 		color: vars.color.foregroundMuted,
 	}),
-
-	statRow: style({
-		gridTemplateColumns: 'repeat(2, 1fr)',
-		padding: vars.spacing[3],
-	}),
 }

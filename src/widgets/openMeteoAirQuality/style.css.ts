@@ -107,9 +107,7 @@ export const styles = {
 		fontWeight: 400,
 	}),
 
-	skeletonStatRow: style({
-		display: 'grid',
-		gridTemplateColumns: 'repeat(3, 1fr)',
-		gap: vars.spacing[2],
+	statsRow: style({
+		padding: 0,
 	}),
 }

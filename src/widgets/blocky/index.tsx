@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { IconButton } from '#components/iconButton'
 import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
 import { StyledTooltip } from '#components/tooltip'
@@ -105,8 +106,7 @@ export const blockyWidget = defineWidget({
 								delay={500}
 								content={isEnabled ? 'Disable blocking' : 'Enable blocking'}
 							>
-								<button
-									type="button"
+								<IconButton
 									className={styles.toggleButton({ enabled: isEnabled })}
 									onClick={() => mutation.mutate(!isEnabled)}
 									disabled={mutation.isPending}
@@ -116,13 +116,16 @@ export const blockyWidget = defineWidget({
 									{isNotNil(remainingSec) && (
 										<span className={styles.timerText}>{formatAutoEnable(remainingSec)}</span>
 									)}
-								</button>
+								</IconButton>
 							</StyledTooltip>
 						)}
 					</div>
 				</Card.Header>
 
-				<Stat.Row className={styles.statsRow}>
+				<Stat.Row
+					columns={3}
+					className={styles.statsRow}
+				>
 					{match({ isLoading, data, metrics })
 						.with({ isLoading: true }, () =>
 							Array.from({ length: 3 }).map((_, index) => (

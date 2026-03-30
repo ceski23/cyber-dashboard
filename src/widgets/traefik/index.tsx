@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
 import { vars } from '#theme.css'
@@ -82,7 +83,10 @@ export const traefikWidget = defineWidget({
 				</Card.Header>
 				{match(traefikQuery)
 					.with({ status: 'pending' }, () => (
-						<Stat.Row className={styles.statsRow}>
+						<Stat.Row
+							columns={3}
+							className={styles.statsRow}
+						>
 							{Array.from({ length: 3 }, (_, statIdx) => (
 								<Skeleton
 									key={statIdx}
@@ -93,7 +97,10 @@ export const traefikWidget = defineWidget({
 						</Stat.Row>
 					))
 					.otherwise(({ data }) => (
-						<Stat.Row className={styles.statsRow}>
+						<Stat.Row
+							columns={3}
+							className={styles.statsRow}
+						>
 							<Stat.Item
 								value={String(
 									[data.routers, data.services, data.middlewares].reduce(
@@ -115,15 +122,12 @@ export const traefikWidget = defineWidget({
 							/>
 						</Stat.Row>
 					))}
-				<div className={styles.list}>
+				<List.Root>
 					{match(traefikQuery)
 						.with({ status: 'pending' }, () => (
-							<div className={styles.skeletonList}>
+							<>
 								{Array.from({ length: 3 }, (_, skeletonIdx) => (
-									<div
-										key={skeletonIdx}
-										className={styles.skeletonRow}
-									>
+									<List.Item key={skeletonIdx}>
 										<Skeleton
 											width={8}
 											height={8}
@@ -139,9 +143,9 @@ export const traefikWidget = defineWidget({
 											height={14}
 											borderRadius={vars.radius.md}
 										/>
-									</div>
+									</List.Item>
 								))}
-							</div>
+							</>
 						))
 						.otherwise(({ data }) => (
 							<>
@@ -150,10 +154,7 @@ export const traefikWidget = defineWidget({
 									const status = getStatStatus(stat)
 
 									return (
-										<div
-											key={section.key}
-											className={styles.row}
-										>
+										<List.Item key={section.key}>
 											<span className={styles.statusDot({ status })} />
 											<a
 												href={new URL(section.url, url).toString()}
@@ -176,12 +177,12 @@ export const traefikWidget = defineWidget({
 												</span>
 											)}
 											<span className={styles.rowTotal}>{stat.total}</span>
-										</div>
+										</List.Item>
 									)
 								})}
 							</>
 						))}
-				</div>
+				</List.Root>
 			</Card.Root>
 		)
 	},

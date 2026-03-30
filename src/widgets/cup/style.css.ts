@@ -64,27 +64,9 @@ export const styles = {
 	}),
 
 	refreshButton: style({
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		width: '28px',
-		height: '28px',
-		borderRadius: vars.radius.md,
-		border: 'none',
-		cursor: 'pointer',
-		flexShrink: 0,
-		background: 'transparent',
 		color: vars.color.foregroundMuted,
-		transition: 'color 0.2s ease, background 0.2s ease',
 		':hover': {
-			background: transparentize(vars.color.white, 0.06),
 			color: vars.color.foreground,
-		},
-		selectors: {
-			'&:disabled': {
-				opacity: 0.4,
-				cursor: 'not-allowed',
-			},
 		},
 	}),
 
@@ -99,25 +81,8 @@ export const styles = {
 	}),
 
 	statsRow: style({
-		gridTemplateColumns: 'repeat(4, 1fr)',
-		padding: vars.spacing[3],
 		flexShrink: 0,
 		borderBottom: `1px solid ${vars.color.borderSubtle}`,
-	}),
-
-	list: style({
-		flex: 1,
-		overflowY: 'auto',
-		paddingBlock: vars.spacing[1],
-	}),
-
-	row: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-		paddingBlock: vars.spacing[1.5],
-		paddingInline: vars.spacing[4],
 	}),
 
 	imageRef: recipe({
@@ -147,7 +112,7 @@ export const styles = {
 			fontSize: vars.text.xxs,
 			fontWeight: 600,
 			paddingBlock: vars.spacing['0.5'],
-			paddingInline: vars.spacing[1.5],
+			paddingInline: vars.spacing[2],
 			borderRadius: vars.radius.full,
 			flexShrink: 0,
 			letterSpacing: '0.04em',
@@ -222,22 +187,5 @@ export const styles = {
 		height: '100%',
 		fontSize: vars.text.xs,
 		color: vars.color.foregroundMuted,
-	}),
-
-	skeletonList: style({
-		display: 'flex',
-		flexDirection: 'column',
-		flex: 1,
-		paddingBlock: vars.spacing[1],
-		rowGap: vars.spacing[1.5],
-	}),
-
-	skeletonRow: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-		paddingBlock: vars.spacing[1.5],
-		paddingInline: vars.spacing[4],
 	}),
 }

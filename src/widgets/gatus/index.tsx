@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
 import { StyledTooltip } from '#components/tooltip'
 import { useQuery } from '@tanstack/react-query'
@@ -91,21 +92,18 @@ export const gatusWidget = defineWidget({
 					) : null}
 				</Card.Header>
 
-				<div className={styles.list}>
+				<List.Root>
 					{isLoading ? (
-						<div className={styles.skeletonList}>
-							<div className={styles.skeletonRow}>
+						<>
+							<List.Item>
 								<Skeleton
 									width={100}
 									height={14}
 									className={styles.skeletonGroupHeader}
 								/>
-							</div>
+							</List.Item>
 							{Array.from({ length: SKELETON_ROW_COUNT }, (_, skeletonIdx) => (
-								<div
-									key={skeletonIdx}
-									className={styles.skeletonRow}
-								>
+								<List.Item key={skeletonIdx}>
 									<Skeleton
 										width={8}
 										height={8}
@@ -119,9 +117,9 @@ export const gatusWidget = defineWidget({
 										width={36}
 										height={14}
 									/>
-								</div>
+								</List.Item>
 							))}
-						</div>
+						</>
 					) : (
 						Object.entries(grouped).map(([group, items]) => (
 							<Fragment key={group}>
@@ -166,7 +164,7 @@ export const gatusWidget = defineWidget({
 											}
 											sideOffset={6}
 										>
-											<div className={styles.row}>
+											<List.Item className={styles.row}>
 												<span className={styles.statusDot({ status: endpoint.status })} />
 												<a
 													href={new URL(`endpoints/${endpoint.key}`, url).toString()}
@@ -180,14 +178,14 @@ export const gatusWidget = defineWidget({
 														? formatDuration(endpoint.durationMs)
 														: '—'}
 												</span>
-											</div>
+											</List.Item>
 										</StyledTooltip>
 									)
 								})}
 							</Fragment>
 						))
 					)}
-				</div>
+				</List.Root>
 			</Card.Root>
 		)
 	},

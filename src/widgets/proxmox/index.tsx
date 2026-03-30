@@ -152,7 +152,7 @@ export const proxmoxWidget = defineWidget({
 						})}
 				</div>
 
-				<Stat.Row className={styles.statRow}>
+				<Stat.Row columns={2}>
 					{match(proxmoxQuery)
 						.with({ status: 'pending' }, () => (
 							<>

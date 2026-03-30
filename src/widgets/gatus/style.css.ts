@@ -31,28 +31,6 @@ export const styles = {
 		flexShrink: 0,
 	}),
 
-	list: style({
-		flex: 1,
-		overflowY: 'auto',
-		paddingBlock: vars.spacing[1],
-	}),
-
-	skeletonList: style({
-		display: 'flex',
-		flexDirection: 'column',
-		paddingBlock: vars.spacing[1],
-		rowGap: vars.spacing[1.5],
-	}),
-
-	skeletonRow: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-		paddingBlock: vars.spacing[1.5],
-		paddingInline: vars.spacing[4],
-	}),
-
 	skeletonGroupHeader: style({
 		marginTop: vars.spacing[1],
 	}),
@@ -69,12 +47,6 @@ export const styles = {
 	}),
 
 	row: style({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: vars.spacing[2],
-		paddingBlock: vars.spacing[1.5],
-		paddingInline: vars.spacing[4],
 		transition: 'background 0.15s ease',
 	}),
 

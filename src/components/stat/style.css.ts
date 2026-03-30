@@ -4,8 +4,8 @@ import { style } from '@vanilla-extract/css'
 
 export const root = style({
 	display: 'grid',
-	gridTemplateColumns: 'repeat(3, 1fr)',
 	gap: vars.spacing[2],
+	padding: vars.spacing[3],
 })
 
 export const item = style({

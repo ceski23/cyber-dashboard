@@ -77,14 +77,17 @@ export const openMeteoWeather = defineWidget({
 									</div>
 								</div>
 								<Card.Divider />
-								<div className={styles.skeletonStatRow}>
+								<Stat.Row
+									columns={3}
+									className={styles.statsRow}
+								>
 									{Array.from({ length: 3 }, (_, skeletonIdx) => (
 										<Skeleton
 											key={skeletonIdx}
 											height={56}
 										/>
 									))}
-								</div>
+								</Stat.Row>
 							</>
 						))
 						.otherwise(({ data }) => (
@@ -105,7 +108,10 @@ export const openMeteoWeather = defineWidget({
 									</div>
 								</div>
 								<Card.Divider />
-								<Stat.Row>
+								<Stat.Row
+									columns={3}
+									className={styles.statsRow}
+								>
 									<Stat.Item
 										value={`${Math.round(data.relativeHumidity)}%`}
 										label="Humidity"

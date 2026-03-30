@@ -1,5 +1,7 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { IconButton } from '#components/iconButton'
+import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
 import { StyledTooltip } from '#components/tooltip'
@@ -74,8 +76,7 @@ export const cupWidget = defineWidget({
 							delay={500}
 							content="Force refresh"
 						>
-							<button
-								type="button"
+							<IconButton
 								className={styles.refreshButton}
 								onClick={() => refresh.mutate()}
 								disabled={refresh.isPending}
@@ -85,7 +86,7 @@ export const cupWidget = defineWidget({
 									size={14}
 									className={styles.refreshIcon({ loading: refresh.isPending })}
 								/>
-							</button>
+							</IconButton>
 						</StyledTooltip>
 					</div>
 				</Card.Header>
@@ -93,7 +94,10 @@ export const cupWidget = defineWidget({
 				{match(cupQuery)
 					.with({ status: 'pending' }, () => (
 						<>
-							<Stat.Row className={styles.statsRow}>
+							<Stat.Row
+								columns={4}
+								className={styles.statsRow}
+							>
 								{Array.from({ length: 4 }, (_, skeletonIdx) => (
 									<Skeleton
 										key={skeletonIdx}
@@ -102,12 +106,9 @@ export const cupWidget = defineWidget({
 									/>
 								))}
 							</Stat.Row>
-							<div className={styles.skeletonList}>
+							<List.Root>
 								{Array.from({ length: SKELETON_ROW_COUNT }, (_, skeletonIdx) => (
-									<div
-										key={skeletonIdx}
-										className={styles.skeletonRow}
-									>
+									<List.Item key={skeletonIdx}>
 										<Skeleton
 											width={8}
 											height={8}
@@ -121,14 +122,17 @@ export const cupWidget = defineWidget({
 											width={44}
 											height={14}
 										/>
-									</div>
+									</List.Item>
 								))}
-							</div>
+							</List.Root>
 						</>
 					))
 					.otherwise(({ data }) => (
 						<>
-							<Stat.Row className={styles.statsRow}>
+							<Stat.Row
+								columns={4}
+								className={styles.statsRow}
+							>
 								<Stat.Item
 									value={String(data.metrics.monitored_images)}
 									label="Monitored"
@@ -147,7 +151,7 @@ export const cupWidget = defineWidget({
 								/>
 							</Stat.Row>
 
-							<div className={styles.list}>
+							<List.Root>
 								{data.images.length === 0 ? (
 									<div className={styles.empty}>All images up to date</div>
 								) : (
@@ -155,10 +159,7 @@ export const cupWidget = defineWidget({
 										const updateType = getUpdateType(image)
 
 										return (
-											<div
-												key={image.reference}
-												className={styles.row}
-											>
+											<List.Item key={image.reference}>
 												<span className={styles.statusDot({ status: getRowStatus(image) })} />
 												{image.url != null ? (
 													<a
@@ -182,11 +183,11 @@ export const cupWidget = defineWidget({
 												{image.result.info?.new_tag != null && (
 													<span className={styles.newTag}>{image.result.info.new_tag}</span>
 												)}
-											</div>
+											</List.Item>
 										)
 									})
 								)}
-							</div>
+							</List.Root>
 						</>
 					))}
 			</Card.Root>
