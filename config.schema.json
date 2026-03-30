@@ -425,6 +425,68 @@
 									},
 									"type": {
 										"type": "string",
+										"const": "cup",
+										"description": "The type of the widget."
+									},
+									"columns": {
+										"default": 3,
+										"description": "The number of columns the widget spans.",
+										"type": "number",
+										"minimum": 1
+									},
+									"options": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"default": "CUP",
+												"description": "Display name for the widget.",
+												"type": "string"
+											},
+											"url": {
+												"type": "string",
+												"format": "uri",
+												"description": "Base URL of the CUP server instance (e.g. http://cup:8000)."
+											},
+											"auth": {
+												"description": "Optional basic auth credentials for the CUP API.",
+												"type": "object",
+												"properties": {
+													"username": {
+														"type": "string",
+														"description": "Username for CUP API basic auth."
+													},
+													"password": {
+														"type": "string",
+														"description": "Password for CUP API basic auth."
+													}
+												},
+												"required": ["username", "password"],
+												"additionalProperties": false
+											},
+											"refreshInterval": {
+												"default": 300000,
+												"description": "Interval in milliseconds to refresh CUP data. Defaults to 5 minutes.",
+												"type": "number",
+												"minimum": 1000
+											}
+										},
+										"required": ["url"],
+										"additionalProperties": false,
+										"description": "The configuration options for the widget."
+									}
+								},
+								"required": ["id", "type", "options"],
+								"additionalProperties": false
+							},
+							{
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"description": "A unique identifier for the widget."
+									},
+									"type": {
+										"type": "string",
 										"const": "proxmox",
 										"description": "The type of the widget."
 									},
@@ -922,6 +984,68 @@
 														"refreshInterval": {
 															"default": 30000,
 															"description": "Interval in milliseconds to refresh Traefik data.",
+															"type": "number",
+															"minimum": 1000
+														}
+													},
+													"required": ["url"],
+													"additionalProperties": false,
+													"description": "The configuration options for the widget."
+												}
+											},
+											"required": ["id", "type", "options"],
+											"additionalProperties": false
+										},
+										{
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "A unique identifier for the widget."
+												},
+												"type": {
+													"type": "string",
+													"const": "cup",
+													"description": "The type of the widget."
+												},
+												"columns": {
+													"default": 3,
+													"description": "The number of columns the widget spans.",
+													"type": "number",
+													"minimum": 1
+												},
+												"options": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"default": "CUP",
+															"description": "Display name for the widget.",
+															"type": "string"
+														},
+														"url": {
+															"type": "string",
+															"format": "uri",
+															"description": "Base URL of the CUP server instance (e.g. http://cup:8000)."
+														},
+														"auth": {
+															"description": "Optional basic auth credentials for the CUP API.",
+															"type": "object",
+															"properties": {
+																"username": {
+																	"type": "string",
+																	"description": "Username for CUP API basic auth."
+																},
+																"password": {
+																	"type": "string",
+																	"description": "Password for CUP API basic auth."
+																}
+															},
+															"required": ["username", "password"],
+															"additionalProperties": false
+														},
+														"refreshInterval": {
+															"default": 300000,
+															"description": "Interval in milliseconds to refresh CUP data. Defaults to 5 minutes.",
 															"type": "number",
 															"minimum": 1000
 														}

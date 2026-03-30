@@ -1,3 +1,4 @@
+import { withBasicAuth } from '#lib/utils/auth'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -33,10 +34,8 @@ const fetchTraefikData = createServerFn({ method: 'GET' })
 			.get('api/overview', {
 				prefixUrl: baseUrl,
 				signal,
-				headers: {
-					Authorization: auth
-						? `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`
-						: undefined,
+				hooks: {
+					beforeRequest: auth ? [withBasicAuth(auth)] : [],
 				},
 			})
 			.json()

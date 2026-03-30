@@ -1,6 +1,7 @@
 import z from 'zod'
 import { blockyWidget } from './blocky'
 import { cpuLoad } from './cpuLoad'
+import { cupWidget } from './cup'
 import { gatusWidget } from './gatus'
 import { memoryUsed } from './memoryUsed'
 import { openMeteoAirQuality } from './openMeteoAirQuality'
@@ -19,6 +20,7 @@ export const widgets = {
 	[storageUsed.type]: storageUsed,
 	[gatusWidget.type]: gatusWidget,
 	[traefikWidget.type]: traefikWidget,
+	[cupWidget.type]: cupWidget,
 	[proxmoxWidget.type]: proxmoxWidget,
 	[blockyWidget.type]: blockyWidget,
 }
