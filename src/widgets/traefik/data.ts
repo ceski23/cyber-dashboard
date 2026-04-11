@@ -1,8 +1,7 @@
-import { withBasicAuth } from '#lib/utils/auth'
+import { defaultServiceApiClient } from '#lib/utils/api'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-import ky from 'ky'
 import { z } from 'zod'
 
 const traefikStatSchema = z.object({
@@ -25,18 +24,14 @@ const fetchTraefikData = createServerFn({ method: 'GET' })
 	.inputValidator(
 		z.object({
 			baseUrl: z.string(),
-			auth: z.object({ username: z.string(), password: z.string() }).optional(),
 		}),
 	)
-	.handler(async ({ data: { baseUrl, auth } }) => {
+	.handler(async ({ data: { baseUrl } }) => {
 		const { signal } = getRequest()
-		const overview = await ky
+		const overview = await defaultServiceApiClient
 			.get('api/overview', {
 				prefixUrl: baseUrl,
 				signal,
-				hooks: {
-					beforeRequest: auth ? [withBasicAuth(auth)] : [],
-				},
 			})
 			.json()
 			.then(raw => traefikOverviewSchema.parse(raw))
@@ -48,13 +43,9 @@ const fetchTraefikData = createServerFn({ method: 'GET' })
 		}
 	})
 
-export const traefikDataQuery = (
-	baseUrl: string,
-	auth: { username: string; password: string } | undefined,
-	refreshInterval: number,
-) =>
+export const traefikDataQuery = (baseUrl: string, refreshInterval: number) =>
 	queryOptions({
-		queryKey: ['traefikData', { baseUrl, auth, refreshInterval }] as const,
-		queryFn: ({ signal }) => fetchTraefikData({ data: { baseUrl, auth }, signal }),
+		queryKey: ['traefikData', { baseUrl, refreshInterval }] as const,
+		queryFn: ({ signal }) => fetchTraefikData({ data: { baseUrl }, signal }),
 		refetchInterval: refreshInterval,
 	})

@@ -30,22 +30,20 @@ export const configSchema = z.strictObject({
 		])
 		.default('metric')
 		.describe('The units to use for weather data. If not specified, the default is metric.'),
-	auth: z
+	authentication: z
 		.discriminatedUnion('type', [
 			z.strictObject({
-				type: z.literal('basic').describe('Basic authentication.'),
-				username: z.string().describe('The username for basic authentication.'),
-				password: z.string().describe('The password for basic authentication.'),
-			}),
-			z.strictObject({
-				type: z.literal('oidc').describe('OpenID Connect authentication.'),
-				issuer: z.url().describe('The OIDC issuer URL.'),
-				clientId: z.string().describe('The OIDC client ID.'),
-				clientSecret: z.string().describe('The OIDC client secret.'),
+				type: z.literal('oauth2').describe('OAuth2 authentication.'),
+				issuer: z.url().describe('The OAuth2 issuer URL.'),
+				clientId: z.string().describe('The OAuth2 client ID.'),
+				clientSecret: z.string().describe('The OAuth2 client secret.'),
+				scope: z.string().describe('The OAuth2 scopes to request.'),
 			}),
 		])
 		.optional()
-		.describe('Authentication configuration.'),
+		.describe(
+			'Authentication configuration for the dashboard. If specified, this will be used to authenticate requests to services and widgets.',
+		),
 	baseUrl: z
 		.url()
 		.describe('The base URL of the dashboard. Used for generating links and configuring authentication.'),

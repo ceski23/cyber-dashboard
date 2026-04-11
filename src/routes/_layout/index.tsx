@@ -1,5 +1,4 @@
 import { Widget } from '#components/widget'
-import { authMiddleware } from '#lib/auth/middleware'
 import { configMiddleware } from '#lib/config/middleware'
 import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute } from '@tanstack/react-router'
@@ -63,9 +62,6 @@ const DashboardPage = () => {
 }
 
 export const Route = createFileRoute('/_layout/')({
-	server: {
-		middleware: [authMiddleware],
-	},
 	loader: async ({ context }) => {
 		const { widgets } = await fetchData()
 		const prefetchPromises = widgets

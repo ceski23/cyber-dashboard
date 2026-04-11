@@ -385,22 +385,6 @@
 												"format": "uri",
 												"description": "Base URL of the Traefik instance (e.g. http://traefik:8080)."
 											},
-											"auth": {
-												"description": "Optional basic auth credentials for the Traefik API.",
-												"type": "object",
-												"properties": {
-													"username": {
-														"type": "string",
-														"description": "Username for Traefik API basic auth."
-													},
-													"password": {
-														"type": "string",
-														"description": "Password for Traefik API basic auth."
-													}
-												},
-												"required": ["username", "password"],
-												"additionalProperties": false
-											},
 											"refreshInterval": {
 												"default": 30000,
 												"description": "Interval in milliseconds to refresh Traefik data.",
@@ -438,34 +422,18 @@
 										"type": "object",
 										"properties": {
 											"name": {
-												"default": "CUP",
+												"default": "Cup",
 												"description": "Display name for the widget.",
 												"type": "string"
 											},
 											"url": {
 												"type": "string",
 												"format": "uri",
-												"description": "Base URL of the CUP server instance (e.g. http://cup:8000)."
-											},
-											"auth": {
-												"description": "Optional basic auth credentials for the CUP API.",
-												"type": "object",
-												"properties": {
-													"username": {
-														"type": "string",
-														"description": "Username for CUP API basic auth."
-													},
-													"password": {
-														"type": "string",
-														"description": "Password for CUP API basic auth."
-													}
-												},
-												"required": ["username", "password"],
-												"additionalProperties": false
+												"description": "Base URL of the Cup server instance (e.g. http://cup:8000)."
 											},
 											"refreshInterval": {
 												"default": 300000,
-												"description": "Interval in milliseconds to refresh CUP data. Defaults to 5 minutes.",
+												"description": "Interval in milliseconds to refresh Cup data. Defaults to 5 minutes.",
 												"type": "number",
 												"minimum": 1000
 											}
@@ -965,22 +933,6 @@
 															"format": "uri",
 															"description": "Base URL of the Traefik instance (e.g. http://traefik:8080)."
 														},
-														"auth": {
-															"description": "Optional basic auth credentials for the Traefik API.",
-															"type": "object",
-															"properties": {
-																"username": {
-																	"type": "string",
-																	"description": "Username for Traefik API basic auth."
-																},
-																"password": {
-																	"type": "string",
-																	"description": "Password for Traefik API basic auth."
-																}
-															},
-															"required": ["username", "password"],
-															"additionalProperties": false
-														},
 														"refreshInterval": {
 															"default": 30000,
 															"description": "Interval in milliseconds to refresh Traefik data.",
@@ -1018,34 +970,18 @@
 													"type": "object",
 													"properties": {
 														"name": {
-															"default": "CUP",
+															"default": "Cup",
 															"description": "Display name for the widget.",
 															"type": "string"
 														},
 														"url": {
 															"type": "string",
 															"format": "uri",
-															"description": "Base URL of the CUP server instance (e.g. http://cup:8000)."
-														},
-														"auth": {
-															"description": "Optional basic auth credentials for the CUP API.",
-															"type": "object",
-															"properties": {
-																"username": {
-																	"type": "string",
-																	"description": "Username for CUP API basic auth."
-																},
-																"password": {
-																	"type": "string",
-																	"description": "Password for CUP API basic auth."
-																}
-															},
-															"required": ["username", "password"],
-															"additionalProperties": false
+															"description": "Base URL of the Cup server instance (e.g. http://cup:8000)."
 														},
 														"refreshInterval": {
 															"default": 300000,
-															"description": "Interval in milliseconds to refresh CUP data. Defaults to 5 minutes.",
+															"description": "Interval in milliseconds to refresh Cup data. Defaults to 5 minutes.",
 															"type": "number",
 															"minimum": 1000
 														}
@@ -1320,52 +1256,36 @@
 				}
 			]
 		},
-		"auth": {
-			"description": "Authentication configuration.",
+		"authentication": {
+			"description": "Authentication configuration for the dashboard. If specified, this will be used to authenticate requests to services and widgets.",
 			"oneOf": [
 				{
 					"type": "object",
 					"properties": {
 						"type": {
 							"type": "string",
-							"const": "basic",
-							"description": "Basic authentication."
-						},
-						"username": {
-							"type": "string",
-							"description": "The username for basic authentication."
-						},
-						"password": {
-							"type": "string",
-							"description": "The password for basic authentication."
-						}
-					},
-					"required": ["type", "username", "password"],
-					"additionalProperties": false
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"const": "oidc",
-							"description": "OpenID Connect authentication."
+							"const": "oauth2",
+							"description": "OAuth2 authentication."
 						},
 						"issuer": {
 							"type": "string",
 							"format": "uri",
-							"description": "The OIDC issuer URL."
+							"description": "The OAuth2 issuer URL."
 						},
 						"clientId": {
 							"type": "string",
-							"description": "The OIDC client ID."
+							"description": "The OAuth2 client ID."
 						},
 						"clientSecret": {
 							"type": "string",
-							"description": "The OIDC client secret."
+							"description": "The OAuth2 client secret."
+						},
+						"scope": {
+							"type": "string",
+							"description": "The OAuth2 scopes to request."
 						}
 					},
-					"required": ["type", "issuer", "clientId", "clientSecret"],
+					"required": ["type", "issuer", "clientId", "clientSecret", "scope"],
 					"additionalProperties": false
 				}
 			]

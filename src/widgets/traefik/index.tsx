@@ -23,11 +23,11 @@ const SECTIONS = [
 export const traefikWidget = defineWidget({
 	type: 'traefik',
 	optionsSchema: traefikOptions,
-	loader: async (queryClient, { url, auth, refreshInterval }) => {
-		await queryClient.prefetchQuery(traefikDataQuery(url, auth, refreshInterval))
+	loader: async (queryClient, { url, refreshInterval }) => {
+		await queryClient.prefetchQuery(traefikDataQuery(url, refreshInterval))
 	},
-	Component: ({ options: { name, url, auth, refreshInterval }, columns }) => {
-		const traefikQuery = useQuery(traefikDataQuery(url, auth, refreshInterval))
+	Component: ({ options: { name, url, refreshInterval }, columns }) => {
+		const traefikQuery = useQuery(traefikDataQuery(url, refreshInterval))
 
 		if (traefikQuery.error) throw new Error(`Failed to load Traefik data: ${traefikQuery.error.message}`)
 

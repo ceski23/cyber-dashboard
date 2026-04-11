@@ -1,10 +1,9 @@
-import { AuthClientProvider, createAuthClient } from '#lib/auth/client'
 import { configMiddleware } from '#lib/config/middleware'
 import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { groupBy } from 'es-toolkit'
-import { useState } from 'react'
+import { Fragment } from 'react'
 import { Header } from './-components/Header'
 
 const getData = createServerFn({ method: 'GET' })
@@ -36,17 +35,16 @@ const getData = createServerFn({ method: 'GET' })
 	)
 
 const Layout = () => {
-	const { baseUrl, title, links } = Route.useLoaderData()
-	const [authClient] = useState(() => createAuthClient(baseUrl))
+	const { title, links } = Route.useLoaderData()
 
 	return (
-		<AuthClientProvider value={authClient}>
+		<Fragment>
 			<Header
 				title={title ?? 'Homelab Dashboard'}
 				links={links}
 			/>
 			<Outlet />
-		</AuthClientProvider>
+		</Fragment>
 	)
 }
 

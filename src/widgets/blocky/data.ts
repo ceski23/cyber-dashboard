@@ -1,9 +1,9 @@
+import { defaultServiceApiClient } from '#lib/utils/api'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { addSeconds } from 'date-fns'
 import { isNotNil } from 'es-toolkit'
-import ky from 'ky'
 import { z } from 'zod'
 import { parseQueryTotals } from './utils'
 
@@ -17,7 +17,10 @@ export const fetchBlockyData = createServerFn({ method: 'GET' })
 	.inputValidator(z.object({ baseUrl: z.string() }))
 	.handler(async ({ data: { baseUrl } }) => {
 		const { signal } = getRequest()
-		const apiClient = ky.create({ prefixUrl: baseUrl, signal })
+		const apiClient = defaultServiceApiClient.extend({
+			prefixUrl: baseUrl,
+			signal,
+		})
 
 		const statusPromise = apiClient
 			.get('api/blocking/status')
@@ -43,7 +46,7 @@ export const toggleBlocking = createServerFn({ method: 'POST' })
 	.handler(async ({ data: { baseUrl, enable } }) => {
 		const { signal } = getRequest()
 
-		await ky.get(`api/blocking/${enable ? 'enable' : 'disable'}`, {
+		await defaultServiceApiClient.get(`api/blocking/${enable ? 'enable' : 'disable'}`, {
 			prefixUrl: baseUrl,
 			signal,
 		})

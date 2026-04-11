@@ -7,13 +7,6 @@ export const cupOptions = defineWidgetOptions(
 	z.strictObject({
 		name: z.string().default('Cup').describe('Display name for the widget.'),
 		url: z.url().describe('Base URL of the Cup server instance (e.g. http://cup:8000).'),
-		auth: z
-			.strictObject({
-				username: z.string().describe('Username for Cup API basic auth.'),
-				password: z.string().describe('Password for Cup API basic auth.'),
-			})
-			.optional()
-			.describe('Optional basic auth credentials for the Cup API.'),
 		refreshInterval: z
 			.number()
 			.min(ms('1s'))

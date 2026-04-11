@@ -48,7 +48,6 @@
 		"@vanilla-extract/css": "1.20.0",
 		"@vanilla-extract/dynamic": "2.1.5",
 		"@vanilla-extract/recipes": "0.5.7",
-		"better-auth": "1.5.6",
 		"cmdk": "1.1.1",
 		"confbox": "0.2.4",
 		"cookie": "1.1.1",

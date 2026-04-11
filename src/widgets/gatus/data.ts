@@ -1,7 +1,7 @@
+import { defaultServiceApiClient } from '#lib/utils/api'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-import ky from 'ky'
 import { z } from 'zod'
 
 const gatusEndpointSchema = z.object({
@@ -36,8 +36,11 @@ const fetchGatusWidgetData = createServerFn({ method: 'GET' })
 	.inputValidator(z.object({ baseUrl: z.string() }))
 	.handler(async ({ data: { baseUrl } }) => {
 		const { signal } = getRequest()
-		const raw = await ky
-			.get('api/v1/endpoints/statuses', { prefixUrl: baseUrl, signal })
+		const raw = await defaultServiceApiClient
+			.get('api/v1/endpoints/statuses', {
+				prefixUrl: baseUrl,
+				signal,
+			})
 			.json()
 			.then(data => gatusResponseSchema.parse(data))
 

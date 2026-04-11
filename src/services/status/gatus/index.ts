@@ -1,6 +1,6 @@
+import { defaultServiceApiClient } from '#lib/utils/api'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-import ky from 'ky'
 import { z } from 'zod'
 import type { ServiceStatus } from '..'
 import { gatusOptions } from './schema'
@@ -35,7 +35,9 @@ export const streamGatusStatus = createServerFn({ method: 'GET' })
 	.inputValidator(gatusOptions)
 	.handler(async function* ({ data: { connection, refreshInterval } }) {
 		const { signal } = getRequest()
-		const apiClient = ky.create({ prefixUrl: connection.baseUrl })
+		const apiClient = defaultServiceApiClient.extend({
+			prefixUrl: connection.baseUrl,
+		})
 
 		while (!signal.aborted) {
 			const endpoints = await apiClient

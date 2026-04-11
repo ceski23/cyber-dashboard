@@ -1,7 +1,6 @@
-import { withBasicAuth } from '#lib/utils/auth'
+import { defaultServiceApiClient } from '#lib/utils/api'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
-import ky from 'ky'
 import { z } from 'zod'
 
 const cupImageResultSchema = z.object({
@@ -46,18 +45,10 @@ export const fetchCupData = createServerFn({ method: 'GET' })
 	.inputValidator(
 		z.object({
 			baseUrl: z.string(),
-			auth: z.object({ username: z.string(), password: z.string() }).optional(),
 		}),
 	)
-	.handler(async ({ data: { baseUrl, auth } }) => {
-		const raw = await ky
-			.get('api/v3/json', {
-				prefixUrl: baseUrl,
-				hooks: {
-					beforeRequest: auth ? [withBasicAuth(auth)] : [],
-				},
-			})
-			.json()
+	.handler(async ({ data: { baseUrl } }) => {
+		const raw = await defaultServiceApiClient.get('api/v3/json', { prefixUrl: baseUrl }).json()
 		return cupResponseSchema.parse(raw)
 	})
 
@@ -68,23 +59,16 @@ export const refreshCupData = createServerFn({ method: 'GET' })
 			auth: z.object({ username: z.string(), password: z.string() }).optional(),
 		}),
 	)
-	.handler(async ({ data: { baseUrl, auth } }) => {
-		await ky.get('api/v3/refresh', {
+	.handler(async ({ data: { baseUrl } }) => {
+		await defaultServiceApiClient.get('api/v3/refresh', {
 			prefixUrl: baseUrl,
-			hooks: {
-				beforeRequest: auth ? [withBasicAuth(auth)] : [],
-			},
 			timeout: false,
 		})
 	})
 
-export const cupDataQuery = (
-	baseUrl: string,
-	auth: { username: string; password: string } | undefined,
-	refreshInterval: number,
-) =>
+export const cupDataQuery = (baseUrl: string, refreshInterval: number) =>
 	queryOptions({
-		queryKey: ['cupData', { baseUrl, auth, refreshInterval }] as const,
-		queryFn: ({ signal }) => fetchCupData({ data: { baseUrl, auth }, signal }),
+		queryKey: ['cupData', { baseUrl, refreshInterval }] as const,
+		queryFn: ({ signal }) => fetchCupData({ data: { baseUrl }, signal }),
 		refetchInterval: refreshInterval,
 	})

@@ -1,7 +1,7 @@
+import { defaultServiceApiClient } from '#lib/utils/api'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
-import ky from 'ky'
 import { z } from 'zod'
 
 const proxmoxNodeStatusSchema = z.object({
@@ -44,7 +44,7 @@ const fetchProxmoxData = createServerFn({ method: 'GET' })
 	)
 	.handler(async ({ data: { baseUrl, node, apiToken } }) => {
 		const { signal } = getRequest()
-		const apiClient = ky.create({
+		const apiClient = defaultServiceApiClient.extend({
 			prefixUrl: new URL('api2/json/', baseUrl).toString(),
 			signal,
 			headers: {

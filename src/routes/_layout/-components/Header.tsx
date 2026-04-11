@@ -3,7 +3,6 @@ import type { ComponentProps, FunctionComponent } from 'react'
 import { CommandPalette } from './CommandPalette'
 import { styles } from './style.css'
 import { ThemeToggle } from './ThemeToggle'
-import { User } from './User'
 
 type HeaderProps = {
 	title: string
@@ -24,7 +23,6 @@ export const Header: FunctionComponent<HeaderProps> = ({ title, links }) => (
 		<CommandPalette links={links} />
 		<div className={styles.header.right}>
 			<ThemeToggle />
-			<User />
 		</div>
 	</header>
 )

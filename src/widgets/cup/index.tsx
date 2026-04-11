@@ -21,15 +21,15 @@ const SKELETON_ROW_COUNT = 5
 export const cupWidget = defineWidget({
 	type: 'cup',
 	optionsSchema: cupOptions,
-	loader: async (queryClient, { url, refreshInterval, auth }) => {
-		await queryClient.prefetchQuery(cupDataQuery(url, auth, refreshInterval))
+	loader: async (queryClient, { url, refreshInterval }) => {
+		await queryClient.prefetchQuery(cupDataQuery(url, refreshInterval))
 	},
-	Component: ({ options: { name, url, refreshInterval, auth }, columns }) => {
+	Component: ({ options: { name, url, refreshInterval }, columns }) => {
 		const queryClient = useQueryClient()
-		const cupQuery = useQuery(cupDataQuery(url, auth, refreshInterval))
+		const cupQuery = useQuery(cupDataQuery(url, refreshInterval))
 		const refresh = useMutation({
-			mutationFn: () => refreshCupData({ data: { baseUrl: url, auth } }),
-			onSuccess: () => queryClient.invalidateQueries(cupDataQuery(url, auth, refreshInterval)),
+			mutationFn: () => refreshCupData({ data: { baseUrl: url } }),
+			onSuccess: () => queryClient.invalidateQueries(cupDataQuery(url, refreshInterval)),
 		})
 
 		if (cupQuery.error) {
