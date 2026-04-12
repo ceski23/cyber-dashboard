@@ -1,5 +1,5 @@
 {
-	"name": "cyber-dashboard-v2",
+	"name": "cyber-dashboard",
 	"private": true,
 	"type": "module",
 	"imports": {

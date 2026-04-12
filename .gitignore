@@ -16,3 +16,5 @@ todos.json
 data/*.db
 data/*.db-*
 !data/.gitkeep
+
+config.jsonc
