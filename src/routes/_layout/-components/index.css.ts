@@ -23,6 +23,12 @@ export const group = style({
 	gap: vars.spacing[3],
 })
 
+export const stack = style({
+	display: 'flex',
+	flexDirection: 'column',
+	gap: vars.spacing[4],
+})
+
 export const groupHeader = style({
 	display: 'flex',
 	alignItems: 'center',

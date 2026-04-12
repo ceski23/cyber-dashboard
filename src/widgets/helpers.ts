@@ -33,7 +33,6 @@ export const defineWidgetOptions = <const TType extends string, TSchema extends 
 	optionsSchema: TSchema,
 ) =>
 	z.strictObject({
-		id: z.string().describe('A unique identifier for the widget.'),
 		type: z.literal(type).describe('The type of the widget.'),
 		columns: z.number().min(1).default(3).describe('The number of columns the widget spans.'),
 		options: optionsSchema.describe('The configuration options for the widget.'),

@@ -1,3 +1,4 @@
+import { flattenDashboardWidgets } from '#lib/config/dashboardItems'
 import { configMiddleware } from '#lib/config/middleware'
 import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
@@ -15,13 +16,10 @@ const getData = createServerFn({ method: 'GET' })
 			},
 		}) => {
 			const links = groupBy(
-				widgets.flatMap(widgetOrGroup => {
-					const widgetList = 'widgets' in widgetOrGroup ? widgetOrGroup.widgets : [widgetOrGroup]
-					return widgetList.flatMap(widget => {
-						const widgetDef = widgetsDefs[widget.type]
-						// @ts-expect-error should be correct based on the provideLinks definition in the widget definitions.
-						return widgetDef.provideLinks?.(widget.options) ?? []
-					})
+				flattenDashboardWidgets(widgets).flatMap(widget => {
+					const widgetDef = widgetsDefs[widget.type]
+					// @ts-expect-error should be correct based on the provideLinks definition in the widget definitions.
+					return widgetDef.provideLinks?.(widget.options) ?? []
 				}),
 				link => link.type,
 			)
