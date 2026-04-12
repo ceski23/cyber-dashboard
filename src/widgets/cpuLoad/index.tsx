@@ -8,7 +8,7 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { isNotNil } from 'es-toolkit'
 import { CpuIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
-import si from 'systeminformation'
+import { OSUtils } from 'node-os-utils'
 import z from 'zod'
 import { defineWidget } from '../helpers'
 import { cpuLoadOptions } from './schema'
@@ -16,7 +16,7 @@ import { loadVar, styles } from './style.css'
 
 export type CpuData = {
 	usage: number
-	speed: number
+	cores: number
 	timestamp: number
 }
 
@@ -31,16 +31,28 @@ export const streamCpuData = createServerFn({ method: 'GET' })
 	.handler(async function* ({ data: { interval } }) {
 		const { signal } = getRequest()
 		const cache = new CircularBuffer<CpuData>(Array, ITEMS_LIMIT)
-
-		await si.currentLoad() // Warm up
-		await Bun.sleep(1000)
+		const osutils = new OSUtils({
+			cacheEnabled: true,
+			cacheTTL: interval,
+		})
 
 		while (!signal.aborted) {
-			const [{ currentLoad }, { avg: speed }] = await Promise.all([si.currentLoad(), si.cpuCurrentSpeed()])
+			const cpuUsage = await osutils.cpu.usage()
+			const cpuCores = await osutils.cpu.coreCount()
+
+			if (!cpuUsage.success) {
+				throw new Error(`Failed to fetch CPU usage data: ${cpuUsage.error.message}`, { cause: cpuUsage.error })
+			}
+
+			if (!cpuCores.success) {
+				throw new Error(`Failed to fetch CPU core count data: ${cpuCores.error.message}`, {
+					cause: cpuCores.error,
+				})
+			}
 
 			cache.push({
-				usage: Math.min(currentLoad, 1),
-				speed,
+				usage: cpuUsage.data / 100,
+				cores: cpuCores.data.logical,
 				timestamp: Date.now(),
 			})
 
@@ -54,7 +66,7 @@ const TypedChart = createTypedChart<CpuData>()
 
 const initialCpuData: CpuData = {
 	usage: 0,
-	speed: 0,
+	cores: 0,
 	timestamp: Date.now(),
 }
 
@@ -78,7 +90,7 @@ export const cpuLoad = defineWidget({
 		const currentLoadPercent = currentLoad
 			.toLocaleString(undefined, { maximumFractionDigits: 0, style: 'percent' })
 			.slice(0, -1)
-		const currentSpeed = data?.at(-1)?.speed ?? 0
+		const currentCores = data?.at(-1)?.cores ?? 0
 		const statusConfig = (() => {
 			if (currentLoad >= 0.9) return { status: 'danger' as const, color: vars.color.red[500] }
 			if (currentLoad >= 0.7) return { status: 'warning' as const, color: vars.color.amber[500] }
@@ -105,7 +117,7 @@ export const cpuLoad = defineWidget({
 							margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
 							data={data?.map(item => ({
 								usage: item.usage * 100,
-								speed: item.speed,
+								cores: item.cores,
 								timestamp: item.timestamp,
 							}))}
 						>
@@ -158,9 +170,9 @@ export const cpuLoad = defineWidget({
 					>
 						<span
 							className={styles.meta}
-							style={{ visibility: currentSpeed > 0 ? 'visible' : 'hidden' }}
+							style={{ visibility: currentCores > 0 ? 'visible' : 'hidden' }}
 						>
-							{currentSpeed.toLocaleString(undefined, { maximumFractionDigits: 2 })} GHz
+							{currentCores} Cores
 						</span>
 					</Card.Header>
 					<span

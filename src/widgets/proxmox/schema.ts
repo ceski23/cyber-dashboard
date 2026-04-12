@@ -5,7 +5,7 @@ import { defineWidgetOptions } from '../helpers'
 export const proxmoxOptions = defineWidgetOptions(
 	'proxmox',
 	z.strictObject({
-		name: z.string().default('Proxmox').describe('Display name for the widget.'),
+		name: z.string().optional().describe('Display name for the widget.'),
 		url: z.url().describe('Base URL of the Proxmox VE instance (e.g. https://proxmox.local:8006).'),
 		node: z.string().default('pve').describe('Name of the Proxmox node to monitor.'),
 		apiToken: z

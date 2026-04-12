@@ -36,7 +36,7 @@ export const proxmoxWidget = defineWidget({
 			>
 				<Card.Header
 					className={styles.header}
-					label={name}
+					label={name ?? node}
 					labelHref={url}
 					icon={
 						<img
@@ -176,10 +176,10 @@ export const proxmoxWidget = defineWidget({
 			</Card.Root>
 		)
 	},
-	provideLinks: ({ url, name }) => [
+	provideLinks: ({ url, name, node }) => [
 		{
 			type: 'Services',
-			label: name,
+			label: name ?? `Proxmox (${node})`,
 			url,
 			icon: PROXMOX_ICON_URL,
 		},

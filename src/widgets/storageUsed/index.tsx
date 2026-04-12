@@ -3,8 +3,8 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { HardDriveIcon } from 'lucide-react'
+import { OSUtils } from 'node-os-utils'
 import prettyBytes from 'pretty-bytes'
-import si from 'systeminformation'
 import { match } from 'ts-pattern'
 import z from 'zod'
 import { defineWidget } from '../helpers'
@@ -23,15 +23,22 @@ export const fetchStorageData = createServerFn({ method: 'GET' })
 		}),
 	)
 	.handler(async ({ data: { drive } }) => {
-		const data = (await si.fsSize(drive)).find(d => d.mount === drive || d.fs === drive)
+		const osutils = new OSUtils()
+		const diskUsage = await osutils.disk.usageByMountPoint(drive)
 
-		if (!data) {
-			throw new Error(`Drive ${drive} not found`)
+		if (!diskUsage.success) {
+			throw new Error(`Failed to fetch storage data for drive ${drive}: ${diskUsage.error.message}`, {
+				cause: diskUsage.error,
+			})
+		}
+
+		if (diskUsage.data === null) {
+			throw new Error(`No storage data available for drive ${drive}`)
 		}
 
 		return {
-			usage: data.used,
-			size: data.size,
+			usage: diskUsage.data.used.bytes,
+			size: diskUsage.data.total.bytes,
 		}
 	})
 
@@ -49,6 +56,7 @@ export const storageUsed = defineWidget({
 	},
 	Component: ({ options: { drive }, columns }) => {
 		const storageQuery = useQuery(storageDataQuery(drive))
+		const usage = storageQuery.data?.usage ?? 0
 		const usageFraction = storageQuery.data ? storageQuery.data.usage / storageQuery.data.size : 0
 		const usagePercent = String(Math.round(usageFraction * 100))
 		const totalSize = storageQuery.data?.size ?? 0
@@ -81,7 +89,7 @@ export const storageUsed = defineWidget({
 							className={styles.meta}
 							style={{ visibility: totalSize > 0 ? 'visible' : 'hidden' }}
 						>
-							{prettyBytes(totalSize)} total
+							{prettyBytes(usage, { binary: true })} / {prettyBytes(totalSize, { binary: true })}
 						</span>
 					</Card.Header>
 					<div className={styles.bottom}>

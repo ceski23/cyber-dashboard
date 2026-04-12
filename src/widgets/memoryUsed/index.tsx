@@ -8,8 +8,8 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { isNotNil } from 'es-toolkit'
 import { MemoryStickIcon } from 'lucide-react'
 import { CircularBuffer } from 'mnemonist'
+import { OSUtils } from 'node-os-utils'
 import prettyBytes from 'pretty-bytes'
-import si from 'systeminformation'
 import z from 'zod'
 import { defineWidget } from '../helpers'
 import { memoryUsedOptions } from './schema'
@@ -32,13 +32,21 @@ export const streamMemoryData = createServerFn({ method: 'GET' })
 	.handler(async function* ({ data: { interval } }) {
 		const { signal } = getRequest()
 		const cache = new CircularBuffer<MemoryData>(Array, ITEMS_LIMIT)
+		const osutils = new OSUtils({
+			cacheEnabled: true,
+			cacheTTL: interval,
+		})
 
 		while (!signal.aborted) {
-			const { used, total } = await si.mem()
+			const memoryInfo = await osutils.memory.info()
+
+			if (!memoryInfo.success) {
+				throw new Error(`Failed to fetch memory data: ${memoryInfo.error.message}`, { cause: memoryInfo.error })
+			}
 
 			cache.push({
-				used,
-				total,
+				used: memoryInfo.data.used.bytes,
+				total: memoryInfo.data.total.bytes,
 				timestamp: Date.now(),
 			})
 
@@ -68,11 +76,10 @@ export const memoryUsed = defineWidget({
 	optionsSchema: memoryUsedOptions,
 	Component: ({ options: { refreshInterval, showGraph }, columns }) => {
 		const { data, error } = useQuery(streamMemoryDataQuery(refreshInterval))
-		const currentUsed = data?.at(-1)?.used ?? 0
-		const currentTotal = data?.at(-1)?.total ?? 0
+		const currentUsed = ((data?.at(-1)?.used ?? 0) / 1024) * 1000
+		const currentTotal = ((data?.at(-1)?.total ?? 0) / 1024) * 1000
 		const usageFraction = currentTotal === 0 ? 0 : currentUsed / currentTotal
 		const usagePercent = String(Math.round(usageFraction * 100))
-		const currentAvailable = currentTotal - currentUsed
 
 		const statusConfig = (() => {
 			if (usageFraction >= 0.9) return { status: 'danger' as const, color: vars.color.red[500] }
@@ -154,7 +161,7 @@ export const memoryUsed = defineWidget({
 							className={styles.meta}
 							style={{ visibility: currentTotal > 0 ? 'visible' : 'hidden' }}
 						>
-							{prettyBytes(currentAvailable)} free
+							{prettyBytes(currentUsed)} / {prettyBytes(currentTotal)}
 						</span>
 					</Card.Header>
 					<span
