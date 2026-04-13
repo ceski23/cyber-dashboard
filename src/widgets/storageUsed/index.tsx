@@ -57,11 +57,13 @@ export const storageUsed = defineWidget({
 	Component: ({ options: { drive }, columns }) => {
 		const storageQuery = useQuery(storageDataQuery(drive))
 		const usage = storageQuery.data?.usage ?? 0
-		const usageFraction = storageQuery.data ? storageQuery.data.usage / storageQuery.data.size : 0
-		const usagePercent = String(Math.round(usageFraction * 100))
 		const totalSize = storageQuery.data?.size ?? 0
+		const usageFraction = totalSize === 0 ? 0 : usage / totalSize
+		const usagePercentValue = Math.round(usageFraction * 100)
+		const usagePercent = String(usagePercentValue)
 
 		const statusConfig = (() => {
+			if (storageQuery.isPending) return { status: 'pending' as const }
 			if (usageFraction >= 0.9) return { status: 'danger' as const }
 			if (usageFraction >= 0.7) return { status: 'warning' as const }
 			return { status: 'normal' as const }
@@ -74,9 +76,13 @@ export const storageUsed = defineWidget({
 		return (
 			<Card.Root
 				className={styles.root}
-				tone={statusConfig.status === 'normal' ? 'default' : statusConfig.status}
+				tone={match(statusConfig.status)
+					.with('normal', () => 'default' as const)
+					.with('pending', () => 'default' as const)
+					.otherwise(status => status)}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
+				<div className={styles.glow({ status: statusConfig.status })} />
 				<Card.Content
 					className={styles.content}
 					padding="lg"
@@ -93,22 +99,16 @@ export const storageUsed = defineWidget({
 						</span>
 					</Card.Header>
 					<div className={styles.bottom}>
-						{match(storageQuery)
-							.with({ status: 'pending' }, () => null)
-							.otherwise(() => (
-								<>
-									<span
-										className={styles.value}
-										style={assignInlineVars({ [storageVar]: usagePercent })}
-									/>
-									<div className={styles.progressTrack}>
-										<div
-											className={styles.progressBar}
-											style={{ width: `${usagePercent}%` }}
-										/>
-									</div>
-								</>
-							))}
+						<span
+							className={styles.value}
+							style={assignInlineVars({ [storageVar]: usagePercent })}
+						/>
+						<div className={styles.progressTrack}>
+							<div
+								className={styles.progressBar({ status: statusConfig.status })}
+								style={{ width: `${usagePercentValue}%` }}
+							/>
+						</div>
 					</div>
 				</Card.Content>
 			</Card.Root>

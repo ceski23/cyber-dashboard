@@ -1,6 +1,7 @@
 import { getVarName, transparentize } from '#lib/utils/style'
 import { vars } from '#theme.css'
 import { createVar, style } from '@vanilla-extract/css'
+import { recipe } from '@vanilla-extract/recipes'
 
 export const storageVar = createVar({
 	syntax: '<integer>',
@@ -11,6 +12,34 @@ export const storageVar = createVar({
 export const styles = {
 	root: style({
 		height: vars.spacing[32],
+	}),
+
+	glow: recipe({
+		base: {
+			position: 'absolute',
+			inset: 0,
+			pointerEvents: 'none',
+			zIndex: 0,
+			opacity: 0.8,
+			transition: 'background 0.4s ease, opacity 0.3s ease',
+		},
+		variants: {
+			status: {
+				normal: {
+					background: `radial-gradient(ellipse at 0% 100%, ${transparentize(vars.color.neutral[500], 0.16)} 0%, transparent 65%)`,
+				},
+				warning: {
+					background: `radial-gradient(ellipse at 0% 100%, ${transparentize(vars.color.warning, 0.16)} 0%, transparent 65%)`,
+				},
+				danger: {
+					background: `radial-gradient(ellipse at 0% 100%, ${transparentize(vars.color.error, 0.14)} 0%, transparent 65%)`,
+				},
+				pending: {
+					background: 'none',
+					opacity: 0,
+				},
+			},
+		},
 	}),
 
 	content: style({
@@ -67,10 +96,27 @@ export const styles = {
 		overflow: 'hidden',
 	}),
 
-	progressBar: style({
-		height: '100%',
-		borderRadius: vars.radius.full,
-		background: 'currentColor',
-		transition: 'width 0.5s ease-out',
+	progressBar: recipe({
+		base: {
+			height: '100%',
+			borderRadius: vars.radius.full,
+			transition: 'width 0.5s ease-out, background-color 0.3s ease',
+		},
+		variants: {
+			status: {
+				normal: {
+					background: vars.color.neutral[500],
+				},
+				warning: {
+					background: vars.color.warning,
+				},
+				danger: {
+					background: vars.color.error,
+				},
+				pending: {
+					background: vars.color.foregroundMuted,
+				},
+			},
+		},
 	}),
 }
