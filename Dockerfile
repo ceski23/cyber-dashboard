@@ -14,6 +14,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV SHELL=/bin/sh
 
 COPY --from=builder /app/.output ./.output
 
