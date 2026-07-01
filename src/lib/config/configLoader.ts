@@ -89,6 +89,37 @@ export class YamlProvider implements Provider {
 	}
 }
 
+/**
+ * Recursively resolves `$file:<path>` references in config values
+ */
+const resolveFileRefs = async <T>(value: T): Promise<T> => {
+	if (typeof value === 'string') {
+		const match = value.match(/^\$file:(.+)$/)?.at(1)
+
+		if (match !== undefined) {
+			try {
+				return (await Bun.file(match).text()).trimEnd() as T
+			} catch {
+				throw new Error(`Failed to read file referenced in config: ${match}`)
+			}
+		}
+
+		return value
+	}
+
+	if (Array.isArray(value)) {
+		return Promise.all(value.map(resolveFileRefs)) as T
+	}
+
+	if (value !== null && typeof value === 'object') {
+		const entries = Object.entries(value).map(async ([key, val]) => [key, await resolveFileRefs(val)])
+
+		return Object.fromEntries(await Promise.all(entries))
+	}
+
+	return value
+}
+
 const setNestedValue = (obj: Dict, path: string[], value: unknown): void => {
 	let current = obj
 	for (let i = 0; i < path.length - 1; i++) {
@@ -104,7 +135,8 @@ const setNestedValue = (obj: Dict, path: string[], value: unknown): void => {
 /**
  * Environment variable provider with prefix support
  * Handles nested paths via separator (e.g., CONFIG_DB__HOST -> db.host)
- * Supports Docker secrets pattern with _FILE suffix (e.g., CONFIG_PASSWORD_FILE=/run/secrets/password)
+ * To load Docker secrets or file-based values, use `$file:<path>` syntax
+ * (e.g., CONFIG_DB__PASSWORD='$file:/run/secrets/db_password')
  */
 export class EnvProvider implements Provider {
 	constructor(
@@ -114,34 +146,15 @@ export class EnvProvider implements Provider {
 
 	async provide(): Promise<Dict> {
 		const result: Dict = {}
-		const processedKeys = new Set<string>()
 
-		// First pass: collect all _FILE suffixes and load them
-		const fileContents: Record<string, string> = {}
 		for (const [key, value] of Object.entries(process.env)) {
-			if (!key.startsWith(this.prefix) || !key.endsWith('_FILE')) {
-				continue
-			}
-			if (value === undefined || value === null || value === '') {
-				continue
-			}
-			const baseKey = key.slice(0, -5) // Remove '_FILE' suffix
-			processedKeys.add(key)
-			processedKeys.add(baseKey) // Mark base key as processed too
-			fileContents[baseKey] = await Bun.file(value).text()
-		}
-
-		// Second pass: process all env vars (excluding _FILE variants)
-		for (const [key, value] of Object.entries(process.env)) {
-			if (!key.startsWith(this.prefix) || processedKeys.has(key)) {
+			if (!key.startsWith(this.prefix) || key.endsWith('_FILE')) {
 				continue
 			}
 
 			if (value === undefined || value === null || value === '') {
 				continue
 			}
-
-			const finalValue = fileContents[key] ?? value
 
 			// Remove prefix and split by separator
 			const configKey = key.slice(this.prefix.length)
@@ -157,24 +170,7 @@ export class EnvProvider implements Provider {
 					.join(''),
 			)
 
-			setNestedValue(result, path, finalValue)
-		}
-
-		// Add _FILE loaded values
-		for (const [key, content] of Object.entries(fileContents)) {
-			const configKey = key.slice(this.prefix.length)
-			const path = configKey.split(this.separator).map(part =>
-				part
-					.split('_')
-					.map((word, index) => {
-						if (index === 0) {
-							return word.toLowerCase()
-						}
-						return word.at(0)?.toUpperCase() + word.slice(1).toLowerCase()
-					})
-					.join(''),
-			)
-			setNestedValue(result, path, content)
+			setNestedValue(result, path, value)
 		}
 
 		return result
@@ -228,7 +224,7 @@ export class ConfigLoader {
 			}
 		}
 
-		return config
+		return resolveFileRefs(config)
 	}
 
 	/**
