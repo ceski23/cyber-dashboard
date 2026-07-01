@@ -1,6 +1,7 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
+import { getRequest } from '@tanstack/react-start/server'
 import { z } from 'zod'
 
 const cupImageResultSchema = z.object({
@@ -48,7 +49,8 @@ export const fetchCupData = createServerFn({ method: 'GET' })
 		}),
 	)
 	.handler(async ({ data: { baseUrl } }) => {
-		const raw = await defaultServiceApiClient.get('api/v3/json', { prefixUrl: baseUrl }).json()
+		const { signal } = getRequest()
+		const raw = await defaultServiceApiClient.get('api/v3/json', { prefixUrl: baseUrl, signal }).json()
 		return cupResponseSchema.parse(raw)
 	})
 
@@ -60,9 +62,11 @@ export const refreshCupData = createServerFn({ method: 'GET' })
 		}),
 	)
 	.handler(async ({ data: { baseUrl } }) => {
+		const { signal } = getRequest()
 		await defaultServiceApiClient.get('api/v3/refresh', {
 			prefixUrl: baseUrl,
 			timeout: false,
+			signal,
 		})
 	})
 
