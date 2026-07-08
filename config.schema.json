@@ -571,6 +571,51 @@
 							"properties": {
 								"type": {
 									"type": "string",
+									"const": "tailscale",
+									"description": "The type of the widget."
+								},
+								"columns": {
+									"default": 3,
+									"description": "The number of columns the widget spans.",
+									"type": "number",
+									"minimum": 1
+								},
+								"options": {
+									"type": "object",
+									"properties": {
+										"name": {
+											"default": "Tailscale",
+											"description": "Display name for the widget.",
+											"type": "string"
+										},
+										"apiKey": {
+											"type": "string",
+											"description": "Tailscale API key for authentication."
+										},
+										"tailnet": {
+											"type": "string",
+											"description": "Tailscale tailnet name (e.g. example.ts.net)."
+										},
+										"refreshInterval": {
+											"default": 30000,
+											"description": "Interval in milliseconds to refresh Tailscale device data.",
+											"type": "number",
+											"minimum": 5000
+										}
+									},
+									"required": ["apiKey", "tailnet"],
+									"additionalProperties": false,
+									"description": "The configuration options for the widget."
+								}
+							},
+							"required": ["type", "options"],
+							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
 									"const": "cup",
 									"description": "The type of the widget."
 								},
@@ -626,7 +671,6 @@
 									"type": "object",
 									"properties": {
 										"name": {
-											"default": "Proxmox",
 											"description": "Display name for the widget.",
 											"type": "string"
 										},

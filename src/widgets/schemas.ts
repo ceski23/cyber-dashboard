@@ -9,6 +9,7 @@ import { openMeteoWeatherOptions } from './openMeteoWeather/schema'
 import { proxmoxOptions } from './proxmox/schema'
 import { serviceLinkOptions } from './serviceLink/schema'
 import { storageUsedOptions } from './storageUsed/schema'
+import { tailscaleOptions } from './tailscale/schema'
 import { traefikOptions } from './traefik/schema'
 
 export const widgetsSchema = z.union([
@@ -20,6 +21,7 @@ export const widgetsSchema = z.union([
 	storageUsedOptions,
 	gatusOptions,
 	traefikOptions,
+	tailscaleOptions,
 	cupOptions,
 	proxmoxOptions,
 	blockyOptions,

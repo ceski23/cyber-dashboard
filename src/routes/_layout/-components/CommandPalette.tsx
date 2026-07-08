@@ -9,6 +9,7 @@ import { Command } from 'cmdk'
 import { isNotNil } from 'es-toolkit'
 import { RotateCcwIcon, SearchIcon } from 'lucide-react'
 import { FunctionComponent, useState } from 'react'
+import { AdaptiveIcon } from '../../../components/AdaptiveIcon'
 import { styles } from './style.css'
 
 type CommandPaletteProps = {
@@ -18,7 +19,7 @@ type CommandPaletteProps = {
 			type: string
 			label: string
 			url: string
-			icon?: string
+			icon?: string | { light: string; dark: string }
 		}[]
 	>
 }
@@ -111,11 +112,19 @@ export const CommandPalette: FunctionComponent<CommandPaletteProps> = ({ links }
 												rel="noopener noreferrer"
 											>
 												{isNotNil(link.icon) ? (
-													<img
-														src={link.icon}
-														alt={link.label}
-														className={styles.commandPalette.item.icon}
-													/>
+													typeof link.icon === 'string' ? (
+														<img
+															src={link.icon}
+															alt={link.label}
+															className={styles.commandPalette.item.icon}
+														/>
+													) : (
+														<AdaptiveIcon
+															src={link.icon}
+															alt={link.label}
+															className={styles.commandPalette.item.icon}
+														/>
+													)
 												) : (
 													<span className={styles.commandPalette.item.icon} />
 												)}

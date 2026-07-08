@@ -9,6 +9,7 @@ import { openMeteoWeather } from './openMeteoWeather'
 import { proxmoxWidget } from './proxmox'
 import { serviceLink } from './serviceLink'
 import { storageUsed } from './storageUsed'
+import { tailscaleWidget } from './tailscale'
 import { traefikWidget } from './traefik'
 
 export const widgets = {
@@ -19,6 +20,7 @@ export const widgets = {
 	[openMeteoAirQuality.type]: openMeteoAirQuality,
 	[storageUsed.type]: storageUsed,
 	[gatusWidget.type]: gatusWidget,
+	[tailscaleWidget.type]: tailscaleWidget,
 	[traefikWidget.type]: traefikWidget,
 	[cupWidget.type]: cupWidget,
 	[proxmoxWidget.type]: proxmoxWidget,

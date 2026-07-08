@@ -9,7 +9,7 @@ export type WidgetDefinition<TType extends string, TSchema extends z.ZodObject> 
 		type: string
 		label: string
 		url: string
-		icon?: string
+		icon?: string | { light: string; dark: string }
 	}>
 	loader?: (queryClient: QueryClient, options: z.infer<TSchema['shape']['options']>) => Promise<void>
 }
