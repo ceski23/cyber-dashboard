@@ -1,6 +1,9 @@
+import { getLogger } from '#lib/utils/logger'
 import { createServerFn, createServerOnlyFn } from '@tanstack/react-start'
 import { EnvProvider, ConfigLoader, JsoncProvider, JsonProvider, YamlProvider } from './configLoader'
 import { configSchema, type DashboardConfig } from './schema'
+
+const logger = getLogger(['config'])
 
 const configKey = Symbol.for('dashboardConfig')
 
@@ -19,12 +22,14 @@ const configLoader = new ConfigLoader()
 export const getConfig = createServerOnlyFn(async (force: boolean = false) => {
 	if (force || !globalThis[configKey]) {
 		globalThis[configKey] = await configLoader.extract(configSchema)
+		logger.info('Config loaded')
 	}
 
 	return globalThis[configKey]
 })
 
 export const reloadConfigFn = createServerFn({ method: 'POST' }).handler(async () => {
+	logger.info('Reloading config')
 	await getConfig(true)
 })
 

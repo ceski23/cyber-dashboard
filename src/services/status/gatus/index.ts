@@ -1,9 +1,12 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
+import { getLogger } from '#lib/utils/logger'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import type { ServiceStatus } from '..'
 import { gatusOptions } from './schema'
+
+const logger = getLogger(['status', 'gatus'])
 
 const gatusResponseSchema = z.array(
 	z.object({
@@ -39,21 +42,28 @@ export const streamGatusStatus = createServerFn({ method: 'GET' })
 			prefixUrl: connection.baseUrl,
 		})
 
+		logger.info('Starting Gatus status stream from {baseUrl}', { baseUrl: connection.baseUrl })
+
 		while (!signal.aborted) {
-			const endpoints = await apiClient
-				.get('api/v1/endpoints/statuses', { signal })
-				.json()
-				.then(data => gatusResponseSchema.parse(data))
+			try {
+				const endpoints = await apiClient
+					.get('api/v1/endpoints/statuses', { signal })
+					.json()
+					.then(data => gatusResponseSchema.parse(data))
 
-			yield endpoints.map<ServiceStatus>(endpoint => {
-				const isSuccess = endpoint.results?.at(-1)?.success
+				yield endpoints.map<ServiceStatus>(endpoint => {
+					const isSuccess = endpoint.results?.at(-1)?.success
 
-				return {
-					service: endpoint.name,
-					status: isSuccess === undefined ? 'unknown' : isSuccess ? 'available' : 'unavailable',
-					label: isSuccess === undefined ? 'No Data' : isSuccess ? 'Up' : 'Down',
-				}
-			})
+					return {
+						service: endpoint.name,
+						status: isSuccess === undefined ? 'unknown' : isSuccess ? 'available' : 'unavailable',
+						label: isSuccess === undefined ? 'No Data' : isSuccess ? 'Up' : 'Down',
+					}
+				})
+			} catch (error) {
+				logger.error('Gatus API fetch failed: {error}', { error })
+				yield []
+			}
 
 			await Bun.sleep(refreshInterval)
 		}

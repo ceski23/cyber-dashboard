@@ -1,4 +1,5 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -21,6 +22,7 @@ const traefikOverviewSchema = z.object({
 export type TraefikStat = z.infer<typeof traefikStatSchema>
 
 const fetchTraefikData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'traefik'])])
 	.inputValidator(
 		z.object({
 			baseUrl: z.string(),

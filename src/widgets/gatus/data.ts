@@ -1,4 +1,5 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -33,6 +34,7 @@ export type GatusEndpoint = {
 }
 
 const fetchGatusWidgetData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'gatus'])])
 	.inputValidator(z.object({ baseUrl: z.string() }))
 	.handler(async ({ data: { baseUrl } }) => {
 		const { signal } = getRequest()

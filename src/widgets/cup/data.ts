@@ -1,4 +1,5 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -43,6 +44,7 @@ const cupResponseSchema = z.object({
 export type CupImage = z.infer<typeof cupImageSchema>
 
 export const fetchCupData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'cup'])])
 	.inputValidator(
 		z.object({
 			baseUrl: z.string(),
@@ -55,6 +57,7 @@ export const fetchCupData = createServerFn({ method: 'GET' })
 	})
 
 export const refreshCupData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'cup', 'refresh'])])
 	.inputValidator(
 		z.object({
 			baseUrl: z.string(),

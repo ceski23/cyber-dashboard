@@ -100,6 +100,37 @@ Pluggable backends (docker, gatus, ping) returning `ServiceStatus[]`. The `strea
 
 Auth is **config-driven** — instantiated at runtime from `config.auth` (not hardcoded env vars). Supports `basic` or `oidc`. `tanstackStartCookies()` **must be the last plugin** in the better-auth plugins array.
 
+### Logging (`src/lib/utils/logger.ts`)
+
+Uses **LogTape** (`@logtape/logtape`). Configured at module import time via `configureSync`. Logs to console (stdout/stderr via console sink) — Docker standard. Control verbosity with `LOG_LEVEL` env var (`trace` | `debug` | `info` | `warning` | `error` | `fatal`), defaults to `info`. ANSI color formatter in dev, plain in prod.
+
+```typescript
+import { getLogger } from '#lib/utils/logger'
+
+const logger = getLogger(['config'])  // category: ["cyber-dashboard", "config"]
+logger.info('Config loaded')
+logger.error('Failed to fetch: {error}', { error })
+
+// Error shorthand:
+try { ... } catch (error) {
+	logger.error(error, { context: 'fetchData' })
+}
+```
+
+**Categories:** always use `getLogger(['subsystem', ...])` — the `cyber-dashboard` root is auto-prepended. Hierarchical categories enable selective filtering. Never use `console.log`/`console.error`.
+
+For server functions, use `createLoggingMiddleware(category)` instead of wrapping handlers in try/catch:
+
+```typescript
+const fetchMyData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'my-widget'])])
+	.handler(async ({ data }) => {
+		// errors are automatically logged
+	})
+```
+
+This middleware logs errors at `error` level and re-throws, preserving existing error propagation to TanStack Query's retry mechanism.
+
 ---
 
 ## Library Conventions
@@ -212,6 +243,7 @@ Refer to `DESIGN.md` for detailed design guidelines, including visual style, col
 | `src/widgets/helpers.ts`   | `defineWidget` / `defineWidgetOptions` factories |
 | `src/widgets/index.ts`     | Widget registry (add new widgets here)           |
 | `src/widgets/schemas.ts`   | Zod union of all widget option schemas           |
+| `src/lib/utils/logger.ts`  | LogTape configuration and `getLogger` helper     |
 | `src/theme.css.ts`         | Vanilla Extract global theme tokens              |
 | `src/routeTree.gen.ts`     | **Auto-generated** — never edit manually         |
 | `config.jsonc`             | Live dashboard configuration (project root)      |

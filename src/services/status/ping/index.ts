@@ -1,8 +1,11 @@
+import { getLogger } from '#lib/utils/logger'
 import { PromisePool } from '@supercharge/promise-pool'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import type { ServiceStatus } from '..'
 import { pingOptions } from './schema'
+
+const logger = getLogger(['status', 'ping'])
 
 type PingParams = {
 	timeoutMs?: number
@@ -54,6 +57,8 @@ export const streamPingStatus = createServerFn({ method: 'GET' })
 	.inputValidator(pingOptions)
 	.handler(async function* ({ data: { refreshInterval, services, timeout } }) {
 		const { signal } = getRequest()
+
+		logger.info('Starting ping status stream for {count} hosts', { count: Object.keys(services).length })
 
 		while (!signal.aborted) {
 			const { results } = await PromisePool.withConcurrency(10)

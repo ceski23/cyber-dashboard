@@ -1,4 +1,5 @@
 import { configMiddleware } from '#lib/config/middleware'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions, skipToken } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -7,7 +8,7 @@ import { fetchWeatherApi } from 'openmeteo'
 import z from 'zod'
 
 const fetchCurrentWeather = createServerFn({ method: 'GET' })
-	.middleware([configMiddleware])
+	.middleware([configMiddleware, createLoggingMiddleware(['widget', 'openMeteoWeather'])])
 	.inputValidator(
 		z.object({
 			latitude: z.number().min(-90).max(90),

@@ -1,4 +1,5 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -35,6 +36,7 @@ const proxmoxGuestListSchema = z.object({
 })
 
 const fetchProxmoxData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'proxmox'])])
 	.inputValidator(
 		z.object({
 			baseUrl: z.string(),

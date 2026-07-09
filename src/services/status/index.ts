@@ -1,4 +1,5 @@
 import { configMiddleware } from '#lib/config/middleware'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { experimental_streamedQuery, queryOptions, skipToken } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -15,7 +16,7 @@ export type ServiceStatus = {
 }
 
 export const streamStatus = createServerFn({ method: 'GET' })
-	.middleware([configMiddleware])
+	.middleware([configMiddleware, createLoggingMiddleware(['status'])])
 	.inputValidator(
 		z.object({
 			provider: z.string(),

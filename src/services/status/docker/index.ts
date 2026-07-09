@@ -1,8 +1,11 @@
+import { getLogger } from '#lib/utils/logger'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import Docker from 'dockerode'
 import type { ServiceStatus } from '..'
 import { dockerOptions } from './schema'
+
+const logger = getLogger(['status', 'docker'])
 
 const mapDockerStateToStatus = (state: string): ServiceStatus['status'] => {
 	switch (state) {
@@ -27,17 +30,24 @@ export const streamDockerStatus = createServerFn({ method: 'GET' })
 		const { signal } = getRequest()
 		const docker = new Docker(connection)
 
-		while (!signal.aborted) {
-			const containers = await docker.listContainers({
-				all: true,
-				abortSignal: signal,
-			})
+		logger.info('Starting Docker status stream')
 
-			yield containers.map<ServiceStatus>(container => ({
-				service: container.Names.join(', ').slice(1),
-				status: mapDockerStateToStatus(container.State),
-				label: container.Status,
-			}))
+		while (!signal.aborted) {
+			try {
+				const containers = await docker.listContainers({
+					all: true,
+					abortSignal: signal,
+				})
+
+				yield containers.map<ServiceStatus>(container => ({
+					service: container.Names.join(', ').slice(1),
+					status: mapDockerStateToStatus(container.State),
+					label: container.Status,
+				}))
+			} catch (error) {
+				logger.error('Docker container list failed: {error}', { error })
+				yield []
+			}
 
 			await Bun.sleep(refreshInterval)
 		}

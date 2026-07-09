@@ -1,3 +1,4 @@
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -27,6 +28,7 @@ const tailscaleDevicesResponseSchema = z.object({
 export type TailscaleDevice = z.infer<typeof tailscaleDeviceSchema>
 
 const fetchTailscaleData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'tailscale'])])
 	.inputValidator(
 		z.object({
 			tailnet: z.string(),

@@ -1,4 +1,5 @@
 import { defaultServiceApiClient } from '#lib/utils/api'
+import { createLoggingMiddleware } from '#lib/utils/logger'
 import { queryOptions } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -14,6 +15,7 @@ const blockingStatusSchema = z.object({
 })
 
 export const fetchBlockyData = createServerFn({ method: 'GET' })
+	.middleware([createLoggingMiddleware(['widget', 'blocky'])])
 	.inputValidator(z.object({ baseUrl: z.string() }))
 	.handler(async ({ data: { baseUrl } }) => {
 		const { signal } = getRequest()
@@ -42,6 +44,7 @@ export const fetchBlockyData = createServerFn({ method: 'GET' })
 	})
 
 export const toggleBlocking = createServerFn({ method: 'POST' })
+	.middleware([createLoggingMiddleware(['widget', 'blocky', 'toggle'])])
 	.inputValidator(z.object({ baseUrl: z.string(), enable: z.boolean() }))
 	.handler(async ({ data: { baseUrl, enable } }) => {
 		const { signal } = getRequest()
