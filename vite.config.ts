@@ -25,7 +25,7 @@ const config = defineConfig({
 		tabWidth: 4,
 		trailingComma: 'all',
 		useTabs: true,
-		ignorePatterns: ['src/routeTree.gen.ts', '.output'],
+		ignorePatterns: ['src/routeTree.gen.ts', '.output', 'CHANGELOG.md'],
 		sortImports: {
 			newlinesBetween: false,
 			groups: [['side_effect'], ['builtin'], ['external'], ['internal'], ['parent'], ['sibling'], ['index']],
