@@ -6,7 +6,8 @@ export const tailscaleOptions = defineWidgetOptions(
 	'tailscale',
 	z.strictObject({
 		name: z.string().default('Tailscale').describe('Display name for the widget.'),
-		apiKey: z.string().describe('Tailscale API key for authentication.'),
+		clientId: z.string().describe('Tailscale OAuth client ID.'),
+		clientSecret: z.string().describe('Tailscale OAuth client secret.'),
 		tailnet: z.string().describe('Tailscale tailnet name (e.g. example.ts.net).'),
 		refreshInterval: z
 			.number()

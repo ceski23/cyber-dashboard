@@ -588,9 +588,13 @@
 											"description": "Display name for the widget.",
 											"type": "string"
 										},
-										"apiKey": {
+										"clientId": {
 											"type": "string",
-											"description": "Tailscale API key for authentication."
+											"description": "Tailscale OAuth client ID."
+										},
+										"clientSecret": {
+											"type": "string",
+											"description": "Tailscale OAuth client secret."
 										},
 										"tailnet": {
 											"type": "string",
@@ -603,7 +607,7 @@
 											"minimum": 5000
 										}
 									},
-									"required": ["apiKey", "tailnet"],
+									"required": ["clientId", "clientSecret", "tailnet"],
 									"additionalProperties": false,
 									"description": "The configuration options for the widget."
 								}

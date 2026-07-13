@@ -23,11 +23,11 @@ const TAILSCALE_ADMIN_URL = 'https://login.tailscale.com/admin/machines'
 export const tailscaleWidget = defineWidget({
 	type: 'tailscale',
 	optionsSchema: tailscaleOptions,
-	loader: async (queryClient, { apiKey, tailnet, refreshInterval }) => {
-		await queryClient.prefetchQuery(tailscaleDataQuery(tailnet, apiKey, refreshInterval))
+	loader: async (queryClient, { clientId, clientSecret, tailnet, refreshInterval }) => {
+		await queryClient.prefetchQuery(tailscaleDataQuery(tailnet, clientId, clientSecret, refreshInterval))
 	},
-	Component: ({ options: { name, apiKey, tailnet, refreshInterval }, columns }) => {
-		const tailscaleQuery = useQuery(tailscaleDataQuery(tailnet, apiKey, refreshInterval))
+	Component: ({ options: { name, clientId, clientSecret, tailnet, refreshInterval }, columns }) => {
+		const tailscaleQuery = useQuery(tailscaleDataQuery(tailnet, clientId, clientSecret, refreshInterval))
 
 		if (tailscaleQuery.error) {
 			throw new Error(`Failed to load Tailscale data: ${tailscaleQuery.error.message}`)
