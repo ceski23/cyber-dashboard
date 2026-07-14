@@ -20,4 +20,7 @@ COPY --from=builder /app/.output ./.output
 
 EXPOSE 3000
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD wget -q http://localhost:3000/health
+
 CMD ["bun", ".output/server/index.mjs"]
