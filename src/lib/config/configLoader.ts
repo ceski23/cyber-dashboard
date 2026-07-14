@@ -1,11 +1,22 @@
-import { parseJSON, parseYAML, parseJSONC } from 'confbox'
 import { defu } from 'defu'
-import { type z, type ZodType } from 'zod'
+import { merge } from 'es-toolkit'
+import { set } from 'es-toolkit/compat'
+import { z } from 'zod'
+import type { ZodType } from 'zod'
+import { ConfigError } from './configError'
+import { parseJsoncDocument } from './jsonParser'
+import type { ParsedDocument } from './parsedDocument'
+import { parseYamlDocument } from './yamlParser'
 
 type Dict = Record<string, unknown>
 
+type ProviderResult = {
+	data: Dict
+	parsedDocument?: ParsedDocument
+}
+
 type Provider = {
-	provide(): Promise<Dict>
+	provide(): Promise<ProviderResult>
 }
 
 type MergeStrategy = 'merge' | 'join'
@@ -16,43 +27,18 @@ type QueuedProvider = {
 }
 
 /**
- * Deep merge function where later values override earlier ones
- */
-const deepMerge = (target: Dict, source: Dict): Dict => {
-	const result = { ...target }
-
-	for (const [key, sourceValue] of Object.entries(source)) {
-		const targetValue = result[key]
-
-		if (
-			sourceValue !== null &&
-			typeof sourceValue === 'object' &&
-			!Array.isArray(sourceValue) &&
-			targetValue !== null &&
-			typeof targetValue === 'object' &&
-			!Array.isArray(targetValue)
-		) {
-			result[key] = deepMerge(targetValue as Dict, sourceValue as Dict)
-		} else {
-			result[key] = sourceValue
-		}
-	}
-
-	return result
-}
-
-/**
  * File-based provider for JSON files
  */
 export class JsonProvider implements Provider {
 	constructor(private filePath: string) {}
 
-	async provide(): Promise<Dict> {
+	async provide(): Promise<ProviderResult> {
 		try {
 			const content = await Bun.file(this.filePath).text()
-			return parseJSON(content)
+			const parsed = parseJsoncDocument(content)
+			return { data: parsed.data, parsedDocument: parsed }
 		} catch {
-			return {}
+			return { data: {} }
 		}
 	}
 }
@@ -63,12 +49,13 @@ export class JsonProvider implements Provider {
 export class JsoncProvider implements Provider {
 	constructor(private filePath: string) {}
 
-	async provide(): Promise<Dict> {
+	async provide(): Promise<ProviderResult> {
 		try {
 			const content = await Bun.file(this.filePath).text()
-			return parseJSONC(content)
+			const parsed = parseJsoncDocument(content)
+			return { data: parsed.data, parsedDocument: parsed }
 		} catch {
-			return {}
+			return { data: {} }
 		}
 	}
 }
@@ -79,12 +66,13 @@ export class JsoncProvider implements Provider {
 export class YamlProvider implements Provider {
 	constructor(private filePath: string) {}
 
-	async provide(): Promise<Dict> {
+	async provide(): Promise<ProviderResult> {
 		try {
 			const content = await Bun.file(this.filePath).text()
-			return parseYAML(content)
+			const parsed = parseYamlDocument(content)
+			return { data: parsed.data, parsedDocument: parsed }
 		} catch {
-			return {}
+			return { data: {} }
 		}
 	}
 }
@@ -120,18 +108,6 @@ const resolveFileRefs = async <T>(value: T): Promise<T> => {
 	return value
 }
 
-const setNestedValue = (obj: Dict, path: string[], value: unknown): void => {
-	let current = obj
-	for (let i = 0; i < path.length - 1; i++) {
-		const key = path[i]
-		if (!(key in current) || typeof current[key] !== 'object' || Array.isArray(current[key])) {
-			current[key] = {}
-		}
-		current = current[key] as Dict
-	}
-	current[path[path.length - 1]] = value
-}
-
 /**
  * Environment variable provider with prefix support
  * Handles nested paths via separator (e.g., CONFIG_DB__HOST -> db.host)
@@ -144,7 +120,7 @@ export class EnvProvider implements Provider {
 		private separator: string = '__',
 	) {}
 
-	async provide(): Promise<Dict> {
+	async provide(): Promise<ProviderResult> {
 		const result: Dict = {}
 
 		for (const [key, value] of Object.entries(process.env)) {
@@ -170,10 +146,10 @@ export class EnvProvider implements Provider {
 					.join(''),
 			)
 
-			setNestedValue(result, path, value)
+			set(result, path, value)
 		}
 
-		return result
+		return { data: result }
 	}
 }
 
@@ -183,9 +159,14 @@ export class EnvProvider implements Provider {
 export class SerializedProvider implements Provider {
 	constructor(private data: Dict) {}
 
-	async provide(): Promise<Dict> {
-		return this.data
+	async provide(): Promise<ProviderResult> {
+		return { data: this.data }
 	}
+}
+
+type LoadResult = {
+	data: Dict
+	parsedDocuments: ParsedDocument[]
 }
 
 export class ConfigLoader {
@@ -209,29 +190,45 @@ export class ConfigLoader {
 
 	/**
 	 * Load and merge all queued providers
-	 * Returns the merged configuration object
+	 * Returns the merged configuration object and any parsed documents
 	 */
-	async load(): Promise<Dict> {
+	async load(): Promise<LoadResult> {
 		let config: Dict = {}
+		const parsedDocuments: ParsedDocument[] = []
 
 		for (const { provider, strategy } of this.queue) {
-			const providerConfig = await provider.provide()
+			const { data, parsedDocument } = await provider.provide()
+
+			if (parsedDocument) {
+				parsedDocuments.push(parsedDocument)
+			}
 
 			if (strategy === 'merge') {
-				config = deepMerge(config, providerConfig)
+				config = merge(config, data)
 			} else {
-				config = defu(config, providerConfig)
+				config = defu(config, data)
 			}
 		}
 
-		return resolveFileRefs(config)
+		config = await resolveFileRefs(config)
+
+		return { data: config, parsedDocuments }
 	}
 
 	/**
 	 * Load and extract configuration with Zod validation
 	 */
 	async extract<T extends ZodType>(schema: T): Promise<z.infer<T>> {
-		const config = await this.load()
-		return schema.parse(config)
+		const { data, parsedDocuments } = await this.load()
+
+		try {
+			return schema.parse(data)
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				throw new ConfigError(error, parsedDocuments)
+			}
+
+			throw error
+		}
 	}
 }

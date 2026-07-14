@@ -1,3 +1,4 @@
+import { ErrorCard } from '#components/errorCard'
 import { flattenDashboardWidgets } from '#lib/config/dashboardItems'
 import { configMiddleware } from '#lib/config/middleware'
 import { widgets as widgetsDefs } from '#widgets'
@@ -49,10 +50,5 @@ const Layout = () => {
 export const Route = createFileRoute('/_layout')({
 	component: Layout,
 	loader: async () => await getData(),
-	errorComponent: ({ error }) => (
-		<div className="p-4">
-			<h1 className="mb-4 text-2xl font-bold">An error occurred</h1>
-			<pre className="text-red-600">{error.message}</pre>
-		</div>
-	),
+	errorComponent: ErrorCard,
 })

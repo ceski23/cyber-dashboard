@@ -1,5 +1,6 @@
 import '#theme.css'
 import '#global.css'
+import { ErrorCard } from '#components/errorCard'
 import { useTheme } from '#lib/utils/theme'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { hotkeysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
@@ -14,6 +15,7 @@ type MyRouterContext = {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+	errorComponent: ErrorCard,
 	head: () => ({
 		meta: [
 			{

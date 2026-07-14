@@ -106,12 +106,7 @@ const fetchTailscaleData = createServerFn({ method: 'GET' })
 		return raw.devices
 	})
 
-export const tailscaleDataQuery = (
-	tailnet: string,
-	clientId: string,
-	clientSecret: string,
-	refreshInterval: number,
-) =>
+export const tailscaleDataQuery = (tailnet: string, clientId: string, clientSecret: string, refreshInterval: number) =>
 	queryOptions({
 		queryKey: ['tailscaleData', { tailnet, refreshInterval }] as const,
 		queryFn: ({ signal }) => fetchTailscaleData({ data: { tailnet, clientId, clientSecret }, signal }),
