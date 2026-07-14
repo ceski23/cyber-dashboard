@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/ceski23/cyber-dashboard/compare/v1.0.0...v1.1.0) (2026-07-14)
+
+
+### Features
+
+* add healthcheck ([3592daa](https://github.com/ceski23/cyber-dashboard/commit/3592daa76fa428d97226668d042d48130195d81f))
+* refactor config loader ([cba1242](https://github.com/ceski23/cyber-dashboard/commit/cba1242aa3cfb6574f107f955464ab2f25ba3ed5))
+* use OAuth instead of API key for Tailscale widget ([ca7d552](https://github.com/ceski23/cyber-dashboard/commit/ca7d552790f4a3b95432203797ea4bd3171f853e))
+
 # 1.0.0 (2026-07-09)
 
 
