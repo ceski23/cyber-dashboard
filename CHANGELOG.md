@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/ceski23/cyber-dashboard/compare/v1.1.0...v1.1.1) (2026-07-14)
+
+
+### Bug Fixes
+
+* fix container healthcheck ([9530195](https://github.com/ceski23/cyber-dashboard/commit/9530195a84d4682b2d26c3b7d95a23321709ca70))
+
 # [1.1.0](https://github.com/ceski23/cyber-dashboard/compare/v1.0.0...v1.1.0) (2026-07-14)
 
 
