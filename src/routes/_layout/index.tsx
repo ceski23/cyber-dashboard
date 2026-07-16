@@ -5,6 +5,7 @@ import type { DashboardItem } from '#lib/config/schema'
 import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { isNotNil, withTimeout } from 'es-toolkit'
 import { ms } from 'ms'
 import { match, P } from 'ts-pattern'
@@ -22,8 +23,8 @@ const DashboardItemView = ({ definition }: { definition: DashboardItem }) =>
 	match(definition)
 		.with({ type: 'stack' }, stack => (
 			<div
-				className={styles.stack}
-				style={{ gridColumn: `span ${stack.columns}` }}
+				className={[styles.stack, styles.gridItem]}
+				style={assignInlineVars({ [styles.gridItemSpanVar]: String(stack.columns) })}
 			>
 				{stack.widgets.map((widgetDef, index) => (
 					<DashboardItemView
@@ -38,8 +39,8 @@ const DashboardItemView = ({ definition }: { definition: DashboardItem }) =>
 
 			return (
 				<div
-					className={styles.group}
-					style={{ gridColumn: `span ${cols}` }}
+					className={[styles.group, styles.gridItem]}
+					style={assignInlineVars({ [styles.gridItemSpanVar]: String(cols) })}
 				>
 					{isNotNil(group.name) && (
 						<div className={styles.groupHeader}>
@@ -49,7 +50,7 @@ const DashboardItemView = ({ definition }: { definition: DashboardItem }) =>
 					)}
 					<div
 						className={styles.groupWidgets}
-						style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+						style={assignInlineVars({ [styles.groupColsVar]: String(cols) })}
 					>
 						{group.widgets.map((widgetDef, index) => (
 							<DashboardItemView
@@ -61,7 +62,14 @@ const DashboardItemView = ({ definition }: { definition: DashboardItem }) =>
 				</div>
 			)
 		})
-		.otherwise(widget => <Widget definition={widget} />)
+		.otherwise(widget => (
+			<div
+				className={styles.gridItem}
+				style={assignInlineVars({ [styles.gridItemSpanVar]: String(widget.columns) })}
+			>
+				<Widget definition={widget} />
+			</div>
+		))
 
 const DashboardPage = () => {
 	const { widgets } = Route.useLoaderData()

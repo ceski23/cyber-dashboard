@@ -1,5 +1,5 @@
 import { media, vars } from '#theme.css'
-import { style } from '@vanilla-extract/css'
+import { createVar, style } from '@vanilla-extract/css'
 
 export const page = style({
 	padding: vars.spacing[6],
@@ -7,10 +7,13 @@ export const page = style({
 
 export const grid = style({
 	display: 'grid',
-	gridTemplateColumns: 'repeat(6, 1fr)',
+	gridTemplateColumns: 'minmax(0, 1fr)',
 	gap: vars.spacing[4],
 	alignItems: 'start',
 	'@media': {
+		[media.sm]: {
+			gridTemplateColumns: 'repeat(6, 1fr)',
+		},
 		[media.lg]: {
 			gridTemplateColumns: 'repeat(12, 1fr)',
 		},
@@ -51,8 +54,27 @@ export const groupRule = style({
 	background: vars.color.borderSubtle,
 })
 
+export const groupColsVar = createVar()
+
 export const groupWidgets = style({
 	display: 'grid',
 	gap: vars.spacing[4],
 	alignItems: 'start',
+	gridTemplateColumns: 'minmax(0, 1fr)',
+	'@media': {
+		[media.sm]: {
+			gridTemplateColumns: `repeat(${groupColsVar}, 1fr)`,
+		},
+	},
+})
+
+export const gridItemSpanVar = createVar()
+
+export const gridItem = style({
+	gridColumn: '1 / -1',
+	'@media': {
+		[media.sm]: {
+			gridColumn: `span ${gridItemSpanVar}`,
+		},
+	},
 })
