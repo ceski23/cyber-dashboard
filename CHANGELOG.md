@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/ceski23/cyber-dashboard/compare/v1.2.0...v1.2.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* regenerate config schema ([e6fddf1](https://github.com/ceski23/cyber-dashboard/commit/e6fddf10b281e331a1c0e20b971efe116230c63a))
+
 # [1.2.0](https://github.com/ceski23/cyber-dashboard/compare/v1.1.1...v1.2.0) (2026-07-19)
 
 
