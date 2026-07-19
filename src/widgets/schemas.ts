@@ -3,6 +3,7 @@ import { blockyOptions } from './blocky/schema'
 import { cpuLoadOptions } from './cpuLoad/schema'
 import { cupOptions } from './cup/schema'
 import { gatusOptions } from './gatus/schema'
+import { grafanaOptions } from './grafana/schema'
 import { memoryUsedOptions } from './memoryUsed/schema'
 import { openMeteoAirQualityOptions } from './openMeteoAirQuality/schema'
 import { openMeteoWeatherOptions } from './openMeteoWeather/schema'
@@ -25,4 +26,5 @@ export const widgetsSchema = z.union([
 	cupOptions,
 	proxmoxOptions,
 	blockyOptions,
+	grafanaOptions,
 ])

@@ -3,6 +3,7 @@ import { blockyWidget } from './blocky'
 import { cpuLoad } from './cpuLoad'
 import { cupWidget } from './cup'
 import { gatusWidget } from './gatus'
+import { grafana } from './grafana'
 import { memoryUsed } from './memoryUsed'
 import { openMeteoAirQuality } from './openMeteoAirQuality'
 import { openMeteoWeather } from './openMeteoWeather'
@@ -25,6 +26,7 @@ export const widgets = {
 	[cupWidget.type]: cupWidget,
 	[proxmoxWidget.type]: proxmoxWidget,
 	[blockyWidget.type]: blockyWidget,
+	[grafana.type]: grafana,
 }
 
 export type WidgetType = {
