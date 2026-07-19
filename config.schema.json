@@ -748,6 +748,85 @@
 							},
 							"required": ["type", "options"],
 							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"const": "grafana",
+									"description": "The type of the widget."
+								},
+								"columns": {
+									"default": 3,
+									"description": "The number of columns the widget spans.",
+									"type": "number",
+									"minimum": 1
+								},
+								"options": {
+									"type": "object",
+									"properties": {
+										"name": {
+											"default": "Grafana",
+											"description": "Display name for the widget.",
+											"type": "string"
+										},
+										"grafanaUrl": {
+											"type": "string",
+											"format": "uri",
+											"description": "Base URL of the Grafana instance"
+										},
+										"datasourceUid": {
+											"type": "string",
+											"description": "UID of the datasource to query through Grafana"
+										},
+										"token": {
+											"description": "Grafana service account token for instances that require authentication.",
+											"type": "string"
+										},
+										"icon": {
+											"description": "Custom icon URL. Defaults to the Grafana logo if not set.",
+											"type": "string"
+										},
+										"queries": {
+											"minItems": 1,
+											"maxItems": 3,
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"query": {
+														"type": "string",
+														"description": "The PromQL query to execute."
+													},
+													"label": {
+														"type": "string",
+														"description": "Display label for this query result."
+													},
+													"unit": {
+														"description": "Optional unit to display after the value (e.g. Mbps, ms, %).",
+														"type": "string"
+													}
+												},
+												"required": ["query", "label"],
+												"additionalProperties": false
+											},
+											"description": "Array of PromQL queries with labels (1-3 items)."
+										},
+										"refreshInterval": {
+											"default": 30000,
+											"description": "Interval in milliseconds to refresh data.",
+											"type": "number",
+											"minimum": 5000
+										}
+									},
+									"required": ["grafanaUrl", "datasourceUid", "queries"],
+									"additionalProperties": false,
+									"description": "The configuration options for the widget."
+								}
+							},
+							"required": ["type", "options"],
+							"additionalProperties": false
 						}
 					]
 				},
