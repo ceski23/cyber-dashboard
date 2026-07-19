@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/ceski23/cyber-dashboard/compare/v1.1.1...v1.2.0) (2026-07-19)
+
+
+### Features
+
+* add Grafana widget ([65e11f2](https://github.com/ceski23/cyber-dashboard/commit/65e11f2c7c4a11b91b165fecf159585bd7dac2bb))
+* improve widgets layout on mobile ([86f0324](https://github.com/ceski23/cyber-dashboard/commit/86f032495c368acc64887fd1ef0c1ad7591aa371))
+
 ## [1.1.1](https://github.com/ceski23/cyber-dashboard/compare/v1.1.0...v1.1.1) (2026-07-14)
 
 
