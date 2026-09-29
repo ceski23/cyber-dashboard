@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ceski23/cyber-dashboard/compare/v1.2.1...v1.3.0) (2026-09-29)
+
+
+### Features
+
+* bump Bun version ([0ce9fd9](https://github.com/ceski23/cyber-dashboard/commit/0ce9fd9bf73e8658f81fe23a0574e0b19437c1c0))
+
 ## [1.2.1](https://github.com/ceski23/cyber-dashboard/compare/v1.2.0...v1.2.1) (2026-07-19)
 
 
