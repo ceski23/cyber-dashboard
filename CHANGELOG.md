@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/ceski23/cyber-dashboard/compare/v1.3.0...v1.4.0) (2026-10-10)
+
+
+### Features
+
+* add Drydock widget ([a054b5b](https://github.com/ceski23/cyber-dashboard/commit/a054b5bda8c49c6ed3bc149d649d4895486af7a9))
+
 # [1.3.0](https://github.com/ceski23/cyber-dashboard/compare/v1.2.1...v1.3.0) (2026-09-29)
 
 
