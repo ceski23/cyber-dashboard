@@ -2,6 +2,7 @@ import z from 'zod'
 import { blockyWidget } from './blocky'
 import { cpuLoad } from './cpuLoad'
 import { cupWidget } from './cup'
+import { drydockWidget } from './drydock'
 import { gatusWidget } from './gatus'
 import { grafana } from './grafana'
 import { memoryUsed } from './memoryUsed'
@@ -24,6 +25,7 @@ export const widgets = {
 	[tailscaleWidget.type]: tailscaleWidget,
 	[traefikWidget.type]: traefikWidget,
 	[cupWidget.type]: cupWidget,
+	[drydockWidget.type]: drydockWidget,
 	[proxmoxWidget.type]: proxmoxWidget,
 	[blockyWidget.type]: blockyWidget,
 	[grafana.type]: grafana,

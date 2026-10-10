@@ -82,10 +82,30 @@ Main config schema is defined in `src/lib/config/schema.ts`.
 - `gatus`
 - `traefik`
 - `cup`
+- `drydock`
 - `proxmox`
 - `blocky`
 
 Widget schemas live in `src/widgets/*/schema.ts`.
+
+### Drydock
+
+The Drydock widget uses the `/api/v1/containers` API and shows monitored containers, up-to-date containers,
+updates, and unknown/error states. Requires a Drydock version exposing the versioned API.
+The refresh button runs a manual watch (`POST /api/v1/containers/watch`); it never applies updates.
+
+```jsonc
+{
+	"type": "drydock",
+	"options": {
+		"name": "Drydock",
+		"url": "http://drydock:3000",
+		"refreshInterval": 300000,
+		// Optional, for instances using HTTP Basic authentication:
+		"auth": { "username": "dashboard", "password": "your-password" },
+	},
+}
+```
 
 ## Supported Status Providers
 

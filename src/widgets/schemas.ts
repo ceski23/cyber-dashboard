@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { blockyOptions } from './blocky/schema'
 import { cpuLoadOptions } from './cpuLoad/schema'
 import { cupOptions } from './cup/schema'
+import { drydockOptions } from './drydock/schema'
 import { gatusOptions } from './gatus/schema'
 import { grafanaOptions } from './grafana/schema'
 import { memoryUsedOptions } from './memoryUsed/schema'
@@ -24,6 +25,7 @@ export const widgetsSchema = z.union([
 	traefikOptions,
 	tailscaleOptions,
 	cupOptions,
+	drydockOptions,
 	proxmoxOptions,
 	blockyOptions,
 	grafanaOptions,

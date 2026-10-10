@@ -662,6 +662,61 @@
 							"properties": {
 								"type": {
 									"type": "string",
+									"const": "drydock",
+									"description": "The type of the widget."
+								},
+								"columns": {
+									"default": 3,
+									"description": "The number of columns the widget spans.",
+									"type": "number",
+									"minimum": 1
+								},
+								"options": {
+									"type": "object",
+									"properties": {
+										"name": {
+											"default": "Drydock",
+											"description": "Display name for the widget.",
+											"type": "string"
+										},
+										"url": {
+											"type": "string",
+											"format": "uri",
+											"description": "Base URL of the Drydock server (e.g. http://drydock:3000)."
+										},
+										"auth": {
+											"description": "Optional HTTP Basic authentication credentials.",
+											"type": "object",
+											"properties": {
+												"username": {
+													"type": "string"
+												},
+												"password": {
+													"type": "string"
+												}
+											},
+											"required": ["username", "password"]
+										},
+										"refreshInterval": {
+											"default": 300000,
+											"description": "Polling interval in milliseconds. Defaults to 5 minutes.",
+											"type": "number",
+											"minimum": 1000
+										}
+									},
+									"required": ["url"],
+									"additionalProperties": false,
+									"description": "The configuration options for the widget."
+								}
+							},
+							"required": ["type", "options"],
+							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
 									"const": "proxmox",
 									"description": "The type of the widget."
 								},
