@@ -1,5 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import type { ComponentProps, FunctionComponent } from 'react'
+import lightIcon from '../../../assets/icon-light.svg?url'
+import darkIcon from '../../../assets/icon.svg?url'
+import { AdaptiveIcon } from '../../../components/AdaptiveIcon'
 import { CommandPalette } from './CommandPalette'
 import { styles } from './style.css'
 import { ThemeToggle } from './ThemeToggle'
@@ -16,7 +19,14 @@ export const Header: FunctionComponent<HeaderProps> = ({ title, links }) => (
 				to="/"
 				className={styles.header.title}
 			>
-				{title}
+				<AdaptiveIcon
+					src={{ light: lightIcon, dark: darkIcon }}
+					alt={title}
+					width={32}
+					height={32}
+					className={styles.header.logo}
+				/>
+				<span className={styles.header.titleText}>{title}</span>
 			</Link>
 		</div>
 		{/* TODO: Display only after auth resolved */}

@@ -40,7 +40,7 @@ const Layout = () => {
 	return (
 		<OpenLinksInNewTabContext value={openLinksInNewTab}>
 			<Header
-				title={title ?? 'Homelab Dashboard'}
+				title={title}
 				links={links}
 			/>
 			<Outlet />
@@ -51,5 +51,8 @@ const Layout = () => {
 export const Route = createFileRoute('/_layout')({
 	component: Layout,
 	loader: async () => await getData(),
+	head: ({ loaderData }) => ({
+		meta: loaderData ? [{ title: loaderData.title }] : [],
+	}),
 	errorComponent: ErrorCard,
 })

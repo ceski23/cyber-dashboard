@@ -42,17 +42,31 @@ export const styles = {
 			minWidth: 0,
 		}),
 		title: style({
+			display: 'flex',
+			alignItems: 'center',
+			gap: vars.spacing[2],
+			minWidth: 0,
 			fontSize: vars.text.xl,
 			fontWeight: 600,
 			transition: 'color 0.2s',
 			color: vars.color.foreground,
 			textDecoration: 'none',
-			textOverflow: 'ellipsis',
 			whiteSpace: 'nowrap',
 			overflow: 'hidden',
 			':hover': {
 				color: vars.color.primary,
 			},
+		}),
+		logo: style({
+			width: vars.spacing[8],
+			height: vars.spacing[8],
+			flexShrink: 0,
+		}),
+		titleText: style({
+			minWidth: 0,
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+			whiteSpace: 'nowrap',
 		}),
 		user: {
 			root: style({

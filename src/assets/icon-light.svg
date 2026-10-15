@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-labelledby="title desc">
+	<title id="title">Cyber Dashboard</title>
+	<desc id="desc">An indigo dashboard grid on a light rounded tile, with a green service-status light.</desc>
+	<defs>
+		<linearGradient id="surface" x1="16" y1="8" x2="112" y2="120" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#FAFAFF" />
+			<stop offset="1" stop-color="#E4E5F0" />
+		</linearGradient>
+		<linearGradient id="accent" x1="28" y1="28" x2="76" y2="100" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#7770EB" />
+			<stop offset="1" stop-color="#5147C9" />
+		</linearGradient>
+		<linearGradient id="rim" x1="24" y1="8" x2="104" y2="120" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#9699B4" stop-opacity=".5" />
+			<stop offset="1" stop-color="#9699B4" stop-opacity=".25" />
+		</linearGradient>
+	</defs>
+	<rect x="4" y="4" width="120" height="120" rx="30" fill="url(#surface)" />
+	<rect x="4.75" y="4.75" width="118.5" height="118.5" rx="29.25" stroke="url(#rim)" stroke-width="1.5" />
+	<rect x="28" y="28" width="28" height="72" rx="8" fill="url(#accent)" />
+	<rect x="66" y="28" width="34" height="28" rx="8" fill="#737990" />
+	<rect x="66" y="66" width="34" height="34" rx="8" fill="#D2D6E5" stroke="#A8AEC3" />
+	<circle cx="83" cy="83" r="6" fill="#168653" />
+</svg>

@@ -1,4 +1,5 @@
 import { useTheme, type Theme } from '#lib/utils/theme'
+import { useRouter } from '@tanstack/react-router'
 import { Monitor, Moon, Sun } from 'lucide-react'
 import type { FunctionComponent } from 'react'
 import * as styles from './ThemeToggle.css'
@@ -23,11 +24,15 @@ const THEME_LABEL: Record<Theme, string> = {
 
 export const ThemeToggle: FunctionComponent = () => {
 	const { theme, setTheme } = useTheme()
+	const router = useRouter()
 
 	return (
 		<button
 			className={styles.button}
-			onClick={() => setTheme(NEXT_THEME[theme])}
+			onClick={async () => {
+				setTheme(NEXT_THEME[theme])
+				await router.invalidate()
+			}}
 			aria-label={THEME_LABEL[theme]}
 			title={THEME_LABEL[theme]}
 		>

@@ -36,7 +36,7 @@ export const dashboardStackSchema: z.ZodType<DashboardStack> = z.strictObject({
 
 export const configSchema = z.strictObject({
 	$schema: z.string().describe('The schema to verify this document against.').optional(),
-	title: z.string().describe('The title of the dashboard.').optional(),
+	title: z.string().describe('The title of the dashboard.').optional().default('Cyber Dashboard'),
 	openLinksInNewTab: z.boolean().default(true).describe('Open widget links in a new tab.'),
 	widgets: z.array(dashboardItemSchema).describe('The list of widgets to display on the dashboard.'),
 	statusProviders: z

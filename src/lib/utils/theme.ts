@@ -18,7 +18,7 @@ const getSnapshot = (): Theme => {
 	return stored === 'light' || stored === 'dark' ? stored : 'auto'
 }
 
-const getServerSnapshot = createIsomorphicFn()
+export const getTheme = createIsomorphicFn()
 	.client(() => getSnapshot())
 	.server(() => {
 		const cookie = getRequestHeader('cookie')
@@ -29,7 +29,7 @@ const getServerSnapshot = createIsomorphicFn()
 	})
 
 export const useTheme = () => {
-	const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+	const theme = useSyncExternalStore(subscribe, getSnapshot, getTheme)
 	const setTheme = (next: Theme) => {
 		if (next === 'auto') {
 			cookie.remove(COOKIE_KEY)

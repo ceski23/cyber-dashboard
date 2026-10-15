@@ -2,6 +2,7 @@ import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
 import viteReact from '@vitejs/plugin-react'
+import favicons from 'favigo/vite'
 import { nitro } from 'nitro/vite'
 import circleDependency from 'vite-plugin-circular-dependency'
 import { defineConfig } from 'vite-plus'
@@ -49,6 +50,15 @@ const config = defineConfig({
 	},
 	envPrefix: 'PUBLIC_',
 	plugins: [
+		favicons({
+			source: './src/assets/icon.svg',
+			configuration: {
+				appName: 'Cyber Dashboard',
+				appShortName: 'Cyber Dashboard',
+				background: '#101117',
+				theme_color: '#101117',
+			},
+		}),
 		devtools({
 			enhancedLogs: {
 				enabled: false,
