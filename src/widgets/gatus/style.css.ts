@@ -16,7 +16,35 @@ export const styles = {
 		height: vars.spacing[64],
 	}),
 
+	glow: recipe({
+		base: {
+			position: 'absolute',
+			inset: 0,
+			pointerEvents: 'none',
+			zIndex: 0,
+		},
+		variants: {
+			status: {
+				success: {
+					background: `radial-gradient(ellipse at 100% 0%, ${transparentize(vars.color.success, 0.12)} 0%, transparent 65%)`,
+				},
+				warning: {
+					background: `radial-gradient(ellipse at 100% 0%, ${transparentize(vars.color.warning, 0.12)} 0%, transparent 65%)`,
+				},
+				error: {
+					background: `radial-gradient(ellipse at 100% 0%, ${transparentize(vars.color.error, 0.12)} 0%, transparent 65%)`,
+				},
+				neutral: { background: 'none' },
+			},
+		},
+	}),
+
+	list: style({
+		position: 'relative',
+	}),
+
 	header: style({
+		position: 'relative',
 		paddingBlock: vars.spacing[3],
 		paddingInline: vars.spacing[4],
 		gap: vars.spacing[2],

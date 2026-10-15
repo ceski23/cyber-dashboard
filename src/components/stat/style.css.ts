@@ -1,4 +1,3 @@
-import { transparentize } from '#lib/utils/style'
 import { vars } from '#theme.css'
 import { style } from '@vanilla-extract/css'
 
@@ -13,9 +12,9 @@ export const item = style({
 	flexDirection: 'column',
 	gap: vars.spacing['0.5'],
 	padding: `${vars.spacing[2]} ${vars.spacing[3]}`,
-	background: transparentize(vars.color.white, 0.03),
+	background: vars.color.backgroundInset,
 	borderRadius: vars.radius.lg,
-	border: `1px solid ${transparentize(vars.color.white, 0.05)}`,
+	border: `1px solid ${vars.color.borderSubtle}`,
 })
 
 export const value = style({

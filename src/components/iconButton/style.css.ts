@@ -1,4 +1,3 @@
-import { transparentize } from '#lib/utils/style'
 import { vars } from '#theme.css'
 import { style } from '@vanilla-extract/css'
 
@@ -17,7 +16,7 @@ export const root = style({
 	background: 'transparent',
 	transition: 'color 0.2s ease, background 0.2s ease, opacity 0.2s ease',
 	':hover': {
-		background: transparentize(vars.color.white, 0.06),
+		background: vars.color.backgroundHover,
 	},
 	selectors: {
 		'&:disabled': {

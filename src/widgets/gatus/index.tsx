@@ -46,6 +46,10 @@ export const gatusWidget = defineWidget({
 				className={styles.root}
 				style={{ gridColumn: `span ${columns ?? 1}` }}
 			>
+				<div
+					className={styles.glow({ status: isLoading || totalCount === 0 ? 'neutral' : badgeStatus })}
+					aria-hidden="true"
+				/>
 				<Card.Header
 					className={styles.header}
 					icon={
@@ -92,7 +96,7 @@ export const gatusWidget = defineWidget({
 					) : null}
 				</Card.Header>
 
-				<List.Root>
+				<List.Root className={styles.list}>
 					{isLoading ? (
 						<>
 							<List.Item>

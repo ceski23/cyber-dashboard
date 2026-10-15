@@ -103,7 +103,7 @@ export const eyebrow = style({
 
 export const divider = style({
 	height: '1px',
-	background: transparentize(vars.color.white, 0.06),
+	background: vars.color.borderSubtle,
 })
 
 export const iconRow = style({

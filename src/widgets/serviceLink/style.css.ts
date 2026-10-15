@@ -27,7 +27,26 @@ export const styles = {
 			textDecoration: 'none',
 			color: vars.color.foreground,
 			height: vars.spacing['18'],
-			transition: `background 0.4s ease, ${getVarName(gradientStartVar)} 0.5s ease`,
+			':hover': {
+				boxShadow: vars.shadow.sm,
+			},
+			transition: `border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, ${getVarName(gradientStartVar)} 0.4s ease`,
+			':focus-visible': {
+				outline: `2px solid ${vars.color.primary}`,
+				outlineOffset: 3,
+				borderColor: vars.color.border,
+			},
+			'@media': {
+				'(hover: hover) and (pointer: fine)': {
+					':hover': {
+						vars: { [gradientStartVar]: '20%' },
+					},
+				},
+				'(prefers-reduced-motion: reduce)': {
+					transition: 'none',
+					':hover': { transform: 'none' },
+				},
+			},
 		},
 		variants: {
 			status: {

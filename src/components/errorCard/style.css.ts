@@ -37,7 +37,7 @@ export const styles = {
 		fontSize: vars.text.xs,
 		color: vars.color.foregroundMuted,
 		fontFamily: 'ui-monospace, "Cascadia Code", "JetBrains Mono", "Fira Code", monospace',
-		background: transparentize(vars.color.black, 0.3),
+		background: vars.color.backgroundAlt,
 		borderRadius: vars.radius.md,
 		padding: vars.spacing[3],
 		border: `1px solid ${transparentize(vars.color.red[500], 0.15)}`,
@@ -49,7 +49,7 @@ export const styles = {
 	codeFrame: style({
 		fontSize: vars.text.xs,
 		fontFamily: 'ui-monospace, "Cascadia Code", "JetBrains Mono", "Fira Code", monospace',
-		background: transparentize(vars.color.black, 0.4),
+		background: vars.color.backgroundAlt,
 		borderRadius: vars.radius.md,
 		padding: vars.spacing[3],
 		border: `1px solid ${vars.color.borderSubtle}`,

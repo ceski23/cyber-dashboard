@@ -1,4 +1,3 @@
-import { transparentize } from '#lib/utils/style'
 import { vars } from '#theme.css'
 import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
@@ -60,7 +59,7 @@ export const styles = {
 	progressTrack: style({
 		height: '6px',
 		borderRadius: vars.radius.full,
-		background: transparentize(vars.color.white, 0.06),
+		background: vars.color.backgroundAlt,
 		overflow: 'hidden',
 	}),
 

@@ -37,7 +37,7 @@ export const badge = recipe({
 			},
 			neutral: {
 				color: vars.color.foregroundMuted,
-				borderColor: transparentize(vars.color.white, 0.1),
+				borderColor: vars.color.border,
 				background: 'transparent',
 			},
 		},

@@ -4,7 +4,7 @@ import { style } from '@vanilla-extract/css'
 
 export const styles = {
 	errorRoot: style({
-		height: vars.spacing[32],
+		minHeight: vars.spacing[32],
 	}),
 
 	errorContent: style({
@@ -22,6 +22,7 @@ export const styles = {
 		color: 'inherit',
 		opacity: 0.8,
 		flex: 1,
+		minWidth: 0,
 	}),
 
 	errorButton: style({
@@ -49,5 +50,6 @@ export const styles = {
 		alignItems: 'flex-start',
 		gap: vars.spacing[2],
 		marginRight: 'auto',
+		width: '100%',
 	}),
 }
