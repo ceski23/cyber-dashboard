@@ -1,3 +1,12 @@
+# [1.5.0](https://github.com/ceski23/cyber-dashboard/compare/v1.4.0...v1.5.0) (2026-10-15)
+
+
+### Features
+
+* add configuration option to open links in same tab ([ae3482e](https://github.com/ceski23/cyber-dashboard/commit/ae3482e1a501c5fc28d033f2340d515b07853479))
+* improve app's branding ([b03dc62](https://github.com/ceski23/cyber-dashboard/commit/b03dc620971f84e1dd9847e97e951c4ed13bbf36))
+* UI improvements ([83afc5c](https://github.com/ceski23/cyber-dashboard/commit/83afc5cca3cda87a4a7fd2f70639121a48d387ec))
+
 # [1.4.0](https://github.com/ceski23/cyber-dashboard/compare/v1.3.0...v1.4.0) (2026-10-10)
 
 
