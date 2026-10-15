@@ -10,6 +10,11 @@
 			"type": "string",
 			"description": "The title of the dashboard."
 		},
+		"openLinksInNewTab": {
+			"default": true,
+			"description": "Open widget links in a new tab.",
+			"type": "boolean"
+		},
 		"widgets": {
 			"type": "array",
 			"items": {

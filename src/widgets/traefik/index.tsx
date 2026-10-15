@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { DashboardLink } from '#components/dashboardLink'
 import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
@@ -156,14 +157,13 @@ export const traefikWidget = defineWidget({
 									return (
 										<List.Item key={section.key}>
 											<span className={styles.statusDot({ status })} />
-											<a
+											<DashboardLink
 												href={new URL(section.url, url).toString()}
-												target="_blank"
 												rel="noopener noreferrer"
 												className={styles.rowLink}
 											>
 												{section.label}
-											</a>
+											</DashboardLink>
 											{stat.errors > 0 && (
 												<span className={styles.countPill({ tone: 'error' })}>
 													<CircleAlertIcon size={12} />

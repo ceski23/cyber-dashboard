@@ -1,3 +1,4 @@
+import { DashboardLink } from '#components/dashboardLink'
 import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import type { RecipeVariants } from '@vanilla-extract/recipes'
@@ -62,14 +63,13 @@ const Header: FunctionComponent<HeaderProps> = ({ className, icon, label, labelH
 					{icon != null && <div className={styles.iconBadge}>{icon}</div>}
 					{match({ label, labelHref })
 						.with({ label: P.string, labelHref: P.string }, ({ labelHref }) => (
-							<a
+							<DashboardLink
 								href={labelHref}
-								target="_blank"
 								rel="noopener noreferrer"
 								className={styles.labelLink}
 							>
 								{label}
-							</a>
+							</DashboardLink>
 						))
 						.with({ label: P.string }, () => <span className={styles.label}>{label}</span>)
 						.otherwise(() => null)}

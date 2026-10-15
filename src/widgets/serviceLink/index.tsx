@@ -1,4 +1,5 @@
 import { Card } from '#components/card'
+import { DashboardLink } from '#components/dashboardLink'
 import { StyledTooltip } from '#components/tooltip'
 import { serviceStatusQuery } from '#services/status'
 import { useQuery } from '@tanstack/react-query'
@@ -58,9 +59,8 @@ export const serviceLink = defineWidget({
 		return (
 			<Card.Root
 				render={
-					<a
+					<DashboardLink
 						href={url}
-						target="_blank"
 						rel="noopener noreferrer"
 					/>
 				}

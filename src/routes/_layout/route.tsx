@@ -1,3 +1,4 @@
+import { OpenLinksInNewTabContext } from '#components/dashboardLink'
 import { ErrorCard } from '#components/errorCard'
 import { flattenDashboardWidgets } from '#lib/config/dashboardItems'
 import { configMiddleware } from '#lib/config/middleware'
@@ -5,7 +6,6 @@ import { widgets as widgetsDefs } from '#widgets'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { groupBy } from 'es-toolkit'
-import { Fragment } from 'react'
 import { Header } from './-components/Header'
 
 const getData = createServerFn({ method: 'GET' })
@@ -13,7 +13,7 @@ const getData = createServerFn({ method: 'GET' })
 	.handler(
 		({
 			context: {
-				config: { title, baseUrl, widgets },
+				config: { title, baseUrl, widgets, openLinksInNewTab },
 			},
 		}) => {
 			const links = groupBy(
@@ -29,21 +29,22 @@ const getData = createServerFn({ method: 'GET' })
 				title,
 				baseUrl,
 				links,
+				openLinksInNewTab,
 			}
 		},
 	)
 
 const Layout = () => {
-	const { title, links } = Route.useLoaderData()
+	const { title, links, openLinksInNewTab } = Route.useLoaderData()
 
 	return (
-		<Fragment>
+		<OpenLinksInNewTabContext value={openLinksInNewTab}>
 			<Header
 				title={title ?? 'Homelab Dashboard'}
 				links={links}
 			/>
 			<Outlet />
-		</Fragment>
+		</OpenLinksInNewTabContext>
 	)
 }
 

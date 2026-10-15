@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { DashboardLink } from '#components/dashboardLink'
 import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
 import { Stat } from '#components/stat'
@@ -140,17 +141,16 @@ export const tailscaleWidget = defineWidget({
 												className={styles.statusDot({ connected: device.connectedToControl })}
 											/>
 											{isNotNil(primaryAddress) ? (
-												<a
+												<DashboardLink
 													href={new URL(
 														`machines/${primaryAddress}`,
 														TAILSCALE_ADMIN_URL,
 													).toString()}
-													target="_blank"
 													rel="noopener noreferrer"
 													className={styles.rowLink}
 												>
 													{device.hostname}
-												</a>
+												</DashboardLink>
 											) : (
 												<span className={styles.rowLink}>{device.hostname}</span>
 											)}

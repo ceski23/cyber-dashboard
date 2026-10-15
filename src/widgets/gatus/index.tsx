@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { DashboardLink } from '#components/dashboardLink'
 import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
 import { StyledTooltip } from '#components/tooltip'
@@ -170,13 +171,13 @@ export const gatusWidget = defineWidget({
 										>
 											<List.Item className={styles.row}>
 												<span className={styles.statusDot({ status: endpoint.status })} />
-												<a
+												<DashboardLink
 													href={new URL(`endpoints/${endpoint.key}`, url).toString()}
 													rel="noopener noreferrer"
 													className={styles.rowLink}
 												>
 													{endpoint.name}
-												</a>
+												</DashboardLink>
 												<span className={styles.duration}>
 													{endpoint.status !== 'unknown'
 														? formatDuration(endpoint.durationMs)

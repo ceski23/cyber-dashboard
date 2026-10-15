@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { DashboardLink } from '#components/dashboardLink'
 import { IconButton } from '#components/iconButton'
 import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
@@ -180,14 +181,13 @@ export const drydockWidget = defineWidget({
 													title={container.error?.message ?? getRowStatus(container)}
 												/>
 												{link != null && /^https?:\/\//i.test(link) ? (
-													<a
+													<DashboardLink
 														href={link}
-														target="_blank"
 														rel="noopener noreferrer"
 														className={styles.imageRef({ withLink: true })}
 													>
 														{label}
-													</a>
+													</DashboardLink>
 												) : (
 													<span className={styles.imageRef({ withLink: false })}>
 														{label}

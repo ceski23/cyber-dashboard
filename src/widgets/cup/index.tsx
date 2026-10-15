@@ -1,5 +1,6 @@
 import { Badge } from '#components/badge'
 import { Card } from '#components/card'
+import { DashboardLink } from '#components/dashboardLink'
 import { IconButton } from '#components/iconButton'
 import { List } from '#components/list'
 import { Skeleton } from '#components/skeleton'
@@ -162,14 +163,13 @@ export const cupWidget = defineWidget({
 											<List.Item key={image.reference}>
 												<span className={styles.statusDot({ status: getRowStatus(image) })} />
 												{image.url != null ? (
-													<a
+													<DashboardLink
 														href={image.url}
-														target="_blank"
 														rel="noopener noreferrer"
 														className={styles.imageRef({ withLink: true })}
 													>
 														{image.reference}
-													</a>
+													</DashboardLink>
 												) : (
 													<span className={styles.imageRef({ withLink: false })}>
 														{image.reference}
